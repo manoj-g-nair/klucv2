@@ -131,7 +131,7 @@ int main(int argc, char * argv[])
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
-                    EyeFeaturePoints fp = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,0,0,0,"Contour RE");
+                    EyeFeaturePoints fp = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,"kidkd",0,"threshold","Contour RE");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
