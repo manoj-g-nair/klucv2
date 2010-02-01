@@ -389,6 +389,7 @@ IplImage * extractGrayScaleROI(const IplImage * image)
 		// @TODO ensure the source format is RGB (at the moment this is just heuristic)
 		cvCvtColor(regImg, regImg, CV_RGB2GRAY);
 	}
+	return regImg;
 }
 //------------------------------------------------------------------------------
 EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
