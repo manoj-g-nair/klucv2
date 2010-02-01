@@ -17,5 +17,5 @@ add_executable(
 
 target_link_libraries(
     facedetect_roi
-    cv cxcore ml highgui cvaux cv
+    cv200 cxcore200 ml200 highgui200 cvaux200 cv200
 )

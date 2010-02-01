@@ -18,7 +18,7 @@ add_executable(
 
 target_link_libraries(
     neural_network
-    cv cxcore cvaux ml highgui
+    cv200 cxcore200 cvaux200 ml200 highgui200
 )
 
 #set_target_properties(feature_point_detection_from_eye_region PROPERTIES PROJECT_LABEL "Neural Network")

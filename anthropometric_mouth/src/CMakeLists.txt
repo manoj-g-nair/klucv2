@@ -18,7 +18,7 @@ add_executable(
 
 target_link_libraries(
     feature_point_detection_from_mouth_region
-    cv cxcore cvaux ml highgui
+    cv200 cxcore200 cvaux200 ml200 highgui200
 )
 
 #set_target_properties(feature_point_detection_from_eye_region PROPERTIES PROJECT_LABEL "Feature Point Detection from Mouth Region")

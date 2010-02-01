@@ -18,7 +18,7 @@ add_executable(
 
 target_link_libraries(
     facedetect_modesto_tips
-    cv cxcore ml highgui cvaux cv
+    cv200 cxcore200 ml200 highgui200 cvaux200 cv200
 )
 
 #set_target_properties(feature_point_detection_from_eye_region PROPERTIES PROJECT_LABEL "Face Detection with Tips from Modesto")
