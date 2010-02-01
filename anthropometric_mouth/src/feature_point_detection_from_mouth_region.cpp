@@ -162,7 +162,7 @@ int main(int argc, char * argv[])
 	{
 		std::cerr << "No capture found. Using static image." << std::endl;
 		// Load the image
-		image = cvLoadImage( "../../data/image_0235_left_eye_region.jpg", 1);
+		image = cvLoadImage( "../data/image_0235_left_eye_region.jpg", 1);
 	}
 
 	// Grayscale / Intensity image	

@@ -41,9 +41,9 @@ int main(int argc, char * argv[])
 	cvInitFont(&(app.font), CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
 	app.frame = 0;	
 	// Initialize old OpenCV 1.x stuff for object detection
-	app.cascadeFace = (CvHaarClassifierCascade*) cvLoad("../../data/haarcascades/haarcascade_frontalface_alt.xml", 0, 0, 0 );
-	app.cascadeEyes = (CvHaarClassifierCascade*) cvLoad("../../data/haarcascades/haarcascade_eye.xml", 0, 0, 0 );
-	app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
+	app.cascadeFace = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_frontalface_alt.xml", 0, 0, 0 );
+	app.cascadeEyes = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_eye.xml", 0, 0, 0 );
+	app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
 	app.memStorage = cvCreateMemStorage(0);
 
 	// END Initialize the application
@@ -73,9 +73,9 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		//image = cvLoadImage( "../../data/uglyman.jpg", 1 );
-		image = cvLoadImage( "../../faces/caltech/image_0045.jpg", 1 );
-		//image = cvLoadImage( "../../data/lena.jpg", 1 );
+		//image = cvLoadImage( "../data/uglyman.jpg", 1 );
+		image = cvLoadImage( "../faces/caltech/image_0045.jpg", 1 );
+		//image = cvLoadImage( "../data/lena.jpg", 1 );
 	}
 
 	// A text buffer for detection processing time

@@ -17,19 +17,6 @@ struct ApplicationEnvironment
 } app;
 
 /*!
-	The \c EyeFeaturePoints struct contains the X-Y coordinates of
-	all the feature points for one eye. Coordinates are considered
-	to be image and not region coordinates.
-*/
-struct EyeFeaturePoints
-{
-	cv::Point2i upperLid;
-	cv::Point2i bottomLid;
-	cv::Point2i cornerLeft; // from point of view
-	cv::Point2i cornerRight;// from point of view
-};
-
-/*!
 	Detects the all the eye-feature points (see \c EyeFeaturePoints) in the \a region
 	of the \a image.
 
@@ -174,7 +161,7 @@ int main(int argc, char * argv[])
 	{
 		std::cerr << "No capture found. Using static image." << std::endl;
 		// Load the image
-		image = cvLoadImage( "../../data/fig3a.png", 1);
+		image = cvLoadImage( "../data/data/fig3a.png", 1);
 	}
 
 	// Grayscale / Intensity image	

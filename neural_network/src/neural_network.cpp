@@ -32,7 +32,7 @@ int main(int argc, char * argv[]) {
 //
 	CvMLData data;
 	data.set_delimiter(',');
-	if (data.read_csv("../../data/sample.csv") != 0) {
+	if (data.read_csv("../data/sample.csv") != 0) {
 		cerr << "Failed to read CSV data" << endl;
 	}
 //
@@ -47,13 +47,13 @@ int main(int argc, char * argv[]) {
 //	cout << "get_train_sample_idx" << endl;
 //	printMat(get_train_sample_idx);
 //
-//	CvFileStorage * paramsStorage = cvOpenFileStorage("../../data/params.xml", NULL, CV_STORAGE_READ);
+//	CvFileStorage * paramsStorage = cvOpenFileStorage("../data/params.xml", NULL, CV_STORAGE_READ);
 //
 //	MyMLP net;
 //	net.readParams(paramsStorage, NULL);
 //	cvReleaseFileStorage(&paramsStorage);
 
-	CvFileStorage * writeStorage = cvOpenFileStorage("../../data/net.xml", NULL, CV_STORAGE_WRITE);
+	CvFileStorage * writeStorage = cvOpenFileStorage("../data/net.xml", NULL, CV_STORAGE_WRITE);
 	net.write(writeStorage, "bla");
 	cvReleaseFileStorage(&writeStorage);
 

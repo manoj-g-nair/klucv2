@@ -274,7 +274,7 @@ int main(int argc, char * argv[])
 	app.scale = 1;
 
 	// Load the cascades
-	if( !app.cascade.load("../../data/haarcascades/haarcascade_mcs_eyepair_small.xml") )
+	if( !app.cascade.load("../data/haarcascades/haarcascade_mcs_eyepair_small.xml") )
 	{
 		cerr << "Failed to load cascade" << endl;
 		exit(1);
@@ -304,7 +304,7 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		image = cvLoadImage( "../../data/lena.jpg", 1 );
+		image = cvLoadImage( "../data/lena.jpg", 1 );
 	}
 
 	// See http://opencv.willowgarage.com/documentation/miscellaneous_image_transformations.html#integral
