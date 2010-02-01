@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<A type_id="opencv-ann-params">
+  
+  <activation_function>SIGMOID_SYM</activation_function>
+  
+  <!-- alpha -->
+  <f_param1>1.0</f_param1>
+  
+  <!-- beta -->
+  <f_param2>1.0</f_param2>
+  
+  <!-- Don't know what these are doing -->
+  <min_val>0.0</min_val>
+  <max_val>1.0</max_val>
+  <min_val1>0.0</min_val1>
+  <max_val1>1.0</max_val1>
+  
+  <training_params>  	
+  
+	<train_method>BACKPROP</train_method>
+	
+	<!-- !!! Training parameters differ between training algorithms !!! -->
+	<!-- !!! The following parameters are only for backprop !!! --> 
+	
+	<dw_scale>0.0</dw_scale>
+	<moment_scale>0.0</moment_scale>
+	
+	<term_criteria>
+		<epsilon>0.01</epsilon>
+		<iterations>1000</iterations>
+	</term_criteria>
+	
+  </training_params>
+</A>
+</opencv_storage>
