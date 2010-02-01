@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 	// Create the result window
     cvNamedWindow(WINDOW_RESULT, 1);
 
-	app.capture = cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
+	app.capture = 0;//cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
 
 	IplImage * image = NULL;
 
@@ -73,10 +73,10 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		//image = cvLoadImage( "../data/uglyman.jpg", 1 );
-		image = cvLoadImage( "../faces/caltech/image_0045.jpg", 1 );
-		//image = cvLoadImage( "../data/lena.jpg", 1 );
+		image = cvLoadImage( "../data/image_0235.jpg", 1 );
 	}
+
+    IplImage * grayscaleFrame = cvCreateImage(cvSize(image->width, image->height), IPL_DEPTH_8U, 1);
 
 	// A text buffer for detection processing time
 	char buf[255];
@@ -92,6 +92,9 @@ int main(int argc, char * argv[])
 			// Capture a frame or simply clone the image if it's still
 			app.frame = cvCloneImage(image);
 		}
+
+        // Convert frame to grayscale / intensity and show
+		cvCvtColor(app.frame, grayscaleFrame, CV_RGB2GRAY);
 
 		tic();
 		CvSize minFaceSize = cvSize(200, 200);
@@ -125,6 +128,11 @@ int main(int argc, char * argv[])
 					rightEyeRect = eyeRects[0];
 					rightEyeRect.x += rightEyeSearchWindow.x;
 					rightEyeRect.y += rightEyeSearchWindow.y;
+
+                    // Find right eye feature points
+                    cvSetImageROI(grayscaleFrame, rightEyeRect);
+                    EyeFeaturePoints fp = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,0,0,0,"Contour RE");
+                    cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
 
@@ -271,6 +279,7 @@ int main(int argc, char * argv[])
 		cvReleaseImage(&image);
 	}
 	cvReleaseCapture(&app.capture);
+    cvReleaseImage(&grayscaleFrame);
 	cvDestroyAllWindows();
 
     return 0;

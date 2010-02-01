@@ -8,7 +8,6 @@ using namespace cv;
 
 #define WINDOW_ORIGINAL "Original"
 
-
 // This struct encapsulates all program options and variables
 struct ApplicationEnvironment
 {
@@ -16,117 +15,6 @@ struct ApplicationEnvironment
 	bool isExiting;
 	IplImage * frame; // Pointer to the current frame
 } app;
-
-/*!
-	Detects the all the eye-feature points (see \c EyeFeaturePoints) in the \a region
-	of the \a image.
-
-	See: Abu Sayeed Md. Sohail and Prabir Bhattacharya
-	     "Detection of Facial Feature Points Using Anthropometric Face Model"
-	     p. 660
-*/
-EyeFeaturePoints detectEyeFeaturePoints(IplImage * image, const CvRect & region = cvRect(0,0,0,0))
-{
-	EyeFeaturePoints featurePoints;
-
-	// Create a temporary copy of the image region
-	IplImage * regionImage = NULL;
-
-	try
-	{
-		// Test if parameters are OK
-		if ( !image || image->depth != IPL_DEPTH_8U || image->nChannels != 1 )
-		{
-			throw std::string("Image must be an IPL_DEPTH_8U grayscale image with one channel only!");
-		}
-
-		if ( region.height != 0 && region.width != 0 )
-		{
-			regionImage = cvCreateImage(cvSize(region.width, region.height), IPL_DEPTH_8U, 1);
-			// @TODO Find a different way to copy subimage to "tmp" so "image" parameter can be const again.
-			CvRect currentRoi = cvGetImageROI(image);
-			cvSetImageROI(image, region);
-			cvResize(image, regionImage);
-			cvSetImageROI(image, currentRoi);
-		}
-		else
-		{
-			// No need to set ROI, simply copy "image" to "tmp".
-			regionImage = cvCloneImage(image);
-		}
-
-		if ( !regionImage )
-		{
-			throw std::string("Failed to create copy of image region!");
-		}
-
-		// Calculate the mean intensity value of all pixel values in the image region
-		cv::Mat frameMatrix = image;
-		cv::Scalar m = cv::mean(frameMatrix);
-		int mean = m[0];
-
-		// Determine which will be the minimum and maximum bound that make up the
-		// values around the mean value. For example, let 110 be the mean grayscale
-		// value of all pixels. Then the lower bound is 0.5 * 110=55 and the upper
-		// bound is 1.5 * 110=165.
-		int upperBound = 1.5 * mean;
-		int lowerBound = 0.5 * mean;
-
-		// Output all values once to console
-		static bool done = false;
-		if ( !done )
-		{
-			std::cerr << "mean = " << mean << std::endl;
-			std::cerr << "upperBound = " << upperBound << std::endl;
-			std::cerr << "lowerBound = " << lowerBound << std::endl;
-			done = true;
-		}
-
-		// Saturate!
-
-		// @TODO Maby we need to re-consider what is meant by the lower half of 50%
-		//       of the image intensity cumulative distribution! Think!
-
-		// Saturate lower half of 50% of the cumulative intensity distribution to 0
-		// Saturate upper half of 50% of the cumulative intensity distribution to 1
-		// ...
-
-		// Iterate over rows
-		for ( int r=0; r < regionImage->height; r++ )
-		{
-			// Iterate over columns
-			for ( int c=0; c < regionImage->width; c++)
-			{
-				// Get the pointer to the intensity value
-				unsigned char * intensity = (unsigned char*) 	regionImage->imageData +
-																r * regionImage->widthStep +
-																c * regionImage->nChannels;
-
-				if ( *intensity > upperBound )
-				{
-					*intensity = 255;
-				}
-				else if ( *intensity < lowerBound )
-				{
-					*intensity = 0;
-				}
-			}
-		}
-
-	}
-	catch ( const std::string & e )
-	{
-		std::cerr << "detectEyeFeaturePoints(): " << e << std::endl;
-	}
-
-	// Release temporary image
-	if ( regionImage )
-	{
-		cvReleaseImage(&regionImage);
-	}
-
-	return featurePoints;
-}
 
 int main(int argc, char * argv[])
 {    
@@ -162,7 +50,7 @@ int main(int argc, char * argv[])
 	{
 		std::cerr << "No capture found. Using static image." << std::endl;
 		// Load the image
-		image = cvLoadImage( "../data/image_0235_left_eye_region.jpg", 1);
+		image = cvLoadImage( "../data/image_0235.jpg", 1);
 	}
 
 	// Grayscale / Intensity image	
@@ -171,8 +59,6 @@ int main(int argc, char * argv[])
 
 	// Contour stuff
 	CvMemStorage * 	storage = cvCreateMemStorage(0); // block size = 0 means default
-	CvSeq * contours = NULL;
-	CvSeq * firstContour = NULL;
 
 	// A text buffer for detection processing time
 	char buf[255];
@@ -195,39 +81,6 @@ int main(int argc, char * argv[])
 		// Convert frame to grayscale / intensity and show
 		cvCvtColor(image, grayscaleFrame, CV_RGB2GRAY);
 
-		static bool done2 = false;
-		if ( !done2 )
-		{
-			saveImage(grayscaleFrame, "mouth_region_grayscale");
-			done2 = true;
-		}
-
-		// Calc mean
-		unsigned char minVal;
-		unsigned char maxVal;
-		int avg = getAvgMinMaxGrayValue(grayscaleFrame, &minVal, &maxVal);
-
-		// 50 % of mean
-		int upperBound = avg + (maxVal - avg) / 2; // old idea: 1.5 * mean
-		int lowerBound = minVal + (avg - minVal) / 2;
-
-		//cvNormalize(grayscaleFrame, grayscaleFrame, upperBound, 255, CV_MINMAX);
-		//cvNormalize(grayscaleFrame, grayscaleFrame, minVal, lowerBound, CV_MINMAX);
-
-
-		static bool hasPrintedStats = false;
-		if ( !hasPrintedStats )
-		{
-			cerr << "avg = " << avg << endl;
-			cerr << "minVal = " << (int) minVal << endl;
-			cerr << "maxVal = " << (int) maxVal << endl;
-			cerr << "upperBound = " << (int) upperBound << endl;
-			cerr << "lowerBound = " << (int) lowerBound << endl;
-			hasPrintedStats = true;
-		}
-
-		stretchContrast(grayscaleFrame, lowerBound, maxVal, upperBound, 255);
-		stretchContrast(grayscaleFrame, minVal, avg, 0, minVal);
 
 		// Saturate lower half of 50% of the cumulative intensity distribution to 0
 		//cvThreshold(grayscaleFrame, grayscaleFrame, lowerBorder, 0, THRESH_TOZERO);

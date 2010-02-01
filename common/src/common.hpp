@@ -259,6 +259,7 @@ namespace klu
 	 * @author Konrad Kleine, Jens Lukowski
 	 */
 	EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
+                                            CvMemStorage * storage,
 											const char * windowContrastStretch1 = NULL,
 											const char * windowContrastStretch2 = NULL,
 											const char * windowThreshold = NULL,

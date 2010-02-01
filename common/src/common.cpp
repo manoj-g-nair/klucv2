@@ -150,7 +150,7 @@ void printMat(const CvMat *A)
 //------------------------------------------------------------------------------
 GrayStats getGrayStats(const IplImage * img)
 {
-	CV_Assert( img && img->nChannels == 1);
+	CV_Assert(img && img->nChannels == 1);
 
 	// Initialize with reasonable defaults
 	GrayStats d;
@@ -393,13 +393,14 @@ IplImage * extractGrayScaleROI(const IplImage * image)
 }
 //------------------------------------------------------------------------------
 EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
+                                        CvMemStorage * storage,
 										const char * windowContrastStretch1,
 										const char * windowContrastStretch2,
 										const char * windowThreshold,
 										const char * windowContour,
 										const char * windowFeaturePoints)
 {
-	CV_Assert(image != NULL);
+	CV_Assert(image != NULL && storage != NULL);
 
 	EyeFeaturePoints fp;
 
@@ -444,6 +445,71 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	} while (t != tNew );
 	cvThreshold(regImg, regImg, t, 255, CV_THRESH_BINARY);
 	visDebug(windowThreshold, regImg);
+
+    // Find contours in inverted binary image
+    CvSeq * contours = NULL;
+	CvSeq * firstContour = NULL;
+	int nContours = cvFindContours(regImg, storage, &firstContour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+	
+	CvSeq * biggestContour = NULL;
+	double biggestArea = 0;
+
+	for( CvSeq* c = firstContour; c!=NULL; c=c->h_next )
+	{
+		double area = cvContourArea(c);
+		if ( (area*area) > biggestArea )
+		{
+			biggestContour = c;
+			biggestArea = (area*area);
+		}
+	}
+
+	if ( biggestContour )
+	{
+        if ( windowContour )
+        {
+		    cvDrawContours(
+			    regImg, // target image
+			    biggestContour, // contour
+			    CV_RGB(255, 255, 0),		// external color
+			    CV_RGB(0, 0, 255),	// hole color
+			    1,			// Vary max_level and compare results
+			    2, // thickness
+			    8 // type
+		    );
+            visDebug(windowContour, regImg);
+        }
+
+
+		// Go through all contour points and find the right- and leftmost
+
+		// @TODO also save the seq IDX for further contour processing and search for upper and lower lid.
+
+        fp.cornerRight = cvPoint(0, 0);
+        fp.cornerLeft = cvPoint(regImg->width, regImg->height);
+
+		int nElements = biggestContour->total;
+
+		for ( int i = 0; i < nElements; i++)
+		{
+			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
+
+			if ( p.x > fp.cornerRight.x )
+			{
+				fp.cornerRight = p;
+			}
+			else if ( p.x < fp.cornerLeft.x )
+			{
+				fp.cornerLeft = p;
+			}
+			//fprintf(stderr, "%d %p\n", biggestContour->total, (CvPoint*) cvGetSeqElem(biggestContour, 0));
+		}
+
+		// Draw right- and leftmost contour points
+//			cvDrawLine(app.frame, rightmost, rightmost, CV_RGB(0, 255, 0), 10);
+//			cvDrawLine(app.frame, leftmost, leftmost, CV_RGB(0, 255, 0), 10);
+
+	}
 
 	cvReleaseImage(&regImg);
 
