@@ -1,0 +1,154 @@
+
+<!-- saved from url=(0125)http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/connect.html#4 -->
+<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+   <META name="Author" content="Abeer Ghuneim">
+   <META name="GENERATOR" content="Microsoft FrontPage 5.0">
+   <TITLE>Untitled</TITLE>
+</HEAD><BODY text="#000000" bgcolor="#FFFFFF" link="#981F8C" vlink="#6230B6" alink="#0000EE" background="./back5.jpg" marginwidth="0" marginheight="0">
+<B><U><FONT color="#C53894"><FONT size="+2">Defining Connectivity</FONT></FONT></U></B>
+<BR><A name="intro"></A>
+
+<P><B><FONT color="#C53894"><FONT size="+2">Introduction</FONT></FONT></B>
+
+</P><P>In binary valued digital imaging, a pixel can either have a value of&nbsp;
+1 -when it's part of the pattern- , or&nbsp; 0 -when it's part of the background-
+i.e. there is no grayscale level. (We will assume that pixels with value
+1 are black while zero valued pixels are white).
+<BR>&nbsp;
+
+</P><P>In order to identify <B><I>objects</I></B> in a digital pattern, we
+need to locate groups of black pixels that are "connected" to each other.
+In other words, the <B><I>objects</I></B> in a given digital pattern are
+the <B><I>connected components </I></B>of that pattern.
+<BR>&nbsp;
+
+</P><P>In general, a <B><I>connected component </I></B>is a set of black pixels,
+<B>P</B>, such that for every pair of pixels <B>p<SUB>i </SUB></B>and <B>p<SUB>j</SUB></B>
+in <B>P,</B> there exists a sequence of pixels&nbsp; <B><I>p<SUB>i</SUB>,
+..., p<SUB>j&nbsp;&nbsp; </SUB></I></B>such that:
+<BR>a) all pixels in the sequence are in the set <B>P </B>i.e. are black,
+and
+<BR>b) every 2 pixels that are <B><I>adjacent in the sequence</I></B> are
+"neighbors"
+<BR>&nbsp;
+
+</P><P>As a result, an important question arises: <B><I>When can we say that
+2 pixels are "neighbors"?</I></B>
+<BR>Since we are using square pixels, the answer to the previous question
+is not trivial. The reason for that is: in a 
+<A target="_top" href="http://mathforum.org/sum95/suzanne/tess.intro.html">square tessellation</A>,
+pixels either share an edge, a vertex, or neither. There are 8 pixels sharing
+an edge or a vertex with any given pixel; these pixels make up the <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/mneigh.html">Moore
+neighborhood </A>of that pixel. Should we consider pixels having only a
+common vertex as "neighbors" ? Or should 2 pixels have a common edge in
+order for them to be considered&nbsp; "neighbors"?
+<BR>&nbsp;
+
+</P><P>This gives rise to 2 types of connectedness, namely: <A href="./Contour Tracing - Defining Connectivity 4-connected.htm" target="_top">4-connectivity</A>
+and <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/8con.html" target="_top">8-connectivity</A>.
+<BR>&nbsp;
+
+</P><P><A name="4"></A>
+
+</P><P><B><FONT color="#C53894"><FONT size="+2">4-Connectivity</FONT></FONT></B>
+
+</P><P>When can we say that a given set of black pixels is <B><I>4-connected
+?</I></B>
+<BR>First, we have to define the concept of a <B><I>4-neighbor </I></B>(also
+known as a <B><I>direct-neighbor</I></B>):
+
+</P><P><FONT color="#000000"><B>Definition of a 4-neighbor</B>:</FONT>
+<BR>A pixel, <B>Q,</B> is a <B><I>4-neighbor</I></B>&nbsp; of a given pixel,
+<B>P</B>, if <B>Q</B> and <B>P</B> share an edge.
+<BR>The 4-neighbors of pixel <B>P </B>(namely pixels <B>P2,P4,P6</B> and
+<B>P8</B>) are shown in <B><I>Figure 2</I></B> below.
+<BR>&nbsp;
+<BR>&nbsp;
+</P><CENTER><IMG src="./Figure2.GIF" height="202" width="177"></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+
+<P><FONT color="#000000"><B>Definition of a 4-connected component</B> :</FONT>
+<BR>A set of black pixels, <B>P</B>, is a <B><I>4-connected component </I></B>if
+for every pair of pixels <B>p<SUB>i </SUB></B>and <B>p<SUB>j</SUB></B>
+in <B>P,</B> there exists a sequence of pixels&nbsp; <B><I>p<SUB>i</SUB>,
+..., p<SUB>j </SUB></I></B>such that:
+<BR>a) all pixels in the sequence are in the set <B>P </B>i.e. are black,
+and
+<BR>b) every 2 pixels that are <B><I>adjacent in the sequence</I></B> are
+<B><I>4-neighbors</I></B>
+<BR>&nbsp;
+
+</P><P><B><FONT color="#000000">Examples of 4-connected patterns :</FONT></B>
+<BR>The following diagrams are examples of patterns that are 4-connected:
+</P><CENTER><IMG src="./Figure3.gif" height="216" width="576"></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+
+<P><A name="8"></A>
+
+</P><P><B><FONT color="#C53894"><FONT size="+2">8-Connectivity</FONT></FONT></B>
+
+</P><P>When can we say that a given set of black pixels is <B><I>8-connected
+?</I></B>
+<BR>First, we have to define the concept of an <B><I>8-neighbor </I></B>(also
+known as an&nbsp; <B><I>indirect-neighbor</I></B>):
+
+</P><P><FONT color="#000000"><B>Definition of an 8-neighbor</B>:</FONT>
+<BR>A pixel, <B>Q,</B> is an <B><I>8-neighbor</I></B> (or simply a <B><I>neighbor</I></B>)
+of a given pixel, <B>P</B>, if <B>Q</B> and <B>P</B> either share an edge
+or a vertex.
+<BR>The 8-neighbors of a given pixel <B>P </B>make up the <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/mneigh.html">Moore
+neighborhood</A><A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/connect.html#moore"> </A>of that pixel.
+
+</P><P><FONT color="#000000"><B>Definition of an 8-connected component</B>:</FONT>
+<BR>A set of black pixels, <B>P</B>, is an <B><I>8-connected component</I></B>
+(or simply a <B><I>connected component</I></B>) if for every pair of pixels
+<B>p<SUB>i </SUB></B>and <B>p<SUB>j</SUB></B> in <B>P,</B> there exists
+a sequence of pixels <B><I>p<SUB>i</SUB>, ..., p<SUB>j&nbsp; </SUB></I></B>such
+that:
+<BR>a) all pixels in the sequence are in the set <B>P </B>i.e. are black,
+and
+<BR>b) every 2 pixels that are <B><I>adjacent in the sequence</I></B> are
+<B><I>8-neighbors</I></B>
+
+</P><P><B>NOTE</B>
+<BR>All 4-connected patterns are 8-connected i.e. 4-connected patterns
+are a subset of the set of 8-connected patterns.
+<BR>On the other hand, an 8-connected pattern may not<B> </B>be 4-connected.
+
+</P><P><B><FONT color="#000000">Example of 8-connected pattern :</FONT></B>
+<BR>The diagram below is an example of a pattern that is 8-connected but
+not 4-connected:
+<BR>&nbsp;
+</P><CENTER><IMG src="./Figure5.gif" nosave="" height="180" width="180"></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+
+<P><B><FONT color="#000000">Example of a pattern that's not 8-connected:</FONT></B>
+<BR>The diagram below is an example of a pattern that is not 8-connected
+i.e. is made up of more than one connected component (there are 3 connected
+components in the diagram below):
+<BR>&nbsp;
+</P><CENTER><IMG src="./Figure9.gif" height="180" width="180"></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<CENTER><IMG src="./Line.gif" height="2" width="685"></CENTER>
+
+<CENTER><I><FONT color="#800080"><FONT size="-1">All comments and questions
+are welcomed...</FONT></FONT></I></CENTER>
+
+<CENTER><I><FONT size="-1"><A href="mailto:abeer.ghuneim@mail.mcgill.ca">
+abeer.ghuneim@mail.mcgill.ca</A></FONT></I></CENTER>
+&nbsp;
+<BR>&nbsp;
+
+</BODY></HTML>

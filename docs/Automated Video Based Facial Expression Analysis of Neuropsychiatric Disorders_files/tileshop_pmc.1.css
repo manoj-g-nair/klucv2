@@ -1,0 +1,350 @@
+/* ================================== */
+.viewport,
+.viewport-static-image,
+.panorama,
+.scale-pmc {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.viewport,
+.viewport-static-image {
+    float:left;
+}
+
+.viewport {
+    overflow:hidden;
+    background-image:url(../../img/tileshop_pmc.1/loading_bg.gif);
+}
+
+.viewport .dnd {
+    background-image:url(../../img/tileshop_pmc.1/loading_bg.gif);
+}
+
+.dnd {
+    cursor: move;
+    cursor: url(http://www.ncbi.nlm.nih.gov/corehtml/jsutils/cur/grab.cur), move;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.moving {
+    cursor: move;
+    cursor: url(http://www.ncbi.nlm.nih.gov/corehtml/jsutils/cur/grabbing.cur), move;
+}
+
+.viewport-static-image {
+    background-image:none;
+    overflow:hidden;
+    background-color:#ccc;
+}
+
+.viewport-static-image img {
+    cursor: url(http://www.ncbi.nlm.nih.gov/corehtml/jsutils/cur/zoomin.cur), auto;
+}
+
+.tileshop {
+    float:left;
+    background-color:#fff;
+    cursor: url(http://www.ncbi.nlm.nih.gov/corehtml/jsutils/cur/zoomin.cur), auto;
+}
+
+.nodrag {
+    cursor:default;
+}
+
+.static,
+.static img {
+    cursor: default;
+    background-color:#ccc;
+    background-image:none;
+}
+
+.half-static,
+.half-static img {
+    background-color:#ccc;
+    background-image:none;
+}
+
+
+.tile-fill {
+    background-color:#f0f;
+}
+
+.panorama {
+    background-color:#ECF0F4;
+    border:none;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+    border-right: 3px solid #F0FFFF;
+}
+
+.panorama div {
+    overflow:hidden;
+}
+
+.panorama img {
+    cursor:pointer;
+}
+
+.pan-switcher {
+    background-image:url(../../img/tileshop_pmc.1/pan_close.gif);
+    background-repeat:no-repeat;
+    width:10px;
+    height:10px;
+    background-color:#fff;
+    _background-color:transparent;
+    border: 1px solid #000;
+    _border:none;
+    cursor:pointer;
+}
+
+.pan-switcher-close {
+    background-image:url(../../img/tileshop_pmc.1/pan_open.gif);
+    
+}
+
+.pan {
+    border: 2px dotted #000;
+    font-size:1px;
+    cursor: move;
+    background-color:#DCE0E4;
+    opacity:0.7;
+    filter: alpha(opacity=70);
+}
+
+
+/* ================================== */
+div.panel {
+    border:1px solid gray;
+    background-color:#ECF0F4;
+    float:left;
+    padding:0;
+    margin:0;
+}
+
+div.panel p {
+    text-align:center;
+    margin:0;
+    float:left;
+    background-color:#ECF0F4;
+    width:100%;
+    min-height:21px;
+    padding:0.1em 0 0.2em 0;
+}
+
+
+div.panel p span {
+    float:left;
+    width:85%;
+    margin:0;
+    padding-left:25px;
+}
+
+div.panel p a {
+    display:none;
+    text-decoration:none;
+    min-height:21px;
+}
+
+div.panel p a.active {
+    background-image:url(../../img/tileshop_pmc.1/toolbar.png);
+    _background-image:url(../../img/tileshop_pmc.1/toolbar.gif);
+    background-repeat:no-repeat;
+    background-position:13px 0px;
+    width:36px;
+    height: 21px;
+    float:right;
+    display:block;
+    margin:0;
+    margin-right:9px;
+    _margin-right:5px;
+}
+
+div.panel p a.active:hover {
+    background-position:-67px 0px;
+    background-color:#ECF0F4;
+    text-decoration:none;
+    background-repeat:no-repeat;
+}
+
+div.panel dl,
+div.panel dd,
+div.panel dt,
+div.panel dt img {
+    margin:0;
+    padding:0;
+}
+
+div.panel dl {
+    float:left;
+    width:100%;
+}
+
+div.panel dl dd {
+    float:right;
+}
+
+div.panel dl dt {
+    background-image:url(../../img/tileshop_pmc.1/loading_bg.gif);
+    float:left;
+}
+
+
+
+/* BEGIN Scale bar PMC */
+
+
+.scale-pmc {
+    width:32px;
+    padding-top:0em;
+    margin:auto;
+}
+
+.scale-pmc a {
+    background-image:url(../../img/tileshop_pmc.1/toolbar.png);
+    _background-image:url(../../img/tileshop_pmc.1/toolbar.gif);
+    background-repeat:no-repeat;
+    display:block;
+    text-decoration:none;
+    margin:0;
+    padding:1px;
+    height:16px;
+    font-size:3px;
+}
+
+.scale-pmc a:hover {
+    background-color:transparent;
+    background-repeat:no-repeat;
+    text-decoration:none;
+}
+
+
+.scale-pmc a.scale-up,
+.scale-pmc a.scale-up-disabled,
+.scale-pmc a.scale-down-disabled,
+.scale-pmc a.scale-down {
+    margin:2px auto;
+    width:22px;
+    height:22px;
+}
+
+.scale-pmc a.scale-up {
+    background-position:4px -26px;
+}
+.scale-pmc a.scale-up:hover {
+    background-position:-76px -26px;
+}
+.scale-pmc a.scale-up-disabled {
+    background-position:-36px -26px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-down {
+    background-position:4px -226px;
+}
+.scale-pmc a.scale-down:hover {
+    background-position:-76px -226px;
+}
+.scale-pmc a.scale-down-disabled {
+    background-position:-36px -226px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-1 {
+    background-position:3px -57px;
+}
+.scale-pmc a.scale-1:hover {
+    background-position:-77px -57px;
+}
+.scale-pmc a.selected-1,
+.scale-pmc a.selected-1:hover {
+    background-position:-37px -57px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-2 {
+    background-position:3px -77px;
+}
+.scale-pmc a.scale-2:hover {
+    background-position:-77px -77px;
+}
+.scale-pmc a.selected-2,
+.scale-pmc a.selected-2:hover {
+    background-position:-37px -77px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-3 {
+    background-position:3px -97px;
+}
+.scale-pmc a.scale-3:hover {
+    background-position:-77px -97px;
+}
+.scale-pmc a.selected-3,
+.scale-pmc a.selected-3:hover {
+    background-position:-37px -97px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-4 {
+    background-position:3px -117px;
+}
+.scale-pmc a.scale-4:hover {
+    background-position:-77px -117px;
+}
+.scale-pmc a.selected-4,
+.scale-pmc a.selected-4:hover {
+    background-position:-37px -117px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-5 {
+    background-position:3px -137px;
+}
+.scale-pmc a.scale-5:hover {
+    background-position:-77px -137px;
+}
+.scale-pmc a.selected-5,
+.scale-pmc a.selected-5:hover {
+    background-position:-37px -137px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-6 {
+    background-position:3px -157px;
+}
+.scale-pmc a.scale-6:hover {
+    background-position:-77px -157px;
+}
+.scale-pmc a.selected-6,
+.scale-pmc a.selected-6:hover {
+    background-position:-37px -157px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-7 {
+    background-position:3px -177px;
+}
+.scale-pmc a.scale-7:hover {
+    background-position:-77px -177px;
+}
+.scale-pmc a.selected-7,
+.scale-pmc a.selected-7:hover {
+    background-position:-37px -177px;
+    cursor:default;
+}
+
+.scale-pmc a.scale-8 {
+    background-position:3px -207px;
+}
+.scale-pmc a.scale-8:hover {
+    background-position:-77px -207px;
+}
+.scale-pmc a.selected-8,
+.scale-pmc a.selected-8:hover {
+    background-position:-37px -207px;
+    cursor:default;
+}
+/* END Scale bar PMC */

@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!-- saved from url=(0041)http://www.csie.ntu.edu.tw/~cjlin/libsvm/ -->
+<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+   <META name="description" content="An integrated and easy-to-use tool for support vector classification and regression">
+   <META name="keywords" content="Support vector machines (SVM), Support vector machine, libsvm">
+   <META name="GENERATOR" content="Mozilla/4.76 [en] (X11; U; Linux 2.4.0-test12 i686) [Netscape]">
+   <TITLE>LIBSVM -- A Library for Support Vector Machines
+</TITLE>
+</HEAD><BODY text="#000000" bgcolor="#FFEFD5" link="#FF0000" vlink="#0000FF">
+
+<H2>
+LIBSVM -- A Library for Support Vector Machines</H2>
+
+<H2>
+Chih-Chung Chang and
+<A href="http://www.csie.ntu.edu.tw/~cjlin/index.html">Chih-Jen
+Lin</A></H2>
+
+<HR width="100%">
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> 
+Version 2.9 released on November 1, 2009.
+Scripts for parameter selection now works under
+python 3.x as well.
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> We now have a nice page <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets">LIBSVM data sets</A> providing problems in LIBSVM format.
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> <A href="http://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf">A practical
+  guide to SVM classification</A>
+is available now! (mainly written for beginners)
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvmtools">libsvm tools</A>
+available now!
+<BR>
+We now have an easy script (easy.py)
+for users who know NOTHING about svm.
+It makes 
+   everything automatic--from data scaling to parameter selection.
+<BR>
+The parameter selection tool grid.py
+generates the following contour of cross-validation
+accuracy. To use this tool, you also need
+to install <A href="http://www.python.org/download/">python</A>
+and 
+<A href="http://www.gnuplot.info/">gnuplot</A>.
+<P>
+</P><CENTER><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/heart_scale.png"></CENTER>
+
+To see the importance of parameter selection, please
+see our <A href="http://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf">guide</A>
+for beginners.
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> Using libsvm, our group is the winner
+of
+<A href="http://www.eunite.org/">EUNITE</A>
+world wide 
+<A href="http://neuron-ai.tuke.sk/competition">
+competition
+on electricity load prediction
+</A> 
+, December 2001. The technique used is the support vector 
+regression.
+
+<BR><IMG src="./LIBSVM -- A Library for Support Vector Machines_files/new.gif"> Using libsvm, our group is the winner
+of
+<A href="http://www.ijcnn.net/">IJCNN</A> 
+Challenge (two of the three competieions).
+<HR>
+<H3>
+Introduction</H3>
+<P><B>LIBSVM </B>is an integrated software for support vector classification, 
+(C-SVC, <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#nuandone">nu-SVC</A>),
+regression (epsilon-SVR, <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#nuandone">nu-SVR</A>) and
+distribution estimation (<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#nuandone">one-class SVM</A>). 
+It supports 
+multi-class classification. 
+</P><P>
+Since version 2.8, it implements an SMO-type algorithm proposed
+in this paper:<BR>
+R.-E. Fan, P.-H. Chen, and C.-J. Lin.
+<A href="http://www.csie.ntu.edu.tw/~cjlin/papers/quadworkset.pdf">Working set selection using second order information for training
+  SVM</A>.
+Journal of Machine Learning Research 6, 1889-1918,  2005. You can also find a pseudo code there.
+(<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/faq.html#f203">how to cite LIBSVM</A>)
+
+</P><P><FONT color="#FF0000">Our goal is to help users from other fields to
+easily use SVM as a tool. </FONT><B>LIBSVM </B>provides a simple interface
+where users can easily link it with their own programs. Main features of <B>LIBSVM</B> include
+</P><UL>
+<LI>Different SVM formulations </LI>
+<LI>Efficient multi-class classification </LI>
+<LI>Cross validation for model selection</LI>
+<LI>Probability estimates</LI>
+<LI>Weighted SVM for unbalanced data</LI>
+<LI>Both C++ and <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#java">Java</A> sources</LI>
+<LI><A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#GUI">GUI</A> demonstrating SVM classification and regression</LI>
+<LI><A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#python">Python</A>, 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#R">R</A> (also Splus), <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#matlab">MATLAB</A>, 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#perl">Perl</A>,
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#ruby">Ruby</A>, 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#weka">Weka</A>,
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#lisp">Common LISP</A>
+and 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#labview">LabVIEW</A> interfaces. <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/#csharp">C# .NET</A> code is available. 
+<BR>
+It's also included in some learning environments:
+<A href="http://yale.sf.net/">YALE</A>
+and
+<A href="http://pcp.sourceforge.net/">PCP</A>.
+</LI>
+<LI>Automatic model selection 
+which can generate contour of cross valiation accuracy.
+</LI>
+</UL>
+<HR>
+<H3>
+Download LIBSVM</H3>
+The current release (Version 2.9, November 2009) of <B>LIBSVM </B>can be obtained by downloading
+the&nbsp;
+<A href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+zip">
+zip
+file
+</A>
+or
+<A href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+tar.gz">
+tar.gz
+</A>
+file.
+<!--(Due to possible slow connection, you may want to download it
+from other places:
+<a href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www-unix.mcs.anl.gov/~lin/libsvm+zip">
+US
+Download</a>). 
+-->
+Please e-mail us if you have problems to download the file.
+<P>The package includes the source code of the library in C++ and Java,
+and a simple program
+for scaling training data. A README file with detailed explanation is
+provided. For <B>MS Windows</B> users, there is a subdirectory in the zip
+file containing binary executable files. Precompiled Java class archive
+is also included.
+</P><P>Please read the <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/COPYRIGHT">COPYRIGHT</A>
+notice before using
+<B>LIBSVM</B>.&nbsp;
+</P><HR>
+<H3>
+<A name="GUI">Graphic Interface</A></H3><A name="GUI">
+Here is a simple applet demonstrating SVM classification and regression.<BR>
+Click on the drawing area and use ``Change'' to change class of data. 
+Then use ``Run'' to see the results.
+<CENTER>
+<P><APPLET code="svm_toy.class" archive="libsvm.jar" width="300" height="350"></APPLET></P></CENTER>
+
+<P> Examples of options:  -s 0 -c 10 -t 1 -g 1 -r 1 -d 3 
+<BR>Classify a binary data with polynomial kernel (u'v+1)^3 and C = 10
+</P><PRE> 
+options:
+-s svm_type : set type of SVM (default 0)
+	0 -- C-SVC
+	1 -- nu-SVC
+	2 -- one-class SVM
+	3 -- epsilon-SVR
+	4 -- nu-SVR
+-t kernel_type : set type of kernel function (default 2)
+	0 -- linear: u'*v
+	1 -- polynomial: (gamma*u'*v + coef0)^degree
+	2 -- radial basis function: exp(-gamma*|u-v|^2)
+	3 -- sigmoid: tanh(gamma*u'*v + coef0)
+-d degree : set degree in kernel function (default 3)
+-g gamma : set gamma in kernel function (default 1/num_features)
+-r coef0 : set coef0 in kernel function (default 0)
+-c cost : set the parameter C of C-SVC, epsilon-SVR, and nu-SVR (default 1)
+-n nu : set the parameter nu of nu-SVC, one-class SVM, and nu-SVR (default 0.5)
+-p epsilon : set the epsilon in loss function of epsilon-SVR (default 0.1)
+-m cachesize : set cache memory size in MB (default 100)
+-e epsilon : set tolerance of termination criterion (default 0.001)
+-h shrinking: whether to use the shrinking heuristics, 0 or 1 (default 1)
+-b probability_estimates: whether to train a SVC or SVR model for probability estimates, 0 or 1 (default 0)
+-wi weight: set the parameter C of class i to weight*C, for C-SVC (default 1)
+
+The k in the -g option means the number of attributes in the input data.
+</PRE>
+<P>To install this tool, please read the README file in the package. There
+are Windows, X, and Java versions in the package.
+<BR>
+</P><HR>
+</A><H3><A name="GUI">
+Additional Information (</A><A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/faq.html#f203">how to cite LIBSVM</A>)</H3>
+
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/faq.html">Frequently Asked Questions (FAQ)</A>
+
+<P>References of <B>LIBSVM</B>:
+</P><UL>
+<LI>
+A guide for beginners:
+<BR>
+C.-W. Hsu, C.-C. Chang, 
+<B>C.-J. Lin</B>.
+<A href="http://www.csie.ntu.edu.tw/~cjlin/papers/guide/guide.pdf">
+A practical guide to support vector classification
+</A> 
+
+
+</LI><LI>
+For implementation details of <B>LIBSVM</B>, please see
+the document
+<BR>
+<A href="http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf">LIBSVM
+: a library for support vector machines.
+<BR>
+pdf</A>, 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz">ps.gz</A>.
+<BR>
+or
+<BR>
+R.-E. Fan, P.-H. Chen, and C.-J. Lin.
+<A href="http://www.csie.ntu.edu.tw/~cjlin/papers/quadworkset.pdf">Working set selection using the second order information for training
+  SVM</A>.
+Journal of Machine Learning Research 6, 1889-1918,  2005. You can also find a pseudo code there.
+</LI>
+<!--<li>
+Numerical experiments on nu-SVM using <b>LIBSVM</b> can be found in
+<a href="http://www.csie.ntu.edu.tw/~cjlin/papers/newsvm.ps.gz">Training
+nu-Support Vector Classifiers: Theory and Algorithms</a>. 
+<i>Neural Computation</i> 13(9), 2001, 2119-2147.</li>
+-->
+<LI> <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/otherdocuments/index.html">Other documents</A> written by users. (including some non-English documents)
+</LI>
+</UL>
+For more information about nu-SVM and one-class SVM&nbsp;<A name="nuandone"></A>,
+please see
+<UL>
+<LI>
+B. Schölkopf, A. Smola, R. Williamson, and P. L. Bartlett. New support
+vector algorithms. <I>Neural Computation</I>, 12, 2000, 1207-1245.</LI>
+
+<LI>
+B. Schölkopf, J. Platt, J. Shawe-Taylor, A. J. Smola, and R. C. Williamson.
+Estimating the support of a high-dimensional distribution. 
+<I>Neural Computation</I>, 13, 2001, 1443-1471.</LI>
+</UL>
+
+<HR>
+<H3>
+Interfaces to LIBSVM</H3>
+
+<CENTER>
+
+<TABLE border="1">
+<TBODY><TR>
+	<TH>Language</TH>
+	<TH>Description</TH>
+	<TH>Maintainers and Their Affiliation</TH>
+	<TH>Supported LIBSVM version</TH>
+	<TH>Link</TH>
+</TR>
+
+<TR>
+	<TD> <A name="java"> Java </A></TD>
+	<TD> Java code close to LIBSVM C code.</TD>
+	<TD> LIBSVM authors at National Taiwan 
+University.</TD>
+	<TD> The latest</TD>
+	<TD> Included in <A href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+zip">LIBSVM</A> pacakge</TD>
+</TR>
+	<TR><TD> <A name="java"> Java </A></TD>
+	<TD> Refactored Java code for faster training/testing.</TD>
+	<TD> <A href="http://www.davidsoergel.com/">David Soergel</A> at University of  
+California, Berkeley.</TD>
+	<TD> 2.88</TD>
+	<TD> <A href="http://dev.davidsoergel.com/trac/jlibsvm/">jlibsvm</A></TD>
+</TR>
+<TR>
+	<TD> <A name="matlab">MATLAB</A></TD>
+	<TD> A simple MATLAB interface</TD>
+	<TD>
+		LIBSVM authors at National
+		Taiwan University.
+	</TD>
+	<TD> 2.9 </TD>
+	<TD><A href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/matlab.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm/matlab+zip">Zip</A></TD>
+</TR>
+<TR>
+	<TD> MATLAB</TD>
+	<TD> An old version (no longer available)</TD>
+	<TD> Junshui Ma and Stanley Ahalt at Ohio State University</TD>
+	<TD> 2.33</TD>
+	<TD> <A href="http://eewww.eng.ohio-state.edu/~maj/osu_svm/">Dead Link</A></TD>
+</TR>
+
+<TR>
+	<TD> MATLAB</TD>
+	<TD> Another version. (libsvm 2.8 used, but multiclass and sparse input not supported yet)</TD>
+	<TD> Michael Vogt from Darmstadt University of Technology, Germany </TD>
+	<TD> 2.8 (partial)</TD>
+	<TD> <A href="http://www.iat.tu-darmstadt.de/~vogt/en/software.html">WWW</A></TD>
+</TR>
+
+
+<TR>
+	<TD> <A name="R"> R </A></TD>
+	<TD> 
+		Please install by typing <I>install.packages('e1071')</I> at R command line prompt.
+		(<A href="http://cran.r-project.org/web/packages/e1071/e1071.pdf">document</A> and 
+		<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/R_example">examples</A>).
+	</TD>
+	<TD>
+		<A href="http://wi.wu-wien.ac.at/home/meyer/"> David Meyer</A> 
+		at the Wirtschaftsuniversität Wien
+(Vienna University of Economics and Business Administration)
+	</TD>
+	<TD> 2.88</TD>
+	<TD> <A href="http://cran.r-project.org/web/packages/e1071/index.html">WWW</A></TD>
+</TR>
+
+<TR>
+	<TD> <A name="python"> Python </A></TD>
+	<TD> A python interface (via SWIG) has been included in LIBSVM since version 2.33.</TD>
+	<TD> Initiated by <A href="http://www.hpl.hp.com/personal/Carl_Staelin"> Carl Staelin</A> at HP Labs. Updated/maintained by LIBSVM authors.</TD>
+	<TD> The latest</TD>
+	<TD> Included in <A href="http://www.csie.ntu.edu.tw/~cjlin/cgi-bin/libsvm.cgi?+http://www.csie.ntu.edu.tw/~cjlin/libsvm+zip">LIBSVM</A> pacakge</TD>
+</TR>
+<TR>
+	<TD> <A name="python">Python and C#</A></TD>
+	<TD> Interfaces provided in the framework pcSVM</TD>
+	<TD> Uwe Schmitt from Germany</TD>
+	<TD> 2.71</TD>
+	<TD> <A href="http://public.procoders.net/pcsvm/">pcSVM</A></TD>
+</TR>
+<TR>
+	<TD> <A name="perl">Perl</A></TD>
+	<TD>&nbsp;</TD>
+	<TD> Matthew Laird at Simon Fraser University, Canada</TD>
+	<TD> 2.85</TD>
+	<TD> 
+		<A href="http://search.cpan.org/~lairdm/">CPAN</A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD> <A name="ruby">Ruby</A></TD>
+	<TD> A Ruby interface via SWIG</TD>
+	<TD> 
+		Tom Zeng
+	</TD>
+	<TD> 2.88</TD>
+	<TD> 
+		<A href="http://github.com/tomz/libsvm-ruby-swig/tree/master">libsvm-ruby-swig</A>
+	</TD>
+</TR>
+
+<TR>
+	<TD> <A name="ruby">Ruby</A></TD>
+	<TD> &nbsp;</TD>
+	<TD> 
+		Rudi Cilibrasi at Centrum voor Wiskunde
+		en Informatica (Dutch National Research Institute for Mathematics and Computer Science).
+	</TD>
+	<TD> 2.84</TD>
+	<TD> 
+		<A href="http://rubysvm.cilibrar.com/">Ruby SVM</A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD> <A name="weka">Weka</A></TD>
+	<TD> &nbsp;</TD>
+	<TD> 
+	    Yasser EL-Manzalawy and Vasant Honavar at Iowa State University.
+	</TD>
+	<TD> 2.8</TD>
+	<TD> 
+		<A href="http://www.cs.iastate.edu/~yasser/wlsvm/">WLSVM</A>
+	</TD>
+</TR>
+
+<TR>
+	<TD> <A name="lisp">Common LISP</A></TD>
+	<TD> &nbsp;</TD>
+	<TD>
+            <A href="http://retes.hu/~mega/">Gábor Melis</A>
+	</TD>
+
+	<TD> 2.82-2.86</TD>
+	<TD>
+		<A href="http://www.cliki.net/cl-libsvm">Common LISP wrapper</A>
+	</TD>
+</TR>
+
+
+<TR>
+	<TD> <A name="clisp" href="http://clisp.cons.org/">CLISP</A></TD>
+	<TD> An <A href="http://clisp.cons.org/impnotes/dffi.html">FFI</A>-based 
+interface distributed with CLISP
+</TD>
+	<TD>
+            <A href="http://sds.podval.org/">Sam Steingold</A>
+	</TD>
+
+	<TD> 2.86</TD>
+	<TD>
+		<A href="http://clisp.cons.org/impnotes/libsvm.html">CLISP LibSVM module</A>
+	</TD>
+</TR>
+
+<TR>
+	<TD> .NET</TD>
+	<TD> .NET conversion of LIBSVM</TD>
+	<TD>
+            <A href="http://www.matthewajohnson.org/">Matthew Johnson</A>
+	</TD>
+
+	<TD> 2.89</TD>
+	<TD>
+		<A href="http://www.matthewajohnson.org/software/svm.html">SVM.NET</A>
+	</TD>
+</TR>
+
+<TR>
+
+	<TD> <A name="labview">Labview</A> </TD>
+	<TD> 
+		Please download the <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/labview/LabviewExample4LIBSVM.llb">llb</A> file. A image demonstrating its use is 
+		<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/labview/screenshot4Diagram.JPG">here</A>.
+		Probability estimates are not
+		supported.
+	</TD>
+	<TD> Kiwoong Kim at Korea Research Institute of Standards and Science.  </TD>
+	<TD> 2.71</TD>
+	<TD> <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/labview/LabviewExample4LIBSVM.llb">llb</A></TD>
+</TR>
+<TR>
+	<TD> <A name="csharp">C#</A></TD>
+	<TD> C# code converted from libsvm java version</TD>
+	<TD>Andrew Poh from Australia </TD>
+	<TD> 2.6</TD>
+	<TD> <A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/Csharp/Csharp-2.6.zip">zip</A></TD>
+</TR>
+
+</TBODY></TABLE>
+</CENTER>
+<P>
+</P><HR>
+<B>Acknowledgments</B>: This work was supported in part by the National
+Science Council of Taiwan via the grant NSC 89-2213-E-002-106. 
+The authors thank 
+<A href="http://www.csie.ntu.edu.tw/~cjlin/libsvm/acknowledgements">their group members and users</A>
+for helpful discussion and comments. 
+Please send comments and suggestions to <A href="http://www.csie.ntu.edu.tw/~cjlin/index.html">Chih-Jen
+Lin</A>.
+
+
+
+</BODY></HTML>

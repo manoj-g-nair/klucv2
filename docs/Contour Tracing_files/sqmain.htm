@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<!-- saved from url=(0122)http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/sqmain.html -->
+<HTML><HEAD><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   
+   <META name="Author" content="Abeer Ghuneim">
+   <META name="GENERATOR" content="Microsoft FrontPage 5.0">
+   <TITLE>Untitled</TITLE>
+</HEAD><BODY text="#000000" bgcolor="#FFFFFF" link="#981F8C" vlink="#6230B6" alink="#0000EE" background="./back5.jpg" marginwidth="0" marginheight="0">
+&nbsp;
+<BR><B><U><FONT color="#C53894"><FONT size="+2">Square Tracing Algorithm</FONT></FONT></U></B>
+<BR><A name="idea"></A>
+<BR><B><U><FONT color="#C53894"><FONT size="+2">Idea</FONT></FONT></U></B>
+<P>The idea behind the square tracing algorithm is very simple; this could
+be attributed to the fact that the algorithm was one of the first attempts
+to extract the contour of a binary pattern.
+<BR>To understand how it works, you need a bit of imagination...
+<BR>Given a digital pattern i.e. a group of black pixels, on a background
+of white pixels i.e. a grid; locate a black pixel and declare it as your
+"<B>start</B>" pixel. (Locating a "<B>start</B>" pixel can be done in a
+number of ways; we'll start at the bottom left corner of the grid, scan
+each column of pixels from the bottom going upwards -starting from the
+leftmost column and proceeding to the right- until we encounter a black
+pixel. We'll declare that pixel as our "<B>start</B>" pixel.)
+</P><P>Now, imagine that you are a bug (ladybird) standing on the <B>start</B>
+pixel as in <B><I>Figure 1</I></B> below. In order to extract the contour
+of the pattern, you have to do the following:
+<BR>every time you find yourself standing on a black pixel, turn left,
+and
+<BR>every time you find yourself standing on a white pixel, turn right,
+<BR>until you encounter the <B>start</B> pixel again.
+<BR>The black pixels you walked over will be the contour of the pattern.
+</P><CENTER>
+<P><IMG src="./standbug.gif" height="252" width="216"></P></CENTER>
+
+<P>The important thing in the square tracing algorithm is the "sense of
+direction". The left and right turns you make are with respect to your
+current positioning, which depends on the way you entered the pixel you
+are standing on. Therefore, it's important to keep track of your current
+orientation in order to make the right moves.
+<BR>&nbsp;
+</P><P><A name="alg"></A>
+<BR><B><U><FONT color="#C53894"><FONT size="+2">Algorithm</FONT></FONT></U></B>
+</P><P>The following is a formal description of the square tracing algorithm:
+</P><P>Input: A square <A href="http://forum.swarthmore.edu/sum95/suzanne/tess.intro.html" target="_top">tessellation</A><B>,
+T,</B> containing a connected component <B>P</B> of black cells.
+</P><P>Output: A sequence <B>B (b<SUB>1</SUB>, b<SUB>2</SUB> ,..., b<SUB>k</SUB>)
+</B>of
+boundary pixels i.e. the contour.
+</P><P>Begin
+</P><UL>
+<LI>
+Set <B>B</B> to be empty.</LI>
+
+<LI>
+From bottom to top and left to right scan the cells of <B>T </B>until a
+black pixel, <B>s, </B>of <B>P </B>is found.</LI>
+
+<LI>
+Insert <B>s</B> in <B>B</B>.</LI>
+
+<LI>
+Set the current pixel, <B>p</B>, to be the starting pixel, <B>s</B>.</LI>
+
+<LI>
+Turn left i.e. visit the left adjacent pixel of
+<B>p</B>.</LI>
+
+<LI>
+Update <B>p </B>i.e. set it to be the current pixel.</LI>
+
+<LI>
+While <B>p</B> not equal to <B>s</B> do</LI>
+
+<BR>&nbsp;&nbsp; If the current pixel <B>p</B> is black
+<UL>
+<LI>
+insert <B>p</B> in <B>B</B> and turn left (visit the left adjacent pixel
+of <B>p</B>).</LI>
+
+<LI>
+Update <B>p</B> i.e. set it to be the current pixel.</LI>
+</UL>
+&nbsp;&nbsp; else
+<UL>
+<LI>
+turn right (visit the right adjacent pixel of <B>p</B>).</LI>
+
+<LI>
+Update <B>p</B> i.e. set it to be the current pixel.</LI>
+</UL>
+end While</UL>
+End
+<BR>&nbsp;
+<P><B>Note:</B> The notion of left and right in the above algorithm is
+not to be interpreted with respect to the page or the reader but rather
+with respect to the direction of entering the "current'' pixel during the
+execution of the scan.
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+</P><P><A name="demo"></A>
+<BR><B><U><FONT color="#C53894"><FONT size="+2">Demonstration</FONT></FONT></U></B>
+</P><P>The following is an animated demonstration of how the square tracing
+algorithm proceeds to trace the contour of a given pattern. Remember that
+you are a bug (ladybird) walking over the pixels; notice how your orientation
+changes as you turn left or right. Left and right turns are made with respect
+to your current positioning on the pixel i.e. your current orientation.
+</P><CENTER>
+<P><IMG src="./sqdemo.GIF" height="360" width="288"></P></CENTER>
+
+<P><BR>
+<BR>
+<BR>
+<BR>
+</P><P><A name="an"></A>
+<BR><B><U><FONT color="#C53894"><FONT size="+2">Analysis</FONT></FONT></U></B>
+</P><P>It turns out that the square tracing algorithm is very limited in its
+performance. In other words, it fails to extract the contour of a large
+family of patterns which frequently occur in real life applications.
+<BR>This is largely attributed to the left and right turns which tend to
+miss pixels lying "diagonally" with respect to a given pixel.
+<BR>We will examine different patterns of different <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/connectivity.html" target="_top">connectivity</A>
+and see why the square tracing algorithm fails. In addition, we will examine
+ways in which we can improve the performance of the algorithm and make
+it at least work for patterns with a special kind of connectivity.
+<BR>&nbsp;
+</P><P><B><FONT size="+1">The Stopping Criterion</FONT></B>
+</P><P>One weakness of the square tracing algorithm lies in the choice of the
+stopping criterion. in other words, when does the algorithm terminate?
+<BR>In the original description of the square tracing algorithm, the stopping
+criterion is visiting the <B>start</B> pixel for a second time. It turns
+out that the algorithm will fail to contour trace a large family of patterns
+if it were to depend on that criterion.
+<BR>What follows is an animated demonstration explaining how the square
+tracing algorithm fails to extract the contour of a pattern due to the
+bad choice of the stopping criterion:
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>
+<BR>
+</P><CENTER>
+<P><IMG src="./sqdem2.GIF" height="252" width="216"></P></CENTER>
+
+<P><A name="jacob"></A>
+</P><P>As you can see, improving the stopping criterion would be a good start
+to improving the overall performance of the square tracing algorithm. There
+are 2 effective alternatives to the existing stopping criterion:
+</P><P>a) Stop after visiting the <B>start</B> pixel <B><I>n</I></B> times,
+where n is at least 2, OR
+<BR>b)<B> </B>Stop after entering the<B> start </B>pixel a second time
+<B>in
+the same manner you entered it initially.</B> This criterion was proposed
+by <FONT color="#000000"><A href="http://www.cs.mcgill.ca/~jacob/" target="_top">Jacob
+Eliosoff</A> and we will therefore call it </FONT><B><I><FONT color="#800080">Jacob's
+stopping criterion.</FONT></I></B>
+</P><P>Changing the stopping criterion will generally improve the performance
+of the square tracing algorithm but will not allow it to overcome other
+weaknesses it has towards patterns of special kinds of <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/connectivity.html" target="_top">connectivity</A>.
+<BR>&nbsp;
+<BR>&nbsp;
+</P><P><B><FONT size="+1">The Square Tracing Algorithm fails to trace the contour
+of a family of&nbsp; <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/8con.html" target="_top">8-connected</A>
+patterns that are NOT<A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/connectivity.html" target="_top"> </A><A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/4con.html" target="_top">4-connected</A></FONT></B>
+</P><P>The following is an animated demonstration of how the square tracing
+algorithm (with Jacob's stopping criterion)&nbsp; fails to extract the
+contour of an 8-connected pattern that's not 4-connected:
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>
+</P><CENTER>
+<P><IMG src="./sqdem3.GIF" height="288" width="216"></P></CENTER>
+
+<P><BR><B><FONT size="+1"></FONT></B>
+</P><P><B><FONT size="+1">Is the Square Tracing Algorithm completely useless?</FONT></B>
+</P><P>If you have read the analysis above you must be thinking that the square
+tracing algorithm fails to extract the contour of most patterns. It turns
+out that there exists a special family of patterns which are completely
+and correctly contour traced by the square tracing algorithm.
+<BR>Let <B>P</B> be a set of <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/4con.html" target="_top">4-connected
+</A>black
+pixels on a grid. Let the white pixels of the grid i.e. the background
+pixels, <B>W</B>, also be 4-connected. It turns out that given such conditions
+of the pattern and its background, we can prove that the square tracing
+algorithm (using <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/sqmain.html#jacob">Jacob's stopping criterion</A>) will
+always succeed in extracting the contour of the pattern.
+</P><P>The following is a proof when both pattern and background pixels are
+4-connected, the square tracing algorithm will correctly extract the contour
+of the pattern provided we use Jacob's stopping criterion.
+<BR>&nbsp;
+</P><P><B><U><FONT size="+1">Proof</FONT></U></B>
+</P><P><B>Given</B>: A&nbsp; pattern, <B>P</B>, such that both the pattern
+pixels i.e. the black pixels, and the background pixels i.e. the white
+pixels, W, are <A href="http://www.imageprocessingplace.com/downloads_V3/root_downloads/tutorials/contour_tracing_Abeer_George_Ghuneim/4con.html" target="_top">4-connected</A>.
+</P><P><B>First Observation</B>
+<BR>Since the set of white pixels, W, are assumed to be 4-connected, this
+means that the pattern cannot have any "<B><I>holes</I></B>" in it.
+<BR>(informally, "<B><I>holes</I></B>" are groups of white pixels which
+are completely surrounded by black pixels in the given pattern).
+<BR>The presence of any "<B><I>hole</I></B>" in the pattern will result
+in disconnecting a group of white pixels from the rest of the white pixels
+and therefore making the set of white pixels not 4-connected.
+<BR><B><I>Figure 2</I></B> and<B><I> Figure 3</I></B> below demonstrate
+2 kinds of "<B><I>holes</I></B>" that could occur in a 4-connected pattern:
+</P><CENTER>
+<P><IMG src="./sqpic.gif" height="180" width="432"></P></CENTER>
+
+<P><BR>
+<BR>
+</P><P><B>Second Observation</B>
+<BR>Any two black pixels of the pattern MUST share a side.
+<BR>Say that 2 black pixels only share a vertex, then, in order to satisfy
+the 4-connectedness property of the pattern, there should be a path linking
+those 2 pixels such that every 2 adjacent pixels in that path are 4-connected.
+But this will give us a pattern similar to the one in <B><I>Figure 3</I></B>
+above. In other words, this would cause the white pixels to become disconnected.
+<BR><B><I>Figure 4 </I></B>below demonstrates a typical pattern satisfying
+the assumption that both background and pattern pixels are 4-connected
+i.e. no "<B><I>holes</I></B>" and every 2 black pixels share a side:
+</P><CENTER>
+<P><IMG src="./sqpic2.gif" height="216" width="216"></P></CENTER>
+
+<P>A useful way of picturing such patterns is:
+<BR>First, consider the boundary pixels i.e. the contour, of the pattern.
+Then, if we consider each boundary pixel as having 4 edges each of unit
+length, we'll see that some of these edges are shared with adjacent white
+pixels. We'll call these edges i.e. the ones shared with white pixels,
+<B><I>boundary
+edges</I></B>.
+<BR>These boundary edges could be viewed as edges of a polygon. <B><I>Figure
+5</I></B> below demonstrates this idea by showing you the polygon corresponding
+to the pattern in <B><I>Figure 4</I></B> above:
+</P><CENTER>
+<P><IMG src="./sqpic3.gif" height="216" width="216"></P></CENTER>
+
+<P>If we look at all possible "configurations" of boundary pixels that
+could arise in such patterns, we'll see that there are 2 basic cases displayed
+in <B><I>Figure 6 </I></B>and <B><I>Figure 7</I></B> below.
+<BR>Boundary pixels may be multiples of these cases or different positionings
+i.e. rotations of these 2 cases.
+<BR>The boundary edges are marked in blue as <B>E1, E2, E3</B> and <B>E4</B>.
+</P><CENTER>
+<P><IMG src="./sqpic4.gif" height="216" width="576"></P></CENTER>
+
+<P><BR>
+<BR>
+<BR>
+</P><P><B>Third Observation</B>
+<BR>For both the above 2 cases, no matter which pixel you choose as your
+start pixel and no matter what direction you enter it, the square tracing
+algorithm will never <B>"backtrack", </B>will never <B>"go through"</B>
+a <B><I>boundary edge </I></B>twice (unless it's tracing the boundary for
+a second time) and will never miss a <B><I>boundary edge</I></B>...try
+it!
+<BR>2 concepts need to be clarified here:
+<BR>a) the algorithm <B>"backtracks"</B> when it goes backwards to visit
+an already visited pixel before tracing the whole boundary, and
+<BR>b) for every <B><I>boundary edge</I></B> there are 2 ways to <B>"go
+through"</B> it, namely "in" or "out" (where "in" means towards the inside
+of the corresponding polygon and "out" means towards the outside of the
+polygon).
+</P><P>In addition, when the square algorithm goes "in" through one of the
+boundary edges, it will go "out" through the next boundary edge i.e. it
+can't be possible for the square tracing algorithm to go through 2 consecutive
+boundary edges in the same manner.
+<BR>&nbsp;
+</P><P><B>Final Observation</B>
+<BR>There is an <B>even number </B>of <B>boundary edges</B> for any given
+pattern.
+<BR>If you take a look at the polygon of <B><I>Figure 5</I></B> above,
+you'll see that:
+<BR>if you want to start at vertex <B>S,</B> marked on the diagram, and
+follow the boundary edges until you reach <B>S </B>again; you'll see that
+you'll pass by an even number of boundary edges in the process. Consider
+each boundary edge as a "step" in a given direction. Then, for every "step"
+to the right, there should be a corresponding "step" to the left if you
+want to go back to your original position. The same applies to vertical
+"steps" . As a result, the "steps" should be matching pairs and this explains
+why there would be an even number of boundary edges in any such pattern.
+</P><P>As a result, when the square tracing algorithm enters the <B>start boundary
+edge</B> (of the start pixel) for a second time, it will do so in the <B>same
+</B>direction
+it did when it first entered it.
+<BR>The reason for that is since there are 2 ways to go through a boundary
+edge, and since the algorithm alternates between "in" and "out" of consecutive&nbsp;
+boundary edges, and since there is an even number of boundary edges, the
+algorithm will go through the start boundary edge a second in the same
+manner it did the first time around.
+<BR>&nbsp;
+</P><P><B>Conclusion</B>
+<BR>Given a 4-connected pattern and background, the square tracing algorithm
+will trace the whole boundary i.e. contour, of the pattern and will stop
+after tracing the boundary once i.e. it will not trace it again since when
+it reaches the <B>start boundary edge</B> for a second time, it will enter
+it in the same way it did the first time around.
+<BR>Therefore, the square tracing algorithm, using Jacob's stopping criterion,
+will correctly extract the contour of any pattern provided both the pattern
+and its background are 4-connected.
+<BR>&nbsp;
+<BR>&nbsp;
+</P><CENTER><IMG src="./Line.gif" height="2" width="685"></CENTER>
+<CENTER><I><FONT color="#800080"><FONT size="-1">All comments and questions
+are welcomed...</FONT></FONT></I>
+<BR><I><FONT size="-1"><A href="mailto:abeer.ghuneim@mail.mcgill.ca">
+abeer.ghuneim@mail.mcgill.ca</A></FONT></I></CENTER>
+
+<P><BR>
+<BR>
+<BR>
+<BR>
+
+</P></BODY></HTML>
