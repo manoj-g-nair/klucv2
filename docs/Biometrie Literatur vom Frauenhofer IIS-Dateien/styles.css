@@ -1,0 +1,112 @@
+A:link {
+	COLOR: rgb(255,0,0); TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: rgb(255,0,0); TEXT-DECORATION: none
+}
+A:hover {
+	COLOR: rgb(255,153,51); TEXT-DECORATION: none
+}
+
+
+/* class=Astyle1-----------Textlinks------------------ */
+  A.Astyle1:link    { color: rgb(145,145,145); FONT-WEIGHT: bold; TEXT-DECORATION: none }
+  A.Astyle1:visited { color: rgb(145,145,145); FONT-WEIGHT: bold; TEXT-DECORATION: none }
+
+/* class=Astyle2-------Weiterführende Links------------- rotgrau(Probleme mit bold-Darstellung)*/
+  A.Astyle2:link    { color: rgb(255,0,0); font-size: 11px;  TEXT-DECORATION: none }
+  A.Astyle2:visited { color: rgb(255,0,0); font-size: 11px;  TEXT-DECORATION: none }
+  A.Astyle2:hover { color: rgb(255,153,51); font-size: 11px;  TEXT-DECORATION: none }
+  
+/* class=Astyle3 */
+  A.Astyle3:link    { color: rgb(255,0,0); font-size: 11px;  TEXT-DECORATION: none }
+  A.Astyle3:visited { color: rgb(255,0,0); font-size: 11px;  TEXT-DECORATION: none } 
+  A.Astyle3:hover { color: rgb(255,153,51); font-size: 11px;  TEXT-DECORATION: none } 
+  
+/* class=Astyle4 */
+  A.Astyle4:link    { color: rgb(0,0,0); font-size: 11px;  TEXT-DECORATION: none }
+  A.Astyle4:visited { color: rgb(0,0,0); font-size: 11px;  TEXT-DECORATION: none }
+  
+/* class=Astylebrotk        Linkstyle für Brotkrümelnavigation */
+  A.Astylebrotk:link    { color: rgb(145,145,145); font-size: 11px;  TEXT-DECORATION: none }
+  A.Astylebrotk:visited { color: rgb(145,145,145); font-size: 11px;  TEXT-DECORATION: none }  
+  
+BODY {
+   background-color:white;   
+
+}
+
+TD{
+
+	FONT-SIZE: 12px;  COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+
+}
+
+.Navig {
+	FONT-SIZE: 12px; VERTICAL-ALIGN: top; COLOR: rgb(255,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif; TEXT-DECORATION: none;
+
+}
+.Inhalt1 {
+	FONT-SIZE: 12px; VERTICAL-ALIGN: top; COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+
+}
+.Inhalt2 {
+	FONT-SIZE: 12px; VERTICAL-ALIGN: top; COLOR: rgb(145,145,145); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+.Inhalt3 {
+	FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+
+.Inhalt3Bold {
+ 	FONT-SIZE: 11px; FONT-WEIGHT: bold; VERTICAL-ALIGN: top; COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+
+.Inhalt4 {
+	FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: rgb(145,145,145); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+.Inhalt5 {
+	FONT-SIZE: 16px; VERTICAL-ALIGN: top; COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+.brotk {
+	FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: rgb(255,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+.brotkende {
+	FONT-SIZE: 11px; VERTICAL-ALIGN: top; COLOR: rgb(0,0,0); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+.mdpi {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif
+}
+
+SUP {
+	FONT-SIZE: 8pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+SUB {
+	FONT-SIZE: 8pt; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.Titel {
+ 	FONT-SIZE: 20px; FONT-WEIGHT: bold; VERTICAL-ALIGN: top; COLOR: rgb(145,145,145); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif	
+}
+.Untertitel {
+	FONT-SIZE: 16px; VERTICAL-ALIGN: top; COLOR: rgb(145,145,145); FONT-FAMILY: Arial, Helvetica, Geneva, sans-serif	
+}
+
+.verwaltungrand {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 0.75em;
+	border-top-width: 0.15em;
+	border-right-width: 0.15em;
+	border-bottom-width: 0.15em;
+	border-left-width: 0.15em;
+	border-top-style: solid;
+	border-right-style: none;
+	border-left-style: none;
+	border-top-color: #FFFFFF;
+	border-bottom-style: solid;
+	border-bottom-color: #000000;
+
+}
+.untenblaurand {
+	border-bottom-width: 0.2em;
+	border-bottom-style: solid;
+	border-bottom-color: #8CA4D3;
+}
