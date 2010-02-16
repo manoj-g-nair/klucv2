@@ -482,10 +482,8 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
             visDebug(windowContour, regImg);
         }
 
-		// Go through all contour points and find the right- and leftmost
-
-		// @TODO also save the seq IDX for further contour processing and search for upper and lower lid.
-
+		// Go through all contour points and find the right- and leftmost contour point.
+        // Initialize with reasonable defaults that are very likely to be overwritten.
         fp.cornerRight = cvPoint(0, 0);
         fp.cornerLeft = cvPoint(regImg->width, regImg->height);
 
@@ -503,11 +501,38 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 			{
 				fp.cornerLeft = p;
 			}
-			//fprintf(stderr, "%d %p\n", biggestContour->total, (CvPoint*) cvGetSeqElem(biggestContour, 0));
 		}
+
+		// Go through all contour points and find the right- and leftmost contour point.
+
+        // The upper and lower lid feature points must lie in the middle third of the
+        // range from the left to the right corner.
+        int minX = fp.cornerLeft.x + (fp.cornerRight.x - fp.cornerLeft.x) / 3;
+        int maxX = fp.cornerLeft.x + 2 * (fp.cornerRight.x - fp.cornerLeft.x) / 3;
+
+        // Initialize with reasonable defaults that are very likely to be overwritten.
+        fp.upperLid = cvPoint(regImg->width, regImg->height);
+        fp.lowerLid = cvPoint(0,0);
+
+		for ( int i = 0; i < nElements; i++)
+		{
+			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
+
+			if ( p.x > minX && p.x < maxX && p.y < fp.upperLid.y )
+			{
+				fp.upperLid = p;
+			}
+            else if ( p.x > minX && p.x < maxX && p.y > fp.lowerLid.y )
+			{
+				fp.lowerLid = p;
+			}	
+        }
+
 
         drawCross(regImg, fp.cornerRight, COL_WHITE);
         drawCross(regImg, fp.cornerLeft, COL_WHITE);
+        drawCross(regImg, fp.upperLid, COL_WHITE);
+        drawCross(regImg, fp.lowerLid, COL_WHITE);
         visDebug(windowFeaturePoints, regImg);
 	}
 
@@ -515,11 +540,11 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 
     // Fix coordinates: ROI to global image coordinates
     CvRect region = cvGetImageROI(image);
-    fp.bottomLid.x += region.x;
+    fp.lowerLid.x += region.x;
     fp.cornerLeft.x += region.x;
     fp.cornerRight.x += region.x;
     fp.upperLid.x += region.x;
-    fp.bottomLid.y += region.y;
+    fp.lowerLid.y += region.y;
     fp.cornerLeft.y += region.y;
     fp.cornerRight.y += region.y;
     fp.upperLid.y += region.y;

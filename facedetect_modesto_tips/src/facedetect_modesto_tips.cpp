@@ -10,7 +10,6 @@ using namespace cv;
 struct ApplicationEnvironment
 {
 	CvCapture * capture; // NULL if no capture is being used.
-	bool detectFace;
 	bool isExiting;
 	CvFont font;
 	IplImage * frame; // Pointer to the current frame
@@ -32,20 +31,17 @@ int main(int argc, char * argv[])
 	cerr << endl;
 	cerr << "Keys:" << endl;
 	cerr << "---------------" << endl;
-	cerr << "f   = Toggle face detection" << endl;
-	cerr << "p   = Saves all currently open windows to image files (e.g. \"Result TIMESTAMP.png\")" << endl;
+	cerr << "p   = Saves the main window to an image file (e.g. \"Result TIMESTAMP.png\")" << endl;
 	cerr << "ESC = Exit the program" << endl;
 
 	// BEGIN Initialize the application
 
-	app.detectFace = true;
 	app.isExiting = false;
 	cvInitFont(&(app.font), CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
 	app.frame = 0;	
 	// Initialize old OpenCV 1.x stuff for object detection
 	app.cascadeFace = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_frontalface_alt.xml", 0, 0, 0 );
-	//app.cascadeEyes = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_eye.xml", 0, 0, 0 );
-	app.cascadeLeftEye = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_lefteye.xml", 0, 0, 0 );
+    app.cascadeLeftEye = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_lefteye.xml", 0, 0, 0 );
 	app.cascadeRightEye = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_righteye.xml", 0, 0, 0 );
 	app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
 	app.memStorage = cvCreateMemStorage(0);
@@ -55,7 +51,7 @@ int main(int argc, char * argv[])
 	// Create the result window
     cvNamedWindow(WINDOW_RESULT);
 
-	app.capture = 0;//cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
+	app.capture = cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
 
 	IplImage * image = NULL;
 
@@ -77,8 +73,7 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
-		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
+		image = cvLoadImage( "../data/image_0235.jpg", 1 );
 	}
 
     IplImage * grayscaleFrame = cvCreateImage(cvSize(image->width, image->height), IPL_DEPTH_8U, 1);
@@ -157,6 +152,11 @@ int main(int argc, char * argv[])
 					leftEyeRect = eyeRects[0];
 					leftEyeRect.x += leftEyeSearchWindow.x;
 					leftEyeRect.y += leftEyeSearchWindow.y;
+
+                    // Find left eye feature points (no debug windows this time ^_^)
+                    cvSetImageROI(grayscaleFrame, leftEyeRect);
+                    ffp.leftEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage);
+                    cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
 
@@ -171,13 +171,6 @@ int main(int argc, char * argv[])
 				mouthSearchWindow = faceRect;
 				mouthSearchWindow.height /= 2;
 				mouthSearchWindow.y += mouthSearchWindow.height;
-//				mouthSearchWindow.x = faceRect.x + (faceRect.width * 0.25);
-//				mouthSearchWindow.y = faceRect.y + (faceRect.height / 2) + (0.25 * faceRect.height / 2);
-//				mouthSearchWindow.width = faceRect.width / 2;
-//				mouthSearchWindow.height = 0.50 * faceRect.height / 2;
-//
-//				mouthSearchWindow.x = mouthCenter.x - mouthSearchWindow.width / 2;
-//				mouthSearchWindow.y = mouthCenter.y - mouthSearchWindow.height / 2;
 
 				cvSetImageROI(app.frame, mouthSearchWindow);
 				mouthRects = detectObjects(app.frame, app.cascadeMouth, app.memStorage, cvSize(120, 60));
@@ -234,19 +227,22 @@ int main(int argc, char * argv[])
         // Draw eye feature points
         drawCross(app.frame, ffp.rightEye.cornerLeft, COL_YELLOW);
         drawCross(app.frame, ffp.rightEye.cornerRight, COL_YELLOW);
+        drawCross(app.frame, ffp.rightEye.upperLid, COL_YELLOW);
+        drawCross(app.frame, ffp.rightEye.lowerLid, COL_YELLOW);
+        drawCross(app.frame, ffp.leftEye.cornerLeft, COL_YELLOW);
+        drawCross(app.frame, ffp.leftEye.cornerRight, COL_YELLOW);
+        drawCross(app.frame, ffp.leftEye.upperLid, COL_YELLOW);
+        drawCross(app.frame, ffp.leftEye.lowerLid, COL_YELLOW);
 
 		// Print processing time for detection (after ROI reset!!)
-		if ( app.detectFace )
-		{
-			memset(buf, '\0', 255);
-			sprintf(buf, "Detection Time: %0.3gms", processingTime);
-			CvSize textBoundings;
-			int ymin;
-			cvGetTextSize(buf, &app.font, &textBoundings, &ymin);
-			CvPoint org = cvPoint(0, app.frame->height - 8);
-			cvRectangle(app.frame, cvPoint(org.x, org.y + ymin), cvPoint(org.x + textBoundings.width, org.y - textBoundings.height), cvScalar(0,0,0,0.5), CV_FILLED);
-			cvPutText(app.frame, buf, cvPoint(0, app.frame->height - 8), &app.font, CV_RGB(0,255,0));		
-		}
+		memset(buf, '\0', 255);
+		sprintf(buf, "Detection Time: %0.3gms", processingTime);
+		CvSize textBoundings;
+		int ymin;
+		cvGetTextSize(buf, &app.font, &textBoundings, &ymin);
+		CvPoint org = cvPoint(0, app.frame->height - 8);
+		cvRectangle(app.frame, cvPoint(org.x, org.y + ymin), cvPoint(org.x + textBoundings.width, org.y - textBoundings.height), cvScalar(0,0,0,0.5), CV_FILLED);
+		cvPutText(app.frame, buf, cvPoint(0, app.frame->height - 8), &app.font, CV_RGB(0,255,0));		
 
 		// Show the composited image
 		cvShowImage(WINDOW_RESULT, app.frame );	
@@ -261,10 +257,6 @@ int main(int argc, char * argv[])
 
 		switch( (char) key )
 		{
-		// Toggle face-detection
-		case 'f':
-			app.detectFace = app.detectFace ? false : true;
-			break;
 		// Print/Save image to file
 		case 'p':
 			saveImage(app.frame, WINDOW_RESULT);
@@ -280,7 +272,6 @@ int main(int argc, char * argv[])
 
 	// Cleanup OpenCV
 	cvReleaseHaarClassifierCascade(&app.cascadeFace);
-	//cvReleaseHaarClassifierCascade(&app.cascadeEyes);
 	cvReleaseHaarClassifierCascade(&app.cascadeMouth);
 	cvReleaseHaarClassifierCascade(&app.cascadeLeftEye);
 	cvReleaseHaarClassifierCascade(&app.cascadeRightEye);

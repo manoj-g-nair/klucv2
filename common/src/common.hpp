@@ -84,9 +84,9 @@ namespace klu
     struct EyeFeaturePoints
     {
         cv::Point2i upperLid;
-        cv::Point2i bottomLid;
-        cv::Point2i cornerLeft; // from point of view
-        cv::Point2i cornerRight;// from point of view
+        cv::Point2i lowerLid;
+        cv::Point2i cornerLeft; // from your point of view
+        cv::Point2i cornerRight;// from your point of view
     };
       
     /**
