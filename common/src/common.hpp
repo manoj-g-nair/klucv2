@@ -74,19 +74,31 @@ namespace klu
 	 * @{
 	 */
 
-	/**
+   	/**
 	 * The \c EyeFeaturePoints struct contains the X-Y coordinates of
 	 * all the feature points for one eye. Coordinates are considered
 	 * to be image and not region coordinates.
 	 *
 	 * @author Konrad Kleine, Jens Lukowski
-	 */        
+	 */  
     struct EyeFeaturePoints
     {
-	    cv::Point2i upperLid;
-	    cv::Point2i bottomLid;
-	    cv::Point2i cornerLeft; // from point of view
-	    cv::Point2i cornerRight;// from point of view
+        cv::Point2i upperLid;
+        cv::Point2i bottomLid;
+        cv::Point2i cornerLeft; // from point of view
+        cv::Point2i cornerRight;// from point of view
+    };
+      
+    /**
+     * The \c FaceFeaturePoints struct combines all feature points for
+     * eye, mouth etc. in one group.
+     *
+     * @author Konrad Kleine, Jens Lukowski
+     */
+    struct FaceFeaturePoints
+    {
+        EyeFeaturePoints leftEye;
+        EyeFeaturePoints rightEye;
     };
 
 	/**
@@ -265,12 +277,6 @@ namespace klu
 											const char * windowThreshold = NULL,
 											const char * windowContour = NULL,
 											const char * windowFeaturePoints = NULL);
-
-
-    /**
-     * Converts the point \a point from it's ROI coordinates to global image coorinates.
-     */
-    cv::Point2i roiPointToGlobal(const cv::Point2i & point, const CvRect & roi);
 }
 
 #endif /* #ifndef COMMON_HPP */

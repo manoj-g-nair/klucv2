@@ -445,13 +445,12 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	} while (t != tNew );
     cvThreshold(regImg, regImg, t, 255, CV_THRESH_BINARY_INV);
 	visDebug(windowThreshold, regImg);
-
+    
 
     // Find contours in inverted binary image
     CvSeq * contours = NULL;
 	CvSeq * firstContour = NULL;
 	int nContours = cvFindContours(regImg, storage, &firstContour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-
 
 	CvSeq * biggestContour = NULL;
 	double biggestArea = 0;
@@ -463,7 +462,6 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 		if ( (area*area) > biggestArea )
 		{
 			biggestContour = c;
-
 			biggestArea = (area*area);            
 		}
 	}
@@ -508,7 +506,6 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 			//fprintf(stderr, "%d %p\n", biggestContour->total, (CvPoint*) cvGetSeqElem(biggestContour, 0));
 		}
 
-
         drawCross(regImg, fp.cornerRight, COL_WHITE);
         drawCross(regImg, fp.cornerLeft, COL_WHITE);
         visDebug(windowFeaturePoints, regImg);
@@ -516,15 +513,18 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 
 	cvReleaseImage(&regImg);
 
+    // Fix coordinates: ROI to global image coordinates
+    CvRect region = cvGetImageROI(image);
+    fp.bottomLid.x += region.x;
+    fp.cornerLeft.x += region.x;
+    fp.cornerRight.x += region.x;
+    fp.upperLid.x += region.x;
+    fp.bottomLid.y += region.y;
+    fp.cornerLeft.y += region.y;
+    fp.cornerRight.y += region.y;
+    fp.upperLid.y += region.y;
+
 	return fp;
-}
-//------------------------------------------------------------------------------
-cv::Point2i roiPointToGlobal(const cv::Point2i & point, const CvRect & roi)
-{
-    cv::Point2i p(point);
-    p.x += roi.x;
-    p.y += roi.y;
-    return p;
 }
 //------------------------------------------------------------------------------
 }

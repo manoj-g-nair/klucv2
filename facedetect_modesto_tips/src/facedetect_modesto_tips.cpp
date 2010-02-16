@@ -111,7 +111,7 @@ int main(int argc, char * argv[])
 		CvRect leftEyeRect;
 		vector<CvRect> mouthRects;
 		CvRect mouthRect;
-        EyeFeaturePoints rightEyeFeaturePoints;
+        FaceFeaturePoints ffp;
 
 		if (faceRects.size() > 0)
 		{
@@ -137,14 +137,7 @@ int main(int argc, char * argv[])
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
-                    rightEyeFeaturePoints = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,"Contrast Stretch 1", "Contrast Stretch 2","Threshold","Contour", "Feature Points");
-                    
-                    // Fix coordinates from ROI to global image Coordinates
-                    rightEyeFeaturePoints.bottomLid = roiPointToGlobal(rightEyeFeaturePoints.bottomLid, rightEyeRect);
-                    rightEyeFeaturePoints.cornerLeft = roiPointToGlobal(rightEyeFeaturePoints.cornerLeft, rightEyeRect);
-                    rightEyeFeaturePoints.cornerRight = roiPointToGlobal(rightEyeFeaturePoints.cornerRight, rightEyeRect);
-                    rightEyeFeaturePoints.upperLid = roiPointToGlobal(rightEyeFeaturePoints.upperLid, rightEyeRect);
-                    
+                    ffp.rightEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,"Contrast Stretch 1", "Contrast Stretch 2","Threshold","Contour", "Feature Points");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
@@ -239,8 +232,8 @@ int main(int argc, char * argv[])
 		drawRect(app.frame, mouthRect, COL_LIME_GREEN);
         
         // Draw eye feature points
-        drawCross(app.frame, rightEyeFeaturePoints.cornerLeft, COL_YELLOW);
-        drawCross(app.frame, rightEyeFeaturePoints.cornerRight, COL_YELLOW);
+        drawCross(app.frame, ffp.rightEye.cornerLeft, COL_YELLOW);
+        drawCross(app.frame, ffp.rightEye.cornerRight, COL_YELLOW);
 
 		// Print processing time for detection (after ROI reset!!)
 		if ( app.detectFace )
