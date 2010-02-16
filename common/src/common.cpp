@@ -445,12 +445,13 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	} while (t != tNew );
     cvThreshold(regImg, regImg, t, 255, CV_THRESH_BINARY_INV);
 	visDebug(windowThreshold, regImg);
-    
+
 
     // Find contours in inverted binary image
     CvSeq * contours = NULL;
 	CvSeq * firstContour = NULL;
 	int nContours = cvFindContours(regImg, storage, &firstContour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
 
 	CvSeq * biggestContour = NULL;
 	double biggestArea = 0;
@@ -462,6 +463,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 		if ( (area*area) > biggestArea )
 		{
 			biggestContour = c;
+
 			biggestArea = (area*area);            
 		}
 	}

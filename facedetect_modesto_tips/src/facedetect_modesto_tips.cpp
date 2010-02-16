@@ -78,6 +78,7 @@ int main(int argc, char * argv[])
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
 		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
+		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
 	}
 
     IplImage * grayscaleFrame = cvCreateImage(cvSize(image->width, image->height), IPL_DEPTH_8U, 1);
