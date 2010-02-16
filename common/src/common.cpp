@@ -365,13 +365,13 @@ void stretchContrast(IplImage * img,
 			unsigned char * p = (unsigned char*) img->imageData +
 					r * img->widthStep +
 					c * img->nChannels;
-
+			
 			if ( *p >= srcMin && *p <= srcMax )
 			{
 				// x = [1;0]
 				double x = (double) (*p - srcMin) / (double) (srcMax - srcMin);
 				*p = dstMin + x * (dstMax - dstMin);
-			}
+			}	
 		}
 	}
 }

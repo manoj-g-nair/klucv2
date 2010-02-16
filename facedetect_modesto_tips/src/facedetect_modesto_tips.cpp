@@ -17,8 +17,10 @@ struct ApplicationEnvironment
 
     // BEGIN Old OpenCV 1.x interface params
 	CvHaarClassifierCascade * cascadeFace;
-	CvHaarClassifierCascade * cascadeEyes;
+	//CvHaarClassifierCascade * cascadeEyes;
 	CvHaarClassifierCascade * cascadeMouth;
+	CvHaarClassifierCascade * cascadeRightEye;
+	CvHaarClassifierCascade * cascadeLeftEye;
     CvMemStorage * memStorage;
     // END Old OpenCV 1.x interface params
 } app;
@@ -42,7 +44,9 @@ int main(int argc, char * argv[])
 	app.frame = 0;	
 	// Initialize old OpenCV 1.x stuff for object detection
 	app.cascadeFace = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_frontalface_alt.xml", 0, 0, 0 );
-	app.cascadeEyes = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_eye.xml", 0, 0, 0 );
+	//app.cascadeEyes = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_eye.xml", 0, 0, 0 );
+	app.cascadeLeftEye = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_lefteye.xml", 0, 0, 0 );
+	app.cascadeRightEye = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_righteye.xml", 0, 0, 0 );
 	app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
 	app.memStorage = cvCreateMemStorage(0);
 
@@ -122,7 +126,7 @@ int main(int argc, char * argv[])
 				rightEyeSearchWindow.y += rightEyeSearchWindow.height;
 				rightEyeSearchWindow.width /= 2;
 				cvSetImageROI(app.frame, rightEyeSearchWindow);
-				vector<CvRect> eyeRects = detectObjects(app.frame, app.cascadeEyes, app.memStorage, eyeSize);
+				vector<CvRect> eyeRects = detectObjects(app.frame, app.cascadeRightEye, app.memStorage, eyeSize);
 				if (eyeRects.size() > 0)
 				{
 					rightEyeRect = eyeRects[0];
@@ -145,7 +149,7 @@ int main(int argc, char * argv[])
 				leftEyeSearchWindow.width /= 2;
 				leftEyeSearchWindow.x += leftEyeSearchWindow.width;
 				cvSetImageROI(app.frame, leftEyeSearchWindow);
-				eyeRects = detectObjects(app.frame, app.cascadeEyes, app.memStorage, eyeSize);
+				eyeRects = detectObjects(app.frame, app.cascadeLeftEye, app.memStorage, eyeSize);
 				if (eyeRects.size() > 0)
 				{
 					leftEyeRect = eyeRects[0];
@@ -270,8 +274,10 @@ int main(int argc, char * argv[])
 
 	// Cleanup OpenCV
 	cvReleaseHaarClassifierCascade(&app.cascadeFace);
-	cvReleaseHaarClassifierCascade(&app.cascadeEyes);
+	//cvReleaseHaarClassifierCascade(&app.cascadeEyes);
 	cvReleaseHaarClassifierCascade(&app.cascadeMouth);
+	cvReleaseHaarClassifierCascade(&app.cascadeLeftEye);
+	cvReleaseHaarClassifierCascade(&app.cascadeRightEye);
 	cvReleaseMemStorage(&app.memStorage);
 	// Release the sample frame (either static image or first video frame) (DON'T DO THIS IF CAPTURING!!!)
 	if ( !app.capture )
