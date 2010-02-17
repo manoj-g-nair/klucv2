@@ -567,4 +567,165 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	return fp;
 }
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
+											CvMemStorage * storage,
+											const char * windowContrastStretch1,
+											const char * windowContrastStretch2,
+											const char * windowThreshold,
+											const char * windowContour,
+											const char * windowFeaturePoints)
+{
+	CV_Assert(image != NULL && storage != NULL);
+
+	MouthFeaturePoints fp;
+
+	// Create a copy of the eye region image
+	IplImage * regImg = extractGrayScaleROI(image);
+
+	// Get some statistical information about the grayscale distribution
+	GrayStats stats = getGrayStats(regImg);
+
+	// Calculate the upper and lower gray value bounds
+	unsigned char upperBound = stats.avg + (stats.max - stats.avg) / 2;
+	unsigned char lowerBound = stats.min + (stats.avg - stats.min) / 2;
+
+	// Print the stats
+	static bool hasPrintedStats = false;
+	if ( !hasPrintedStats )
+	{
+		cerr << "avg        = " << stats.avg << endl;
+		cerr << "minVal     = " << (int) stats.min << endl;
+		cerr << "maxVal     = " << (int) stats.max << endl;
+		cerr << "upperBound = " << (int) upperBound << endl;
+		cerr << "lowerBound = " << (int) lowerBound << endl;
+		cerr << "pixelCount = " << stats.pixelCount;
+		hasPrintedStats = true;
+	}
+
+	// Saturation (this is not very well documented in
+	stretchContrast(regImg, lowerBound, stats.max, upperBound, 255);
+	visDebug(windowContrastStretch1, regImg);
+
+	stretchContrast(regImg, stats.min, stats.avg, 0, stats.min);
+	visDebug(windowContrastStretch2, regImg);
+
+	// Threshold iteration
+	unsigned char t;
+	unsigned char tNew = stats.avg;
+	do {
+		t = tNew;
+		GrayStats statsM1 = getGrayStats(regImg, 0, t);
+		GrayStats statsM2 = getGrayStats(regImg, t+1, 255);
+		tNew = (statsM1.avg + statsM2.avg) / 2;
+	} while (t != tNew );
+    cvThreshold(regImg, regImg, t, 255, CV_THRESH_BINARY_INV);
+	visDebug(windowThreshold, regImg);
+    
+
+    // Find contours in inverted binary image
+    CvSeq * contours = NULL;
+	CvSeq * firstContour = NULL;
+	int nContours = cvFindContours(regImg, storage, &firstContour, sizeof(CvContour), CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
+
+	CvSeq * biggestContour = NULL;
+	double biggestArea = 0;
+
+	for( CvSeq* c = firstContour; c!=NULL; c=c->h_next )
+	{
+		double area = cvContourArea(c);
+
+		if ( (area*area) > biggestArea )
+		{
+			biggestContour = c;
+			biggestArea = (area*area);            
+		}
+	}
+
+	if ( biggestContour )
+	{
+        if ( windowContour )
+        {
+		    cvDrawContours(
+			    regImg, // target image
+			    biggestContour, // contour
+			    CV_RGB(255, 255, 255),		// external color
+			    CV_RGB(255, 0, 0),	// hole color
+			    1,			// Vary max_level and compare results
+			    1, // thickness
+			    8 // type
+		    );
+            visDebug(windowContour, regImg);
+        }
+
+		// Go through all contour points and find the right- and leftmost contour point.
+        // Initialize with reasonable defaults that are very likely to be overwritten.
+        fp.cornerRight = cvPoint(0, 0);
+        fp.cornerLeft = cvPoint(regImg->width, regImg->height);
+
+		int nElements = biggestContour->total;
+
+		for ( int i = 0; i < nElements; i++)
+		{
+			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
+
+			if ( p.x > fp.cornerRight.x )
+			{
+				fp.cornerRight = p;
+			}
+			else if ( p.x < fp.cornerLeft.x )
+			{
+				fp.cornerLeft = p;
+			}
+		}
+
+		// Go through all contour points and find the right- and leftmost contour point.
+
+        // The upper and lower lid feature points must lie in the middle third of the
+        // range from the left to the right corner.
+        int minX = fp.cornerLeft.x + (fp.cornerRight.x - fp.cornerLeft.x) / 3;
+        int maxX = fp.cornerLeft.x + 2 * (fp.cornerRight.x - fp.cornerLeft.x) / 3;
+
+        // Initialize with reasonable defaults that are very likely to be overwritten.
+        fp.upperLip = cvPoint(regImg->width, regImg->height);
+        fp.lowerLip = cvPoint(0,0);
+
+		for ( int i = 0; i < nElements; i++)
+		{
+			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
+
+			if ( p.x > minX && p.x < maxX && p.y < fp.upperLip.y )
+			{
+				fp.upperLip = p;
+			}
+            else if ( p.x > minX && p.x < maxX && p.y > fp.lowerLip.y )
+			{
+				fp.lowerLip = p;
+			}	
+        }
+
+
+        drawCross(regImg, fp.cornerRight, COL_WHITE);
+        drawCross(regImg, fp.cornerLeft, COL_WHITE);
+        drawCross(regImg, fp.upperLip, COL_WHITE);
+        drawCross(regImg, fp.lowerLip, COL_WHITE);
+        visDebug(windowFeaturePoints, regImg);
+	}
+
+	cvReleaseImage(&regImg);
+
+    // Fix coordinates: ROI to global image coordinates
+    CvRect region = cvGetImageROI(image);
+    fp.lowerLip.x += region.x;
+    fp.cornerLeft.x += region.x;
+    fp.cornerRight.x += region.x;
+    fp.upperLip.x += region.x;
+    fp.lowerLip.y += region.y;
+    fp.cornerLeft.y += region.y;
+    fp.cornerRight.y += region.y;
+    fp.upperLip.y += region.y;
+
+	return fp;
+}
+//------------------------------------------------------------------------------
 }

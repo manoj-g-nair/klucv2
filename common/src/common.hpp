@@ -91,6 +91,21 @@ namespace klu
         cv::Point2i cornerLeft; // from your point of view
         cv::Point2i cornerRight;// from your point of view
     };
+	
+	/**
+	 * The \c MouthFeaturePoints struct contains the X-Y coordinates of
+	 * all the feature points for the mouth. Coordinates are considered
+	 * to be image and not region coordinates.
+	 *
+	 * @author Konrad Kleine, Jens Lukowski
+	 */  
+    struct MouthFeaturePoints
+    {
+        cv::Point2i upperLip;
+        cv::Point2i lowerLip;
+        cv::Point2i cornerLeft; // from your point of view
+        cv::Point2i cornerRight;// from your point of view
+    };
       
     /**
      * The \c FaceFeaturePoints struct combines all feature points for
@@ -102,6 +117,7 @@ namespace klu
     {
         EyeFeaturePoints leftEye;
         EyeFeaturePoints rightEye;
+		MouthFeaturePoints mouth;
     };
 
 	/**
@@ -283,6 +299,29 @@ namespace klu
 											const char * windowThreshold = NULL,
 											const char * windowContour = NULL,
 											const char * windowFeaturePoints = NULL);
+											
+	/**
+	 *	Detects the all the mouth-feature points (see \c MouthFeaturePoints) in
+	 *	the \a image. You should set the ROI of for the \a image using the
+	 *	OpenCV function \c cvSetImageROI() to the mouth region before calling
+	 *	this function.
+	 *
+	 *	If \a window... is not \c NULL, some temporary images will be shown
+	 *	in this window. This is useful for visual debugging.
+	 *
+	 *	See: Abu Sayeed Md. Sohail and Prabir Bhattacharya
+	*       "Detection of Facial Feature Points Using Anthropometric Face Model"
+	 *	     p. 662
+	 *
+	 * @author Konrad Kleine, Jens Lukowski
+	 */
+	MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
+												CvMemStorage * storage,
+												const char * windowContrastStretch1,
+												const char * windowContrastStretch2,
+												const char * windowThreshold,
+												const char * windowContour,
+												const char * windowFeaturePoints);
 }
 
 #endif /* #ifndef COMMON_HPP */
