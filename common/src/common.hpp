@@ -86,10 +86,11 @@ namespace klu
 	 */  
     struct EyeFeaturePoints
     {
-        cv::Point2i upperLid;
-        cv::Point2i lowerLid;
-        cv::Point2i cornerLeft; // from your point of view
-        cv::Point2i cornerRight;// from your point of view
+        CvPoint center;
+        CvPoint upperLid;
+        CvPoint lowerLid;
+        CvPoint cornerLeft; // from your point of view
+        CvPoint cornerRight;// from your point of view
     };
 	
 	/**
@@ -101,10 +102,14 @@ namespace klu
 	 */  
     struct MouthFeaturePoints
     {
-        cv::Point2i upperLip;
-        cv::Point2i lowerLip;
-        cv::Point2i cornerLeft; // from your point of view
-        cv::Point2i cornerRight;// from your point of view
+        CvPoint upperLipMiddle;
+        CvPoint lowerLipMiddle;
+        CvPoint upperLipRight;
+        CvPoint lowerLipRight;
+        CvPoint upperLipLeft;
+        CvPoint lowerLipLeft;
+        CvPoint cornerLeft; // from your point of view
+        CvPoint cornerRight;// from your point of view
     };
       
     /**
@@ -202,7 +207,7 @@ namespace klu
      *
      * @author Konrad Kleine, Jens Lukowski
      */
-	void drawCross(IplImage * img, const CvPoint & p, CvScalar color = COL_YELLOW);
+    void drawCross(IplImage * img, const CvPoint & p, CvScalar color = COL_WHITE);
 
 	/**
 	 * Returns the distance (length of difference vector) from \a p1 to \a p2.
@@ -310,7 +315,7 @@ namespace klu
 	 *	in this window. This is useful for visual debugging.
 	 *
 	 *	See: Abu Sayeed Md. Sohail and Prabir Bhattacharya
-	*       "Detection of Facial Feature Points Using Anthropometric Face Model"
+	 *       "Detection of Facial Feature Points Using Anthropometric Face Model"
 	 *	     p. 662
 	 *
 	 * @author Konrad Kleine, Jens Lukowski
@@ -322,6 +327,15 @@ namespace klu
 												const char * windowThreshold,
 												const char * windowContour,
 												const char * windowFeaturePoints);
+
+    /**
+     * This function draws all the Facial Feature Points (FFPs) stored in \a fpp
+     * into the \a image.
+     *
+     * @author Konrad Kleine, Jens Lukowski
+     */
+    void drawFfps(IplImage * image, const FaceFeaturePoints & ffp);
+
 }
 
 #endif /* #ifndef COMMON_HPP */

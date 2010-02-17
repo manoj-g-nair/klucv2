@@ -11,6 +11,9 @@ struct ApplicationEnvironment
 {
 	CvCapture * capture; // NULL if no capture is being used.
 	bool isExiting;
+    bool drawSearchRects;
+    bool drawAnthropometricPoints;
+    bool drawFfps;
 	CvFont font;
 	IplImage * frame; // Pointer to the current frame
 
@@ -33,11 +36,17 @@ int main(int argc, char * argv[])
 	cerr << "---------------" << endl;
 	cerr << "p   = Saves the images of all windows and visual debugs (even if not visable) to an image file (e.g. \"WINDOWNAME TIMESTAMP.png\")" << endl;
     cerr << "d   = Toggle visual debugging on and off." << endl;
+    cerr << "r   = Toggle draw search rectangles on and off." << endl;
+    cerr << "f   = Toggle draw Facial Feature Points (FFPs) on and off." << endl;
+    cerr << "a   = Toggle draw anthropometric points on and off." << endl;
 	cerr << "ESC = Exit the program" << endl;
 
 	// BEGIN Initialize the application
 
 	app.isExiting = false;
+    app.drawAnthropometricPoints = false;
+    app.drawSearchRects = false;
+    app.drawFfps = true;
 	cvInitFont(&(app.font), CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
 	app.frame = 0;	
 	// Initialize old OpenCV 1.x stuff for object detection
@@ -130,6 +139,7 @@ int main(int argc, char * argv[])
 					rightEyeRect = eyeRects[0];
 					rightEyeRect.x += rightEyeSearchWindow.x;
 					rightEyeRect.y += rightEyeSearchWindow.y;
+                    ffp.rightEye.center = getRectMidPoint(rightEyeRect);
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
@@ -153,6 +163,7 @@ int main(int argc, char * argv[])
 					leftEyeRect = eyeRects[0];
 					leftEyeRect.x += leftEyeSearchWindow.x;
 					leftEyeRect.y += leftEyeSearchWindow.y;
+                    ffp.leftEye.center = getRectMidPoint(leftEyeRect);
 
                     // Find left eye feature points
                     cvSetImageROI(grayscaleFrame, leftEyeRect);
@@ -164,10 +175,8 @@ int main(int argc, char * argv[])
 				/**
 				 * Find mouth
 				 */
-				CvPoint rightEyeMidPoint = getRectMidPoint(rightEyeRect);
-				CvPoint leftEyeMidPoint = getRectMidPoint(leftEyeRect);
-				double eyeDist = getDist(leftEyeMidPoint, rightEyeMidPoint);
-				CvPoint mouthCenter = cvPoint(rightEyeMidPoint.x + eyeDist * 0.5, rightEyeMidPoint.y + eyeDist * 1.1);
+				double eyeDist = getDist(ffp.leftEye.center, ffp.rightEye.center);
+				CvPoint mouthCenter = cvPoint(ffp.rightEye.center.x + eyeDist * 0.5, ffp.rightEye.center.y + eyeDist * 1.1);
 
 				mouthSearchWindow = faceRect;
 				mouthSearchWindow.height /= 2;
@@ -197,46 +206,41 @@ int main(int argc, char * argv[])
 		{
 			drawRect(app.frame, faceRects[i], COL_RED);
 		}
-		drawRect(app.frame, rightEyeSearchWindow, COL_GREEN);
-		drawRect(app.frame, leftEyeSearchWindow, COL_BLUE);
-		drawRect(app.frame, rightEyeRect, COL_GREEN);
-		drawRect(app.frame, leftEyeRect, COL_BLUE);
-		// Draw eye mid-points
-		drawCross(app.frame, getRectMidPoint(rightEyeRect));
-		drawCross(app.frame, getRectMidPoint(leftEyeRect));
-		// Draw eye-midpoint connection line
-		CvPoint rightEyeMidPoint = getRectMidPoint(rightEyeRect);
-		CvPoint leftEyeMidPoint = getRectMidPoint(leftEyeRect);
-		cvLine(app.frame, rightEyeMidPoint, leftEyeMidPoint, COL_RED, 1);
-		// Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)
-		double eyeDist = getDist(leftEyeMidPoint, rightEyeMidPoint);
-		cvLine(app.frame, rightEyeMidPoint, cvPoint(rightEyeMidPoint.x, rightEyeMidPoint.y - eyeDist * 0.33), COL_RED, 1);
-		cvLine(app.frame, leftEyeMidPoint, cvPoint(leftEyeMidPoint.x, leftEyeMidPoint.y - eyeDist * 0.33), COL_RED, 1);
-		// Draw nose tip
-		CvPoint noseTip = cvPoint(rightEyeMidPoint.x + eyeDist * 0.5, rightEyeMidPoint.y + eyeDist * 0.6);
-		drawCross(app.frame, noseTip);
 		
-		// Mouth
-		CvPoint mouthCenter = cvPoint(rightEyeMidPoint.x + eyeDist * 0.5, rightEyeMidPoint.y + eyeDist * 1.1);
-		drawCross(app.frame, mouthCenter);
-		drawRect(app.frame, mouthSearchWindow, COL_BLUE);
-		drawRect(app.frame, mouthRect, COL_LIME_GREEN);
-        
-		// Draw mouth feature points
-        drawCross(app.frame, ffp.mouth.cornerLeft, COL_YELLOW);
-        drawCross(app.frame, ffp.mouth.cornerRight, COL_YELLOW);
-        drawCross(app.frame, ffp.mouth.upperLip, COL_YELLOW);
-        drawCross(app.frame, ffp.mouth.lowerLip, COL_YELLOW);
-        
-        // Draw eye feature points
-        drawCross(app.frame, ffp.rightEye.cornerLeft, COL_YELLOW);
-        drawCross(app.frame, ffp.rightEye.cornerRight, COL_YELLOW);
-        drawCross(app.frame, ffp.rightEye.upperLid, COL_YELLOW);
-        drawCross(app.frame, ffp.rightEye.lowerLid, COL_YELLOW);
-        drawCross(app.frame, ffp.leftEye.cornerLeft, COL_YELLOW);
-        drawCross(app.frame, ffp.leftEye.cornerRight, COL_YELLOW);
-        drawCross(app.frame, ffp.leftEye.upperLid, COL_YELLOW);
-        drawCross(app.frame, ffp.leftEye.lowerLid, COL_YELLOW);
+        double eyeDist = getDist(ffp.leftEye.center, ffp.rightEye.center);
+        cerr << "eyeDist :" << eyeDist << endl;
+
+        if (app.drawSearchRects)
+        {
+            drawRect(app.frame, rightEyeSearchWindow, COL_GREEN);
+		    drawRect(app.frame, leftEyeSearchWindow, COL_BLUE);
+		    drawRect(app.frame, rightEyeRect, COL_GREEN);
+		    drawRect(app.frame, leftEyeRect, COL_BLUE);
+
+		    // Draw eye-midpoint connection line
+            cvLine(app.frame, ffp.leftEye.center, ffp.rightEye.center, COL_RED, 1);
+
+		    // Mouth rect
+		    drawRect(app.frame, mouthSearchWindow, COL_BLUE);
+		    drawRect(app.frame, mouthRect, COL_LIME_GREEN);
+        }
+
+        if (true || app.drawAnthropometricPoints)
+        {
+		    // Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)		    
+		    cvLine(app.frame, ffp.rightEye.center, cvPoint(ffp.rightEye.center.x, ffp.rightEye.center.y - eyeDist * 0.33), COL_RED, 1);
+		    cvLine(app.frame, ffp.leftEye.center, cvPoint(ffp.leftEye.center.x, ffp.leftEye.center.y - eyeDist * 0.33), COL_RED, 1);
+
+            // Draw nose tip
+		    CvPoint noseTip = cvPoint(ffp.rightEye.center.x + eyeDist * 0.5, ffp.rightEye.center.y + eyeDist * 0.6);
+		    drawCross(app.frame, noseTip);
+    		
+            // Draw estimated mouth center
+            CvPoint mouthCenter = cvPoint(ffp.rightEye.center.x + eyeDist * 0.5, ffp.rightEye.center.y + eyeDist * 1.1);
+		    drawCross(app.frame, mouthCenter);
+        }
+
+        drawFfps(app.frame, ffp);
 
 		// Print processing time for detection (after ROI reset!!)
 		memset(buf, '\0', 255);
@@ -249,7 +253,7 @@ int main(int argc, char * argv[])
 		cvPutText(app.frame, buf, cvPoint(0, app.frame->height - 8), &app.font, CV_RGB(0,255,0));		
 
 		// Show the composited image
-		cvShowImage(WINDOW_RESULT, app.frame );	
+		cvShowImage(WINDOW_RESULT, app.frame);	
 
 		// Control the program
         int key = cvWaitKey(10);
@@ -272,6 +276,18 @@ int main(int argc, char * argv[])
         // Toggle visual debugging
         case 'd':
             g_enableVisDebug = g_enableVisDebug ? false : true;
+            break;
+        // Toggle draw search rectangles
+        case 'r':
+            app.drawSearchRects = app.drawSearchRects ? false : true;
+            break;
+        // Toggle draw FFPs
+        case 'f':
+            app.drawFfps = app.drawFfps ? false : true;
+            break;
+        // Toggle draw anthropometric points
+        case 'a':
+            app.drawAnthropometricPoints = app.drawAnthropometricPoints ? false : true;
             break;
 		}
 

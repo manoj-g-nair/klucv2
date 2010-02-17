@@ -687,28 +687,58 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
         int maxX = fp.cornerLeft.x + 2 * (fp.cornerRight.x - fp.cornerLeft.x) / 3;
 
         // Initialize with reasonable defaults that are very likely to be overwritten.
-        fp.upperLip = cvPoint(regImg->width, regImg->height);
-        fp.lowerLip = cvPoint(0,0);
+        fp.upperLipMiddle = cvPoint(regImg->width, regImg->height);
+        fp.lowerLipMiddle = cvPoint(0,0);
+        fp.upperLipRight = cvPoint(regImg->width, regImg->height);
+        fp.lowerLipRight = cvPoint(0,0);
+        fp.upperLipLeft = cvPoint(regImg->width, regImg->height);
+        fp.lowerLipLeft = cvPoint(0,0);
 
 		for ( int i = 0; i < nElements; i++)
 		{
 			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
 
-			if ( p.x > minX && p.x < maxX && p.y < fp.upperLip.y )
+            // TODO: Flip "<" and ">"
+
+            // Middle Lip
+			if ( p.x > minX && p.x < maxX && p.y < fp.upperLipMiddle.y )
 			{
-				fp.upperLip = p;
+                fp.upperLipMiddle = p;
 			}
-            else if ( p.x > minX && p.x < maxX && p.y > fp.lowerLip.y )
+            else if ( p.x > minX && p.x < maxX && p.y > fp.lowerLipMiddle.y )
 			{
-				fp.lowerLip = p;
+				fp.lowerLipMiddle = p;
+			}
+
+            // Right Lip
+            if ( p.x > maxX && p.y < fp.upperLipRight.y )
+			{
+                fp.upperLipRight = p;
+			}
+            else if ( p.x > maxX && p.y > fp.lowerLipRight.y )
+			{
+				fp.lowerLipRight = p;
+			}	
+
+            // Left Lip
+			if ( p.x < minX && p.y < fp.upperLipLeft.y )
+			{
+                fp.upperLipLeft = p;
+			}
+            else if ( p.x < minX && p.y > fp.lowerLipLeft.y )
+			{
+				fp.lowerLipLeft = p;
 			}	
         }
 
-
         drawCross(regImg, fp.cornerRight, COL_WHITE);
         drawCross(regImg, fp.cornerLeft, COL_WHITE);
-        drawCross(regImg, fp.upperLip, COL_WHITE);
-        drawCross(regImg, fp.lowerLip, COL_WHITE);
+        drawCross(regImg, fp.upperLipMiddle, COL_WHITE);
+        drawCross(regImg, fp.lowerLipMiddle, COL_WHITE);
+        drawCross(regImg, fp.upperLipRight, COL_WHITE);
+        drawCross(regImg, fp.lowerLipRight, COL_WHITE);
+        drawCross(regImg, fp.upperLipLeft, COL_WHITE);
+        drawCross(regImg, fp.lowerLipLeft, COL_WHITE);
         visDebug(windowFeaturePoints, regImg);
 	}
 
@@ -716,16 +746,61 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 
     // Fix coordinates: ROI to global image coordinates
     CvRect region = cvGetImageROI(image);
-    fp.lowerLip.x += region.x;
+    fp.lowerLipMiddle.x += region.x;
     fp.cornerLeft.x += region.x;
     fp.cornerRight.x += region.x;
-    fp.upperLip.x += region.x;
-    fp.lowerLip.y += region.y;
+    fp.upperLipMiddle.x += region.x;
+    fp.lowerLipLeft.x += region.x;
+    fp.lowerLipRight.x += region.x;
+    fp.upperLipRight.x += region.x;
+    fp.upperLipLeft.x += region.x;
+    fp.lowerLipMiddle.y += region.y;
     fp.cornerLeft.y += region.y;
     fp.cornerRight.y += region.y;
-    fp.upperLip.y += region.y;
+    fp.upperLipMiddle.y += region.y;
+    fp.lowerLipLeft.y += region.y;
+    fp.lowerLipRight.y += region.y;
+    fp.upperLipLeft.y += region.y;
+    fp.upperLipRight.y += region.y;
 
 	return fp;
+}
+//------------------------------------------------------------------------------
+void drawFfps(IplImage * image, const FaceFeaturePoints & ffp)
+{
+    // Draw mouth feature points
+    //drawCross(image, ffp.mouth.cornerLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.cornerRight, COL_YELLOW);
+    //drawCross(image, ffp.mouth.upperLipMiddle, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lowerLipMiddle, COL_YELLOW);
+    //drawCross(image, ffp.mouth.upperLipLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lowerLipLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.upperLipRight, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lowerLipRight, COL_YELLOW);
+    // Lips
+    cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW);
+    cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
+    cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
+    cvLine(image, ffp.mouth.upperLipMiddle, ffp.mouth.upperLipRight, COL_YELLOW);
+    cvLine(image, ffp.mouth.upperLipRight, ffp.mouth.cornerRight, COL_YELLOW);
+    cvLine(image, ffp.mouth.cornerRight, ffp.mouth.lowerLipRight, COL_YELLOW);
+    cvLine(image, ffp.mouth.lowerLipRight, ffp.mouth.lowerLipMiddle, COL_YELLOW);
+    cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW);
+    cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW);       
+
+    // Draw eye feature points
+    // Centers
+    drawCross(image, ffp.leftEye.center, COL_YELLOW);
+    drawCross(image, ffp.rightEye.center, COL_YELLOW);
+    // Lids
+    drawCross(image, ffp.rightEye.cornerLeft, COL_YELLOW);
+    drawCross(image, ffp.rightEye.cornerRight, COL_YELLOW);
+    drawCross(image, ffp.rightEye.upperLid, COL_YELLOW);
+    drawCross(image, ffp.rightEye.lowerLid, COL_YELLOW);
+    drawCross(image, ffp.leftEye.cornerLeft, COL_YELLOW);
+    drawCross(image, ffp.leftEye.cornerRight, COL_YELLOW);
+    drawCross(image, ffp.leftEye.upperLid, COL_YELLOW);
+    drawCross(image, ffp.leftEye.lowerLid, COL_YELLOW);
 }
 //------------------------------------------------------------------------------
 }
