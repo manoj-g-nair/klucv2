@@ -555,6 +555,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 
     // Fix coordinates: ROI to global image coordinates
     CvRect region = cvGetImageROI(image);
+    fp.center = getRectMidPoint(region);
     fp.lowerLid.x += region.x;
     fp.cornerLeft.x += region.x;
     fp.cornerRight.x += region.x;
@@ -566,7 +567,6 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 
 	return fp;
 }
-//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 											CvMemStorage * storage,

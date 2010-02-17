@@ -139,7 +139,6 @@ int main(int argc, char * argv[])
 					rightEyeRect = eyeRects[0];
 					rightEyeRect.x += rightEyeSearchWindow.x;
 					rightEyeRect.y += rightEyeSearchWindow.y;
-                    ffp.rightEye.center = getRectMidPoint(rightEyeRect);
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
@@ -163,7 +162,6 @@ int main(int argc, char * argv[])
 					leftEyeRect = eyeRects[0];
 					leftEyeRect.x += leftEyeSearchWindow.x;
 					leftEyeRect.y += leftEyeSearchWindow.y;
-                    ffp.leftEye.center = getRectMidPoint(leftEyeRect);
 
                     // Find left eye feature points
                     cvSetImageROI(grayscaleFrame, leftEyeRect);
@@ -208,7 +206,6 @@ int main(int argc, char * argv[])
 		}
 		
         double eyeDist = getDist(ffp.leftEye.center, ffp.rightEye.center);
-        cerr << "eyeDist :" << eyeDist << endl;
 
         if (app.drawSearchRects)
         {
@@ -217,16 +214,16 @@ int main(int argc, char * argv[])
 		    drawRect(app.frame, rightEyeRect, COL_GREEN);
 		    drawRect(app.frame, leftEyeRect, COL_BLUE);
 
-		    // Draw eye-midpoint connection line
-            cvLine(app.frame, ffp.leftEye.center, ffp.rightEye.center, COL_RED, 1);
-
 		    // Mouth rect
 		    drawRect(app.frame, mouthSearchWindow, COL_BLUE);
 		    drawRect(app.frame, mouthRect, COL_LIME_GREEN);
         }
 
-        if (true || app.drawAnthropometricPoints)
+        if (app.drawAnthropometricPoints)
         {
+            // Draw eye-midpoint connection line
+            cvLine(app.frame, ffp.rightEye.center, ffp.leftEye.center, COL_BLUE);
+
 		    // Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)		    
 		    cvLine(app.frame, ffp.rightEye.center, cvPoint(ffp.rightEye.center.x, ffp.rightEye.center.y - eyeDist * 0.33), COL_RED, 1);
 		    cvLine(app.frame, ffp.leftEye.center, cvPoint(ffp.leftEye.center.x, ffp.leftEye.center.y - eyeDist * 0.33), COL_RED, 1);
@@ -240,7 +237,10 @@ int main(int argc, char * argv[])
 		    drawCross(app.frame, mouthCenter);
         }
 
-        drawFfps(app.frame, ffp);
+        if (app.drawFfps)
+        {
+            drawFfps(app.frame, ffp);
+        }
 
 		// Print processing time for detection (after ROI reset!!)
 		memset(buf, '\0', 255);
