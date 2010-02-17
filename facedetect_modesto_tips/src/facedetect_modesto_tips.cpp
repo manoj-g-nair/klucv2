@@ -180,6 +180,10 @@ int main(int argc, char * argv[])
 					mouthRect = mouthRects[0];
 					mouthRect.x += mouthSearchWindow.x;
 					mouthRect.y += mouthSearchWindow.y;
+
+					cvSetImageROI(grayscaleFrame, mouthRect);
+                    ffp.mouth = detectMouthFeaturePoints(grayscaleFrame, app.memStorage, "M Contrast Stretch 1", "M Contrast Stretch 2","M Threshold", "M Contour", "M Feature Points");
+                    cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
 			}
@@ -211,11 +215,18 @@ int main(int argc, char * argv[])
 		// Draw nose tip
 		CvPoint noseTip = cvPoint(rightEyeMidPoint.x + eyeDist * 0.5, rightEyeMidPoint.y + eyeDist * 0.6);
 		drawCross(app.frame, noseTip);
+		
 		// Mouth
 		CvPoint mouthCenter = cvPoint(rightEyeMidPoint.x + eyeDist * 0.5, rightEyeMidPoint.y + eyeDist * 1.1);
 		drawCross(app.frame, mouthCenter);
 		drawRect(app.frame, mouthSearchWindow, COL_BLUE);
 		drawRect(app.frame, mouthRect, COL_LIME_GREEN);
+        
+		// Draw mouth feature points
+        drawCross(app.frame, ffp.mouth.cornerLeft, COL_YELLOW);
+        drawCross(app.frame, ffp.mouth.cornerRight, COL_YELLOW);
+        drawCross(app.frame, ffp.mouth.upperLip, COL_YELLOW);
+        drawCross(app.frame, ffp.mouth.lowerLip, COL_YELLOW);
         
         // Draw eye feature points
         drawCross(app.frame, ffp.rightEye.cornerLeft, COL_YELLOW);
