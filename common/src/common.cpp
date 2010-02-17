@@ -12,6 +12,9 @@ using namespace cv;
 namespace klu
 {
 //------------------------------------------------------------------------------
+long g_autoSaveImages = 0;
+bool g_enableVisDebug = false;
+//------------------------------------------------------------------------------
 static double ticStart = 0;
 void tic()
 {
@@ -33,13 +36,25 @@ KLU_INLINE void visDebug(const char * wndName, const IplImage * img)
 {
 	if ( wndName && img )
 	{
-		cvNamedWindow(wndName, 0);
-		cvShowImage(wndName, img);
+        if (g_enableVisDebug)
+        {
+		    cvNamedWindow(wndName, 0);
+		    cvShowImage(wndName, img);
+        }
+        else
+        {
+            cvDestroyWindow(wndName);
+        }
+
+        if (g_autoSaveImages)
+        {
+            saveImage(img, wndName);
+        }
 	}
 }
 //------------------------------------------------------------------------------
 // Saves the "image" to "basename"_TIMESTAMP.png
-void saveImage(IplImage * image, const char * basename)
+void saveImage(const IplImage * image, const char * basename)
 {
 	if ( !image || !basename )
 	{
@@ -48,7 +63,7 @@ void saveImage(IplImage * image, const char * basename)
 	
 	char filename[255];
 	memset(filename, '\0', 255);	
-	sprintf(filename, "%s %ld.png", basename, time(NULL));
+	sprintf(filename, "%s %ld.png", basename, g_autoSaveImages);
 	cout << "Saving image " << filename << endl;	
 	cvSaveImage(filename, image);
 }

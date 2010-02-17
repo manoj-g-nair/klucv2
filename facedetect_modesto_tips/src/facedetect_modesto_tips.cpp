@@ -27,11 +27,12 @@ struct ApplicationEnvironment
 int main(int argc, char * argv[])
 {    
 	// Print keys
-	cerr << "Detection of facial feature regions" << endl;
+	cerr << "Facial Feature Points (FFP) Detection" << endl;
 	cerr << endl;
 	cerr << "Keys:" << endl;
 	cerr << "---------------" << endl;
-	cerr << "p   = Saves the main window to an image file (e.g. \"Result TIMESTAMP.png\")" << endl;
+	cerr << "p   = Saves the images of all windows and visual debugs (even if not visable) to an image file (e.g. \"WINDOWNAME TIMESTAMP.png\")" << endl;
+    cerr << "d   = Toggle visual debugging on and off." << endl;
 	cerr << "ESC = Exit the program" << endl;
 
 	// BEGIN Initialize the application
@@ -51,7 +52,7 @@ int main(int argc, char * argv[])
 	// Create the result window
     cvNamedWindow(WINDOW_RESULT);
 
-	app.capture = cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
+	app.capture = 0;//cvCreateCameraCapture(CV_CAP_ANY);//CV_CAP_ANY);
 
 	IplImage * image = NULL;
 
@@ -73,7 +74,7 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		image = cvLoadImage( "../data/image_0235.jpg", 1 );
+		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
 	}
 
     IplImage * grayscaleFrame = cvCreateImage(cvSize(image->width, image->height), IPL_DEPTH_8U, 1);
@@ -132,7 +133,7 @@ int main(int argc, char * argv[])
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
-                    ffp.rightEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage,"Contrast Stretch 1", "Contrast Stretch 2","Threshold","Contour", "Feature Points");
+                    ffp.rightEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
@@ -153,9 +154,9 @@ int main(int argc, char * argv[])
 					leftEyeRect.x += leftEyeSearchWindow.x;
 					leftEyeRect.y += leftEyeSearchWindow.y;
 
-                    // Find left eye feature points (no debug windows this time ^_^)
+                    // Find left eye feature points
                     cvSetImageROI(grayscaleFrame, leftEyeRect);
-                    ffp.leftEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage);
+                    ffp.leftEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
@@ -179,14 +180,6 @@ int main(int argc, char * argv[])
 					mouthRect = mouthRects[0];
 					mouthRect.x += mouthSearchWindow.x;
 					mouthRect.y += mouthSearchWindow.y;
-
-					static bool done = false;
-					if ( !done )
-					{
-						cvSetImageROI(app.frame, mouthRect);
-						saveImage(app.frame, "mouth");
-						done = true;
-					}
 				}
 				cvResetImageROI(app.frame);
 			}
@@ -255,11 +248,19 @@ int main(int argc, char * argv[])
             app.isExiting = true;
 		}
 
+        // Automatically disable automatic image saving feature.
+        g_autoSaveImages = 0;
+
 		switch( (char) key )
 		{
 		// Print/Save image to file
 		case 'p':
-			saveImage(app.frame, WINDOW_RESULT);
+            g_autoSaveImages = time(NULL);
+			saveImage(app.frame, WINDOW_RESULT);            
+            break;
+        // Toggle visual debugging
+        case 'd':
+            g_enableVisDebug = g_enableVisDebug ? false : true;
             break;
 		}
 

@@ -69,6 +69,9 @@
  */
 namespace klu
 {
+    extern long g_autoSaveImages;
+    extern bool g_enableVisDebug;
+
 	/**
 	 * \name Datatypes for Feature Points.
 	 * @{
@@ -141,6 +144,9 @@ namespace klu
 	 * window named after \a wndName.
 	 *
 	 * If the window hasn't been created already, it will be created on-the-fly.
+     *
+     * If \c g_autoSaveImages is set to \c true, all windows will save the images
+     * they are presenting.
 	 */
 	KLU_INLINE void visDebug(const char * wndName, const IplImage * img);
 
@@ -149,7 +155,7 @@ namespace klu
      *
      * @author Konrad Kleine, Jens Lukowski
      */
-	void saveImage(IplImage * image, const char * basename);
+	void saveImage(const IplImage * image, const char * basename);
 
 	/**
      * Detects objects in \a img that match the Haar classifier \a cascade and
