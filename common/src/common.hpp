@@ -207,7 +207,7 @@ namespace klu
      *
      * @author Konrad Kleine, Jens Lukowski
      */
-    void drawCross(IplImage * img, const CvPoint & p, CvScalar color = COL_WHITE);
+    void drawCross(IplImage * img, const CvPoint & p, CvScalar color = COL_YELLOW);
 
 	/**
 	 * Returns the distance (length of difference vector) from \a p1 to \a p2.
@@ -287,6 +287,11 @@ namespace klu
 	 *	the \a image. You should set the ROI of for the \a image using the
 	 *	OpenCV function \c cvSetImageROI() to the eye region before calling
 	 *	this function.
+     *  The \a eyeCenter is a 2D point of the previously detected center of
+     *  the eye in global image coordinates. With the \a eyeCenter we can
+     *  ensure that the correct eye contour is selected during the image processing.
+     *  We ensure that the eyeCenter lies within the tested eye contour;
+     *  otherwise we might falsely the eyebrow instead of the eye.
 	 *
 	 *	If \a window... is not \c NULL, some temporary images will be shown
 	 *	in this window. This is useful for visual debugging.
@@ -298,7 +303,8 @@ namespace klu
 	 * @author Konrad Kleine, Jens Lukowski
 	 */
 	EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
-                                            CvMemStorage * storage,
+                                            const CvPoint & eyeCenter,
+                                            CvMemStorage * storage,                                            
 											const char * windowContrastStretch1 = NULL,
 											const char * windowContrastStretch2 = NULL,
 											const char * windowThreshold = NULL,

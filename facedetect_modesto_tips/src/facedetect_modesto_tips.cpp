@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
 	{
 		cerr << "No capture found. Using static image." << endl;		
 		// Load the image
-		image = cvLoadImage( "../data/gesicht_mann.jpg", 1 );
+		image = cvLoadImage( "../data/image_0316.jpg", 1 );
 	}
 
     IplImage * grayscaleFrame = cvCreateImage(cvSize(image->width, image->height), IPL_DEPTH_8U, 1);
@@ -142,7 +142,7 @@ int main(int argc, char * argv[])
 
                     // Find right eye feature points
                     cvSetImageROI(grayscaleFrame, rightEyeRect);
-                    ffp.rightEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
+                    ffp.rightEye = detectEyeFeaturePoints(grayscaleFrame, getRectMidPoint(rightEyeRect), app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);
@@ -165,7 +165,7 @@ int main(int argc, char * argv[])
 
                     // Find left eye feature points
                     cvSetImageROI(grayscaleFrame, leftEyeRect);
-                    ffp.leftEye = detectEyeFeaturePoints(grayscaleFrame, app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
+                    ffp.leftEye = detectEyeFeaturePoints(grayscaleFrame, getRectMidPoint(leftEyeRect), app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
                     cvResetImageROI(grayscaleFrame);
 				}
 				cvResetImageROI(app.frame);

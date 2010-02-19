@@ -408,7 +408,8 @@ IplImage * extractGrayScaleROI(const IplImage * image)
 }
 //------------------------------------------------------------------------------
 EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
-                                        CvMemStorage * storage,
+                                        const CvPoint & eyeCenter,
+                                        CvMemStorage * storage,                                        
 										const char * windowContrastStretch1,
 										const char * windowContrastStretch2,
 										const char * windowThreshold,
@@ -421,6 +422,14 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 
 	// Create a copy of the eye region image
 	IplImage * regImg = extractGrayScaleROI(image);
+
+    // Fix eye center coordinate: From global to ROI coordinates
+    CvRect region = cvGetImageROI(image);
+    fp.center = getRectMidPoint(region);
+    fp.center.x -= region.x;
+    fp.center.y -= region.y;
+
+    cvEqualizeHist(regImg, regImg);
 
 	// Get some statistical information about the grayscale distribution
 	GrayStats stats = getGrayStats(regImg);
@@ -474,7 +483,14 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	{
 		double area = cvContourArea(c);
 
-		if ( (area*area) > biggestArea )
+        // EDIT: We ensure now, that the mid point of the eye lies in the contours rectangle.
+        CvRect cr = cvContourBoundingRect(c);
+       
+        if ( (area*area) > biggestArea &&
+            fp.center.x > cr.x &&
+            fp.center.x < (cr.x + cr.width) &&
+            fp.center.y > cr.y &&
+            fp.center.y < (cr.y + cr.height))
 		{
 			biggestContour = c;
 			biggestArea = (area*area);            
@@ -554,8 +570,8 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	cvReleaseImage(&regImg);
 
     // Fix coordinates: ROI to global image coordinates
-    CvRect region = cvGetImageROI(image);
-    fp.center = getRectMidPoint(region);
+    fp.center.x += region.x;
+    fp.center.y += region.y;
     fp.lowerLid.x += region.x;
     fp.cornerLeft.x += region.x;
     fp.cornerRight.x += region.x;
@@ -582,6 +598,8 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 
 	// Create a copy of the eye region image
 	IplImage * regImg = extractGrayScaleROI(image);
+
+    cvEqualizeHist(regImg, regImg);
 
 	// Get some statistical information about the grayscale distribution
 	GrayStats stats = getGrayStats(regImg);
@@ -698,8 +716,6 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 		{
 			CvPoint p = *((CvPoint*) cvGetSeqElem(biggestContour, i));
 
-            // TODO: Flip "<" and ">"
-
             // Middle Lip
 			if ( p.x > minX && p.x < maxX && p.y < fp.upperLipMiddle.y )
 			{
@@ -744,7 +760,7 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 
 	cvReleaseImage(&regImg);
 
-    // Fix coordinates: ROI to global image coordinates
+    // Fix coordinates: ROI to global image coordinates    
     CvRect region = cvGetImageROI(image);
     fp.lowerLipMiddle.x += region.x;
     fp.cornerLeft.x += region.x;
