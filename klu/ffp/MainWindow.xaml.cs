@@ -45,17 +45,29 @@ namespace ffp
             tmpBitmap = new System.Drawing.Bitmap(320, 240);
 
             try
-            {
-                ExpressionTableAdapter tableAdapter = new ExpressionTableAdapter();
+            {                
+                ExpressionTableAdapter tableAdapter = new ExpressionTableAdapter();                
+                TrainingDataSet dataSet = new TrainingDataSet();
+
+                // Clear the complete dataset
+                dataSet.Clear();
                 
-                TrainingDataSet typedDataSet = new TrainingDataSet();
-                typedDataSet.Expression.Clear();
-                tableAdapter.Fill(typedDataSet.Expression);
+                // Load data from SQL Table via TableAdapter
+                tableAdapter.Fill(dataSet.Expression);                
 
-                TrainingDataSet.ExpressionRow row = typedDataSet.Expression.AddExpressionRow("Come on, smile", null);
-                typedDataSet.AcceptChanges();
+                // Insert/Add a row to the Typed DataSet
+                dataSet.Expression.AddExpressionRow("Please", null);
+                            
+                // Check if the row was really inserted.
+                int numRowsAffected = tableAdapter.Update(dataSet);
+                Console.WriteLine("Affected Rows: " + numRowsAffected);
 
-                foreach(TrainingDataSet.ExpressionRow er in typedDataSet.Expression)
+                // Do NOT call this before the data table is updated!
+                // Otherwise 0 changes will be made.
+                dataSet.AcceptChanges();
+
+                // Show all entries of the "expression" table
+                foreach(TrainingDataSet.ExpressionRow er in dataSet.Expression)
                 {
                     Console.WriteLine(er.Expression);
                 }
