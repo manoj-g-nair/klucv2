@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="ffp.PlayerControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Height="300" Width="458">
+    <Grid Width="458">        
+        <Canvas Margin="12" Name="canvas1" Background="SpringGreen">
+            
+            <Button Canvas.Left="121" Canvas.Top="92" Height="30" Name="buttonSmile" Width="79">
+                <StackPanel Orientation="Horizontal">
+                    <Image Name="imageSmile" Source="pack://application:,,,/ffp;component/face-smile.png"></Image>
+                    <TextBlock Margin="10,5,0,0">Smile</TextBlock>
+                </StackPanel>
+            </Button>
+            
+            <Button Canvas.Left="206" Canvas.Top="92" Height="30" Name="buttonSad" Width="79">
+                <StackPanel Orientation="Horizontal">
+                    <Image Name="imageSad" Source="pack://application:,,,/ffp;component/face-sad.png"></Image>
+                    <TextBlock Margin="10,5,0,0">Smile</TextBlock>
+                </StackPanel>
+            </Button>
+
+            <Button Canvas.Left="36" Canvas.Top="92" Height="30" Name="buttonNeutral" Width="79">
+                <StackPanel Orientation="Horizontal">
+                    <Image Name="imageNeutral" Source="pack://application:,,,/ffp;component/face-plain.png"></Image>
+                    <TextBlock Margin="10,5,0,0">Smile</TextBlock>
+                </StackPanel>
+            </Button>
+            
+            <Expander Canvas.Left="36" Canvas.Top="128" Header="Show Thumbnails" Height="130" Name="thumbnailExpander" Width="340" ExpandDirection="Down">
+                <Grid>
+                    <ListBox Background="Silver" SelectedIndex="0" Margin="6,6,6,6.4" Name="thumbnailListBox"></ListBox>
+                </Grid>
+            </Expander>
+            <Label Canvas.Left="13" Canvas.Top="18" Height="28" Name="label1" Width="120" FontWeight="Bold" FontSize="16">Player Control</Label>
+        </Canvas>
+    </Grid>
+</UserControl>

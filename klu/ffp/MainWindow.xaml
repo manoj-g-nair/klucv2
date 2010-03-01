@@ -1,0 +1,91 @@
+﻿<Window x:Class="ffp.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:ffp"
+    Title="MainWindow" Height="675" Width="910">
+
+    <Window.Resources>
+        <Style TargetType="Border" x:Key="PageBackground">
+            <Setter Property="Background" Value="Blue"/>
+        </Style>
+        <!--<Style TargetType="Button">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Opacity" Value="1.0" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseDown">
+                    <BeginStoryboard>
+                        <Storyboard SpeedRatio="2">
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="0.5" To="1" Duration="0:0:5" SpeedRatio="2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+            </Style.Triggers>
+        </Style>-->
+        <!--<Style TargetType="Image">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect />
+                </Setter.Value>
+            </Setter>
+        </Style>-->
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="DarkCyan" Offset="0.1" />
+                <GradientStop Color="LightGray" Offset="0.5"/>
+                <GradientStop Color="DarkCyan" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+       
+        
+        <Menu Height="23" VerticalAlignment="Top">
+            <MenuItem Header="_File" InputGestureText="Ctrl+F">
+                
+                <MenuItem Header="_Options" InputGestureText="Ctrl+O"/>
+                <Separator></Separator>
+                <MenuItem Header="E_xit" InputGestureText="Ctrl+X"/>
+            </MenuItem>
+            <MenuItem Header="Process" Name="processMenu">
+                <MenuItem Header="Video" Name="processVideoMenuItem" Click="processVideo_Click"/>
+                <MenuItem Header="Still Image(s)" Name="processStillMenuItem" Click="processStill_Click"/>
+                <MenuItem Header="Camera" Name="processCameraMenuItem" Click="processCamera_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Info" InputGestureText="Ctrl+I">
+                <MenuItem Header="_About" InputGestureText="Ctrl+A"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="statusText">Ready</TextBlock>
+            </StatusBarItem>
+        </StatusBar>
+        <Label Height="28" Margin="0,0,0,20" Name="label1" VerticalAlignment="Bottom" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" Foreground="White">Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.</Label>
+
+        
+        <Image Margin="14,70,0,287" x:Name="image1" Stretch="None" Width="320" HorizontalAlignment="Left" />
+        <Button Height="23" HorizontalAlignment="Left" Margin="12,28.886,0,0" Name="createCaptureBt" VerticalAlignment="Top" Width="96" Click="createCaptureBt_Click">
+            Create Capture</Button>
+        <Button Height="23" Margin="114,28.886,0,0" Name="freeCaptureBt" VerticalAlignment="Top" Click="freeCaptureBt_Click" HorizontalAlignment="Left" Width="88">Free Capture</Button>
+        <Button Height="23" Margin="208,29,0,0" Name="querySingleFrameBt" VerticalAlignment="Top" Click="querySingleFrameBt_Click" HorizontalAlignment="Left" Width="126">Query Single Frame</Button>
+        <Button Height="23" Margin="339.726,28.886,0,0" Name="startLiveBt" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75.118" Click="startLiveBt_Click">Start Live</Button>
+        <Button Height="23" HorizontalAlignment="Left" Margin="420.526,28.886,0,0" Name="stopLiveBt" VerticalAlignment="Top" Width="75" Click="stopLiveBt_Click">Stop Live</Button>
+        <TextBox Height="23" Margin="587.719,31.108,0,0" Name="captureTimeTextBox" VerticalAlignment="Top" HorizontalAlignment="Left" Width="55.55" HorizontalContentAlignment="Right" BorderBrush="Transparent" Background="Transparent" Foreground="Yellow" TextInput="captureTimeTextBox_TextInput">33</TextBox>
+        <Label Height="36.663" Margin="644.38,28.886,0,0" Name="msLabel" VerticalAlignment="Top" HorizontalAlignment="Left" Width="43.329" Foreground="White">ms</Label>
+        <Label Foreground="White" Height="36.663" Margin="501.281,28.886,0,0" Name="label2" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86.658">Capture every</Label>
+
+        <local:PlayerControl Margin="340,72,-56,265" />
+        
+    </Grid>
+</Window>
