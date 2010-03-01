@@ -78,6 +78,9 @@ namespace ffp
                 {
                     Console.WriteLine(er.Expression);
                 }
+
+                // Bind data to control
+                expressionComboBox.ItemsSource = dataSet.Expression;
             }            
             catch (Exception ex)
             {
@@ -213,23 +216,14 @@ namespace ffp
 
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            
+        }
 
-        //t.Tables["Expression"].Columns["Name"]
-        // 1. Beispiel hier:
-        // http://msdn.microsoft.com/en-us/library/system.windows.media.imaging.bitmapsource.aspx
-
-        // altes C#
-        //System.Drawing.Image img = System.Drawing.Image.FromStream(...);
-
-        // WPF Variante
-        //BitmapImage bi = new BitmapImage();
-        //bi.BeginInit();
-        //bi.StreamSource = File.OpenRead(@"C:\Users\Public\Pictures\Sample Pictures\Garden.jpg");
-        //bi.EndInit();
-
-        // Am besten?
-        //byte[] bytes = new byte[4];
-        //System.Windows.Media.Imaging.BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromMemorySection(
-        //    );
+        private void closeApplication(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }
