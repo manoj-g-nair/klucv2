@@ -45,28 +45,35 @@ namespace ffp
             tmpBitmap = new System.Drawing.Bitmap(320, 240);
 
             try
-            {                
-                ExpressionTableAdapter tableAdapter = new ExpressionTableAdapter();                
+            {
+                TableAdapterManager tam = new TableAdapterManager();  
                 TrainingDataSet dataSet = new TrainingDataSet();
 
                 // Clear the complete dataset
                 dataSet.Clear();
                 
-                // Load data from SQL Table via TableAdapter
-                tableAdapter.Fill(dataSet.Expression);                
+                // Load data from SQL database and fill our DataSet
+                tam.ExpressionTableAdapter = new ExpressionTableAdapter();
+                tam.EmoticonTableAdapter = new EmoticonTableAdapter();
+                tam.TrainingTableAdapter = new TrainingTableAdapter();
+                tam.ImageTableAdapter = new ImageTableAdapter();
+                tam.ExpressionTableAdapter.Fill(dataSet.Expression);
+                tam.EmoticonTableAdapter.Fill(dataSet.Emoticon);
+                tam.TrainingTableAdapter.Fill(dataSet.Training);
+                tam.ImageTableAdapter.Fill(dataSet.Image);
 
-                // Insert/Add a row to the Typed DataSet
-                dataSet.Expression.AddExpressionRow("Please", null);
+                // Insert/Add a row to the typed DataSet
+                dataSet.Expression.AddExpressionRow("Cry", null);
                             
-                // Check if the row was really inserted.
-                int numRowsAffected = tableAdapter.Update(dataSet);
+                // Push changes to database and check if the row was really inserted.
+                int numRowsAffected = tam.UpdateAll(dataSet);
                 Console.WriteLine("Affected Rows: " + numRowsAffected);
 
                 // Do NOT call this before the data table is updated!
                 // Otherwise 0 changes will be made.
                 dataSet.AcceptChanges();
 
-                // Show all entries of the "expression" table
+                // Show all entries of the "expression" table.
                 foreach(TrainingDataSet.ExpressionRow er in dataSet.Expression)
                 {
                     Console.WriteLine(er.Expression);

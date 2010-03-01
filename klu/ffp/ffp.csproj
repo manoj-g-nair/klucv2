@@ -214,7 +214,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Training.sdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
