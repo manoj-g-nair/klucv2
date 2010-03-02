@@ -18,7 +18,7 @@
     <ManifestCertificateThumbprint>1E9DAB972C90C7474484F17F2EABF7FE1C62B1F1</ManifestCertificateThumbprint>
     <ManifestKeyFile>ffp_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <PublishUrl>C:\Users\Konrad\Desktop\ffp\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
