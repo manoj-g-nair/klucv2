@@ -32,6 +32,8 @@ namespace ffp
         private Klu klu;
         private DispatcherTimer captureTimer;
         private System.Drawing.Bitmap tmpBitmap;
+        TableAdapterManager tam;
+        TrainingDataSet dataSet;
 
         /// <summary>
         /// 
@@ -46,46 +48,37 @@ namespace ffp
 
             try
             {
-                TableAdapterManager tam = new TableAdapterManager();  
-                TrainingDataSet dataSet = new TrainingDataSet();
-
-                // Clear the complete dataset
-                dataSet.Clear();
+                tam = new TableAdapterManager();  
+                dataSet = new TrainingDataSet();
                 
                 // Load data from SQL database and fill our DataSet
                 tam.ExpressionTableAdapter = new ExpressionTableAdapter();
                 tam.EmoticonTableAdapter = new EmoticonTableAdapter();
                 tam.TrainingTableAdapter = new TrainingTableAdapter();
                 tam.ImageTableAdapter = new ImageTableAdapter();
-                tam.ExpressionTableAdapter.Fill(dataSet.Expression);
-                tam.EmoticonTableAdapter.Fill(dataSet.Emoticon);
-                tam.TrainingTableAdapter.Fill(dataSet.Training);
-                tam.ImageTableAdapter.Fill(dataSet.Image);
 
-                // Insert/Add a row to the typed DataSet
-                dataSet.Expression.AddExpressionRow("Cry", null);
-                            
-                // Push changes to database and check if the row was really inserted.
-                int numRowsAffected = tam.UpdateAll(dataSet);
-                Console.WriteLine("Affected Rows: " + numRowsAffected);
-
-                // Do NOT call this before the data table is updated!
-                // Otherwise 0 changes will be made.
-                dataSet.AcceptChanges();
-
-                // Show all entries of the "expression" table.
-                foreach(TrainingDataSet.ExpressionRow er in dataSet.Expression)
-                {
-                    Console.WriteLine(er.Expression);
-                }
-
-                // Bind data to control
-                expressionComboBox.ItemsSource = dataSet.Expression;
+                LoadData();
             }            
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void LoadData()
+        {
+            // Clear the complete dataset
+            dataSet.Clear();
+
+            // Load data from database and fill dataset
+            tam.ExpressionTableAdapter.Fill(dataSet.Expression);
+            tam.EmoticonTableAdapter.Fill(dataSet.Emoticon);
+            tam.TrainingTableAdapter.Fill(dataSet.Training);
+            tam.ImageTableAdapter.Fill(dataSet.Image);
+
+            // Bind data to control
+            lviewExpressions.ItemsSource = dataSet.Expression;
+            lviewTrainingData.ItemsSource = dataSet.Training;
         }
 
         /// <summary>
