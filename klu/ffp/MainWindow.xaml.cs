@@ -50,7 +50,7 @@ namespace ffp
             {
                 tam = new TableAdapterManager();  
                 dataSet = new TrainingDataSet();
-                
+
                 // Load data from SQL database and fill our DataSet
                 tam.ExpressionTableAdapter = new ExpressionTableAdapter();
                 tam.EmoticonTableAdapter = new EmoticonTableAdapter();
@@ -79,6 +79,8 @@ namespace ffp
             // Bind data to control
             lviewExpressions.ItemsSource = dataSet.Expression;
             lviewTrainingData.ItemsSource = dataSet.Training;
+            
+            dataGrid.DataContext = dataSet.Expression;
         }
 
         /// <summary>
