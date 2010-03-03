@@ -103,7 +103,7 @@
                         HorizontalGridLinesBrush="AntiqueWhite"
                         VerticalGridLinesBrush="AntiqueWhite" 
                         GridLinesVisibility="All"
-                        HeadersVisibility="Column">
+                        HeadersVisibility="All">
 
                         <toolkit:DataGrid.RowValidationRules>
                             <local:DataRowValidation ValidationStep="UpdatedValue" />
@@ -134,7 +134,7 @@
                         HorizontalGridLinesBrush="AntiqueWhite"
                         VerticalGridLinesBrush="AntiqueWhite" 
                         GridLinesVisibility="All"
-                        HeadersVisibility="Column">
+                        HeadersVisibility="All">
 
                         <toolkit:DataGrid.RowValidationRules>
                             <local:DataRowValidation ValidationStep="UpdatedValue" />
