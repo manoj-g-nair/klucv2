@@ -42,12 +42,26 @@ namespace ffp
         {
             InitializeComponent();
 
-            klu = new Klu();
-            captureTimer = null; // is this needed?
-            tmpBitmap = new System.Drawing.Bitmap(320, 240);
-
             try
             {
+                klu = new Klu();
+                tmpBitmap = new System.Drawing.Bitmap(320, 240);
+
+                // Create a Timer with a Normal Priority
+                captureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
+
+                // Set the callback to just show the time ticking away
+                // NOTE: We are using a control so this has to run on 
+                // the UI thread
+                captureTimer.Tick += new EventHandler(
+                    delegate(object s, EventArgs a)
+                    {
+                        klu.QueryCaptureImage2(ref tmpBitmap);
+                        //tmpBitmap = klu.QueryCaptureImage();
+                        klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                    }
+                );
+
                 tam = new TableAdapterManager();  
                 dataSet = new TrainingDataSet();
 
@@ -76,11 +90,11 @@ namespace ffp
             tam.TrainingTableAdapter.Fill(dataSet.Training);
             tam.ImageTableAdapter.Fill(dataSet.Image);
 
-            // Bind data to control
-            lviewExpressions.ItemsSource = dataSet.Expression;
-            lviewTrainingData.ItemsSource = dataSet.Training;
-            
-            dataGrid.DataContext = dataSet.Expression;
+            // Bind data to controls            
+            //dataGrid.AutoGenerateColumns = false;            
+            dgridExpressions.DataContext = dataSet.Expression;
+
+            //dgridExpressions.Columns.ElementAt(0).Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -140,24 +154,6 @@ namespace ffp
                 return;
             }
 
-            if (captureTimer == null)
-            {
-                // Create a Timer with a Normal Priority
-                captureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
-
-                // Set the callback to just show the time ticking away
-                // NOTE: We are using a control so this has to run on 
-                // the UI thread
-                captureTimer.Tick += new EventHandler(
-                    delegate(object s, EventArgs a)
-                    {
-                        klu.QueryCaptureImage2(ref tmpBitmap);
-                        //tmpBitmap = klu.QueryCaptureImage();
-                        klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                    }
-                );
-            }
-
             // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
             captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(captureTimeTextBox.Text));
 
@@ -166,17 +162,14 @@ namespace ffp
         }
 
         /// <summary>
-        /// 
+        /// Stops the internal timer which is responsible for updating the (live) image
+        /// and doing the processing.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void stopLiveBt_Click(object sender, RoutedEventArgs e)
         {
-            if (captureTimer != null)
-            {
-                captureTimer.Stop();
-                klu.FreeCapture();
-            }
+            captureTimer.Stop();            
         }
 
         /// <summary>
@@ -190,10 +183,7 @@ namespace ffp
             captureTimeTextBox.Text = Convert.ToString(value);
 
             // Also adjust the timer.
-            if (captureTimer != null)
-            {
-                captureTimer.Interval = TimeSpan.FromMilliseconds(value);
-            }
+            captureTimer.Interval = TimeSpan.FromMilliseconds(value);            
         }
 
         private void processVideo_Click(object sender, RoutedEventArgs e)
@@ -211,14 +201,54 @@ namespace ffp
 
         }
 
+        /// <summary>
+        /// Call this function to ensure the user has the ability to save
+        /// unsaved changes to the dataset. It will open a message box and
+        /// asks if the user wants to save those changes.
+        /// </summary>
+        private void lastChanceSaving()
+        {
+            if (dataSet.HasChanges())
+            {
+                MessageBoxResult res = MessageBox.Show("You've made some changes that are not yet saved! Do you wish to save them?",
+                    "Prevent data loss?",
+                    MessageBoxButton.YesNoCancel,
+                    MessageBoxImage.Question,
+                    MessageBoxResult.Yes
+                );
+
+                if (res == MessageBoxResult.Yes)
+                {
+                    tam.UpdateAll(dataSet);
+                    dataSet.AcceptChanges();
+                }
+            }
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+            lastChanceSaving();
         }
 
         private void closeApplication(object sender, RoutedEventArgs e)
         {
+            lastChanceSaving();
             Close();
+        }
+
+        private void dgridExpressions_CellEditEnding(object sender, Microsoft.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        {
+            tam.UpdateAll(dataSet);
+        }
+
+        private void dgridTraining_CellEditEnding(object sender, Microsoft.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        {
+            tam.UpdateAll(dataSet);
+        }
+
+        private void deleteExpressions_Click(object sender, RoutedEventArgs e)
+        {
+            //dgridExpressions.sel
         }
     }
 }

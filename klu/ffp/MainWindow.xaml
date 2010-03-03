@@ -54,107 +54,34 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Expressions">
-                <StackPanel HorizontalAlignment="Stretch">
-                
-                <ListView   Name="lviewExpressions" ItemsSource="{Binding}" MinHeight="50" Margin="6">
-                    <ListView.View>
-                        <GridView>
-                            <GridView.Columns>
-                                <GridViewColumn Header="ID" Width="65">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=ExpressionOID}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Name" Width="65">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=Expression}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Emoticon" Width="65">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=EmoticonOID}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-                    <Grid HorizontalAlignment="Center" Margin="6">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition></ColumnDefinition>
-                            <ColumnDefinition></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                            <RowDefinition></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Name:</Label>
-                        <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=lviewExpressions, Path=SelectedItem.Expression}"></TextBox>
-                        <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Image:</Label>
-                        <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="{Binding ElementName=lviewExpressions, Path=SelectedItem.EmoticonOID}"></TextBox>                                               
-                        <StackPanel Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
-                            <Button Name="SaveExpressionChangesButton" Margin="6">Save Changes</Button>
-                            <Button Name="AddExpressionButton" Margin="6">Add as new  Expression</Button>
-                            <Button Name="DeleteExpressionButon" Margin="6">Delete Expression</Button>
-                        </StackPanel>
-                    </Grid>
-
-                    <dg:DataGrid dg:Name="dataGrid" ItemsSource="{Binding}"/>
+                <StackPanel>
+                    <Label Margin="6">Please, feel free to add your own Expressions!</Label>
+                    <dg:DataGrid 
+                        Margin="6"
+                        CellEditEnding="dgridExpressions_CellEditEnding"
+                        AlternatingRowBackground="DarkCyan" 
+                        CanUserAddRows="True" 
+                        CanUserDeleteRows="True" 
+                        CanUserSortColumns="True" 
+                        Name="dgridExpressions"
+                        ItemsSource="{Binding}">
+                    </dg:DataGrid>
+                    <Button HorizontalAlignment="Center" Margin="6" Name="deleteExpressions" Click="deleteExpressions_Click">Delete selected Expression(s)</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Training Datasets">
                 <StackPanel>
-                    <ListView Name="lviewTrainingData" ItemsSource="{Binding}" MinHeight="100" Margin="6">
-                        <ListView.View>
-                            <GridView>
-                                <GridView.Columns>
-                                    <GridViewColumn Header="ID" Width="65">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Path=TrainingOID}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Image" Width="65">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Path=ImageOID}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Expression" Width="65">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Path=ExpressionOID}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="LipCornerLeftX" Width="100">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Path=LipCornerLeftX}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="LipCornerLeftY" Width="100">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding Path=LipCornerLeftY}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <Button Name="SaveTrainingChangesButton" Margin="6" HorizontalAlignment="Right">Save Changes</Button>
+                    <Label Margin="6">Please, feel free to manually edit or review your trainings!</Label>
+                    <dg:DataGrid
+                        Margin="6"
+                        CellEditEnding="dgridTraining_CellEditEnding"
+                        AlternatingRowBackground="DarkCyan" 
+                        CanUserAddRows="True" 
+                        CanUserDeleteRows="True" 
+                        CanUserSortColumns="True" 
+                        Name="dgridTraining"
+                        ItemsSource="{Binding}" />
+                    <Button HorizontalAlignment="Center" Margin="6" Name="deleteTrainings">Delete selected Training Dataset(s)</Button>
                 </StackPanel>
             </TabItem>
             <TabItem Header="Export">
