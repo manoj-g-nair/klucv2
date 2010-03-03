@@ -103,7 +103,7 @@ namespace KluSharp
                     {
                         //bitmap.SetPixel(j / 3, i, System.Drawing.Color.FromArgb(imageData[j + t], imageData[j + 1 + t], imageData[j + 2 + t]));
                         // Somehow Red and Blue where switched.
-                        bitmap.SetPixel(j / 3, i, System.Drawing.Color.FromArgb(imageData[j + 1 + t], imageData[j + 2 + t], imageData[j + t]));
+                        bitmap.SetPixel(j / 3, i, System.Drawing.Color.FromArgb(imageData[j + 2 + t], imageData[j + 1 + t], imageData[j + t]));
                     }
                     t += step;
                 }
