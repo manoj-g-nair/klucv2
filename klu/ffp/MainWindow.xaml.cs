@@ -1,23 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlServerCe;
-
-using KluSharp;
 using ffp.TrainingDataSetTableAdapters;
+using KluSharp;
 
 namespace ffp
 {
@@ -90,11 +76,9 @@ namespace ffp
             tam.TrainingTableAdapter.Fill(dataSet.Training);
             tam.ImageTableAdapter.Fill(dataSet.Image);
 
-            // Bind data to controls            
-            //dataGrid.AutoGenerateColumns = false;            
+            // Bind data to controls                  
             dgridExpressions.DataContext = dataSet.Expression;
-
-            //dgridExpressions.Columns.ElementAt(0).Visibility = Visibility.Hidden;
+            dgridTraining.DataContext = dataSet.Training;      
         }
 
         /// <summary>
@@ -219,8 +203,20 @@ namespace ffp
 
                 if (res == MessageBoxResult.Yes)
                 {
-                    tam.UpdateAll(dataSet);
-                    dataSet.AcceptChanges();
+                    try
+                    {
+                        tam.UpdateAll(dataSet);
+                        dataSet.AcceptChanges();
+                    }
+                    catch (Exception e)
+                    {
+                        res = MessageBox.Show(e.Message, "An unhandled exception occured!", MessageBoxButton.YesNo, MessageBoxImage.Error, MessageBoxResult.No);
+
+                        if (res == MessageBoxResult.Yes)
+                        {
+                            throw e;
+                        }
+                    }
                 }
             }
         }
@@ -236,19 +232,14 @@ namespace ffp
             Close();
         }
 
-        private void dgridExpressions_CellEditEnding(object sender, Microsoft.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        private void stopTrainingMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            tam.UpdateAll(dataSet);
+
         }
 
-        private void dgridTraining_CellEditEnding(object sender, Microsoft.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        private void startTrainingMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            tam.UpdateAll(dataSet);
-        }
 
-        private void deleteExpressions_Click(object sender, RoutedEventArgs e)
-        {
-            //dgridExpressions.sel
         }
     }
 }
