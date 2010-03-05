@@ -4,7 +4,7 @@
     xmlns:local="clr-namespace:ffp"
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     Title="Facial Expression Recognition" Height="367.5" Width="882.5"
-    WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+    WindowStartupLocation="CenterScreen" Closing="Window_Closing" Name="myWindow">
 
     <Window.Resources>
         <Style TargetType="{x:Type ListViewItem}">
@@ -177,6 +177,36 @@
                             <Button Margin="6">XML</Button>
                         </StackPanel>
                     </GroupBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Artifical Neural Network Configurator">
+                <StackPanel>
+                    <Label Margin="6">Please, feel free to configure the ANN the way you like!</Label>
+                    <toolkit:DataGrid 
+                        RowStyle="{StaticResource RowStyle}"
+                        Margin="6"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        MinHeight="90"
+                        AlternatingRowBackground="AntiqueWhite" 
+                        CanUserAddRows="True" 
+                        CanUserDeleteRows="True" 
+                        CanUserSortColumns="True" 
+                        Name="dgridHiddenLayer"
+                        ItemsSource="{Binding}"
+                        AutoGenerateColumns="False"
+                        HorizontalGridLinesBrush="AntiqueWhite"
+                        VerticalGridLinesBrush="AntiqueWhite" 
+                        GridLinesVisibility="All"
+                        HeadersVisibility="All" AreRowDetailsFrozen="False" RowDetailsVisibilityMode="Visible" SelectionMode="Single">
+                        <toolkit:DataGrid.Columns>
+                            <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=NeuronsColumn}" />
+                        </toolkit:DataGrid.Columns>
+                    </toolkit:DataGrid>
+                    <Button HorizontalAlignment="Left" Name="ApplyAnnSettings" Margin="6" Click="ApplyAnnSettings_Click">Apply</Button>
+                    <Canvas Name="annCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="annCanvas_SizeChanged" Background="LightGray">
+
+                    </Canvas>
                 </StackPanel>
             </TabItem>
         </TabControl>
