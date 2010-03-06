@@ -1,16 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ffp
 {
-    // Represents the basic structure of an artifical neural network
+    /// <summary>
+    /// Represents the basic structure of an artifical neural network
+    /// </summary>
     class ANN
     {
         private int[] numNeuronsPerLayer = null;
         
-        // The number of layers in the neural network
+        /// <summary>
+        /// The number of layers in the neural network
+        /// </summary>
         public int NumLayers
         {
             get {
@@ -21,13 +23,20 @@ namespace ffp
             }
         }
 
-        // Returns the total number of neurons
+        /// <summary>
+        /// Returns the total number of neurons
+        /// </summary>
+        /// <returns></returns>
         public int GetTotalNumberOfNeurons()
         {
             return numNeuronsPerLayer.Sum();
         }
 
-        // Returns the number of neurons on all layers before layer
+        /// <summary>
+        /// Returns the number of neurons on all layers before layer
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
         public int GetNumberOfNeuronsBefore(int layer)
         {
             int res = 0;
@@ -38,7 +47,11 @@ namespace ffp
             return res;                
         }
 
-        // Sets the number of neurons on layer to numNeurons.
+        /// <summary>
+        /// Sets the number of neurons on layer to numNeurons.
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <param name="numNeurons"></param>
         public void SetNumNeurons(int layer, int numNeurons)
         {
             if (layer > (NumLayers - 1) || layer < 0)
@@ -48,7 +61,11 @@ namespace ffp
             numNeuronsPerLayer[layer] = numNeurons;
         }
 
-        // Returns the number of neurons on layer.
+        /// <summary>
+        /// Returns the number of neurons on layer.
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
         public int GetNumNeurons(int layer)
         {
             if (layer > (NumLayers - 1) || layer < 0)

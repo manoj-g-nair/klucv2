@@ -38,12 +38,14 @@
         <!--<Grid.Background>
             <SolidColorBrush Color="DarkCyan"></SolidColorBrush>
         </Grid.Background>-->
-        
+
         <Menu Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
-                <MenuItem Header="_Options" InputGestureText="Ctrl+O"/>
                 <Separator></Separator>
                 <MenuItem Header="E_xit" InputGestureText="Ctrl+X" Click="closeApplication" />
+            </MenuItem>
+            <MenuItem Header="_View" InputGestureText="Ctrl+F">
+                <MenuItem Name="showExpertOptionsMenuItem" Click="showExpertOptionsMenuItem_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
                 <MenuItem Header="Video" Name="processVideoMenuItem" Click="processVideo_Click"/>
@@ -58,15 +60,15 @@
                 <MenuItem Header="_About" InputGestureText="Ctrl+A"/>
             </MenuItem>
         </Menu>
-        
+
         <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom">
             <StatusBarItem>
                 <TextBlock Name="statusText">Ready</TextBlock>
             </StatusBarItem>
         </StatusBar>
-        
+
         <TabControl ClipToBounds="False" SnapsToDevicePixels="False" Margin="6,29,6,29">
-            <TabItem Header="Analyse">
+            <TabItem Name="analyseTabItem" Header="Analyse">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -78,7 +80,7 @@
                     </Grid.RowDefinitions>
                 </Grid>
             </TabItem>
-            <TabItem Header="Main">
+            <TabItem Name="mainTabItem" Header="Main">
                 <Grid>
                     <Image Margin="14,70,0,287" x:Name="image1" Stretch="None" Width="320" HorizontalAlignment="Left" />
                     <Button Height="23" Name="freeCaptureBt" Click="freeCaptureBt_Click" Width="88" HorizontalAlignment="Right" Margin="0,14,330,0" VerticalAlignment="Top">Free Capture</Button>
@@ -91,10 +93,12 @@
                     <Label Height="36.663" Margin="0,101,325,0" Name="msLabel" VerticalAlignment="Top" HorizontalAlignment="Right" Width="43.329">ms</Label>
                 </Grid>
             </TabItem>
-            <TabItem Header="Expressions" VerticalAlignment="Stretch">
+            <TabItem Name="expressionsTabItem" Header="Expressions" VerticalAlignment="Stretch">
                 <StackPanel VerticalAlignment="Stretch">
                     <Label Margin="6">Please, feel free edit or add your own Expressions!</Label>
                     <toolkit:DataGrid 
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
                         VerticalAlignment="Stretch"
@@ -119,13 +123,15 @@
                             <toolkit:DataGridTextColumn Header="Name" Binding="{Binding Path=Expression}" />
                             <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
                         </toolkit:DataGrid.Columns>
-                    </toolkit:DataGrid>                    
+                    </toolkit:DataGrid>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Training Datasets">
+            <TabItem Name="trainingDatasetsTabItem" Header="Training Datasets">
                 <StackPanel>
                     <Label Margin="6">Please, feel free to manually edit or review your trainings!</Label>
                     <toolkit:DataGrid 
+                        HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
                         VerticalAlignment="Stretch"
@@ -139,7 +145,8 @@
                         HorizontalGridLinesBrush="AntiqueWhite"
                         VerticalGridLinesBrush="AntiqueWhite" 
                         GridLinesVisibility="All"
-                        HeadersVisibility="All">
+                        HeadersVisibility="All"
+                        >
 
                         <toolkit:DataGrid.RowValidationRules>
                             <local:DataRowValidation ValidationStep="UpdatedValue" />
@@ -150,7 +157,7 @@
                             <toolkit:DataGridTemplateColumn Header="Expression">
                                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <ComboBox ItemsSource="{Binding ElementName=dataSet.Expression, Path=ExpressionColumn}"></ComboBox>                                       
+                                        <ComboBox ItemsSource="{Binding ElementName=dataSet.Expression, Path=ExpressionColumn}"></ComboBox>
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                 <toolkit:DataGridTemplateColumn.CellTemplate>
@@ -166,14 +173,14 @@
                     </toolkit:DataGrid>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Export">
+            <TabItem Name="exportTabItem" Header="Export">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <GroupBox Header="Export Training Dataset to" Margin="6">
                         <StackPanel Orientation="Vertical">
-                        <Button Margin="6">Excel</Button>
-                        <Button Margin="6">CSV</Button>
+                            <Button Margin="6">Excel</Button>
+                            <Button Margin="6">CSV</Button>
                             <Button Margin="6">XML</Button>
-                            </StackPanel>
+                        </StackPanel>
                     </GroupBox>
                     <GroupBox Header="Export Expressions to" Margin="6">
                         <StackPanel Orientation="Vertical">
@@ -184,12 +191,12 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Artifical Neural Network Configurator" VerticalAlignment="Stretch">
-                <Grid Name="annGrid" SizeChanged="annGrid_SizeChanged">
+            <TabItem Name="annConfigurationTabItem" Header="Artifical Neural Network Configuration" VerticalAlignment="Stretch">
+                <Grid Name="annGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>                    
+                    </Grid.ColumnDefinitions>
                     <StackPanel  HorizontalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -200,12 +207,13 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0">Num Layers: </Label>
-                        <Label Grid.Column="1" Grid.Row="0" Content="{Binding Path=self.ann.NumLayers}"></Label>
-                        <Button Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Name="ApplyAnnSettings" Margin="6" Click="ApplyAnnSettings_Click">Apply</Button>
-                        <toolkit:DataGrid 
-                            Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"
+                            <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save to File</Button>
+                            <Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
+                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>
+                            <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>                   
+                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"                            
                             RowStyle="{StaticResource RowStyle}"
                             Margin="6"
                             VerticalAlignment="Stretch"
@@ -220,8 +228,8 @@
                             AutoGenerateColumns="False"
                             HorizontalGridLinesBrush="AntiqueWhite"
                             VerticalGridLinesBrush="AntiqueWhite" 
-                            HorizontalScrollBarVisibility="Auto"
-                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Visible"
+                            VerticalScrollBarVisibility="Visible"
                             GridLinesVisibility="All"
                             HeadersVisibility="All"
                             AreRowDetailsFrozen="False"
@@ -229,28 +237,16 @@
                             SelectionMode="Single">
 
                                 <toolkit:DataGrid.Columns>
-                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=NeuronsColumn}" />
+                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" />
                                 </toolkit:DataGrid.Columns>
-                            
+
                             </toolkit:DataGrid>
                         </Grid>
-                        </StackPanel>                
-                        <Border Name="annBorder" Grid.Column="1" Margin="6"
-                                BorderBrush="Gray"
-                                BorderThickness="10"
-                                Background="Gray"
-                                Padding="0"                                
-                                CornerRadius="5"
-                                OverridesDefaultStyle="True" ClipToBounds="True">
-                            <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto" Height="Auto" ClipToBounds="True"
-                                        Name="annCanvas"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        SizeChanged="annCanvas_SizeChanged"
-                                        Background="Gray" >                            
-                        </Canvas>
-                        </Border>
-                    </Grid>
+                    </StackPanel>
+                    <Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="Gray" BorderThickness="5" Background="Gray" CornerRadius="5">
+                        <Canvas Name="annCanvas" Background="Gray" SizeChanged="annCanvas_SizeChanged"></Canvas>
+                    </Border>
+                </Grid>
             </TabItem>
         </TabControl>
 

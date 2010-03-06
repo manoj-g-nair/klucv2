@@ -73,13 +73,14 @@ namespace ffp
                 ann.SetNumNeurons(0, 4);
                 ann.SetNumNeurons(1, 1);
 
+                // Bind certain labels to ANN stuff
+                annNumLayers.DataContext = ann;
+
                 // Bind DataGrid to DataSet
                 dataSetAnn = new DataSet("HiddenLayer");
                 dataSetAnn.Tables.Add("HiddenLayerTable");
                 uint tmp = 0;
                 dataSetAnn.Tables[0].Columns.Add("NeuronsColumn", tmp.GetType());
-                tmp = 3;
-                dataSetAnn.Tables[0].Rows.Add(tmp);
                 dgridHiddenLayer.DataContext = dataSetAnn.Tables[0];
                 #endregion
 
@@ -342,7 +343,7 @@ namespace ffp
         /// <summary>
         /// Draws the ANN on the appropriate Canvas.
         /// </summary>
-        private void DrawANN()
+        private void drawANN()
         {
             // Clear Canvas
             annCanvas.Children.Clear();
@@ -403,6 +404,7 @@ namespace ffp
                         line.Y2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].Y + neuronDiameter / 2.0;
                         line.Stroke = Brushes.White;
                         line.StrokeThickness = 1;
+                        line.Opacity = 0.5;
 
                         annCanvas.Children.Add(line);
                     }
@@ -420,7 +422,7 @@ namespace ffp
         /// <param name="e"></param>
         private void annCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            DrawANN();
+            drawANN();
         }
 
         /// <summary>
@@ -429,7 +431,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ApplyAnnSettings_Click(object sender, RoutedEventArgs e)
+        private void applyAnnSettings_Click(object sender, RoutedEventArgs e)
         {
             ann.NumLayers = 2 + dataSetAnn.Tables[0].Rows.Count;
             ann.SetNumNeurons(0, 4);
@@ -440,13 +442,63 @@ namespace ffp
                 ann.SetNumNeurons(i + 1, Convert.ToInt32(dataSetAnn.Tables[0].Rows[i].ItemArray[0]));
             }
 
-            DrawANN();
+            annNumLayers.DataContext = ann;
+
+            drawANN();
         }
 
-        private void annGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        /// <summary>
+        /// When the "Show export options is toggled from the "View" menu, we hide
+        /// certain tab items that the user might not be interested in.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void showExpertOptionsMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Width/Height: " + annBorder.Width + "/" + annBorder.Height);
-            Console.WriteLine("Actual.Width/Actual.Height: " + annBorder.ActualWidth + "/" + annBorder.ActualHeight);
+            if ( showExpertOptionsMenuItem.IsChecked )
+            {
+                annConfigurationTabItem.Visibility = Visibility.Visible;
+                expressionsTabItem.Visibility = Visibility.Visible;
+                trainingDatasetsTabItem.Visibility = Visibility.Visible;
+                exportTabItem.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                annConfigurationTabItem.Visibility = Visibility.Hidden;
+                expressionsTabItem.Visibility = Visibility.Hidden;
+                trainingDatasetsTabItem.Visibility = Visibility.Hidden;
+                exportTabItem.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// Saves the current ANN settings to an OpenCV ANN file which can be loaded
+        /// later for initialization, training and use later.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void saveAnnButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Configure save file dialog box
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "NeuralNetwork"; // Default file name
+            dlg.DefaultExt = ".xml"; // Default file extension
+            dlg.Filter = "XML documents (.xml)|*.xml"; // Filter files by extension
+            dlg.Title = "Where to save your new Neural Network?";
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+            }
+
+            // Call OpenCV wrapper from KluSharp library here.
+            // ...
+            
         }
     }
 }
