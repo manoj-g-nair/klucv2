@@ -19,6 +19,7 @@
     <ManifestKeyFile>ffp_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>false</SignManifests>
+    <ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
     <PublishUrl>C:\Users\Konrad\Desktop\ffp\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -216,6 +217,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ApplicationIcon.ico" />
     <Content Include="Training.sdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
