@@ -10,8 +10,16 @@ using System.Windows;
 // For interface to C DLL
 using System.Runtime.InteropServices;
 
+
 namespace KluSharp
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public class TestStruct
+    {
+        public Int32 A;
+        public Int32 B;
+    };
+
     /// <summary>
     /// This class encapsulates the C klu DLL library and provides some
     /// methods to image content from the library.
@@ -41,6 +49,13 @@ namespace KluSharp
             FreeCapture();
         }
 
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern Int32 testStruct([Out, MarshalAs(UnmanagedType.LPStruct)] TestStruct t);
+        
         /// <summary>
         /// 
         /// </summary>
@@ -78,6 +93,11 @@ namespace KluSharp
         public void FreeCapture()
         {
             freeCapture();
+            TestStruct t = new TestStruct();
+            t.A = 3;
+            t.B = 9;
+            testStruct(t);
+            Console.WriteLine("Output (Sum): " + testStruct(t));
         }
 
         /// <summary>

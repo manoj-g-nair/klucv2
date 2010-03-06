@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "klulib.h"
-#include "common.hpp"
+#include "klu_common.hpp"
 
 extern "C" {
 //------------------------------------------------------------------------------
@@ -60,6 +60,11 @@ KLULIB_API int klu_initializeLibrary(void)
 KLULIB_API int klu_deinitializeLibrary(void)
 {
     return klu::deinitializeLibrary() ? 1 : 0;
+}
+//------------------------------------------------------------------------------
+KLULIB_API int testStruct(KluTestStruct * p)
+{
+    return p->x + p->y;
 }
 //------------------------------------------------------------------------------
 } // end extern "C" {

@@ -4,7 +4,7 @@
     xmlns:local="clr-namespace:ffp"
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     Title="Facial Expression Recognition" Height="367.5" Width="882.5"
-    WindowStartupLocation="CenterScreen" Closing="Window_Closing" Name="myWindow">
+    WindowStartupLocation="CenterScreen" Closing="Window_Closing" x:Name="self">
 
     <Window.Resources>
         <Style TargetType="{x:Type ListViewItem}">
@@ -17,13 +17,8 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid>
-                            <Ellipse Width="12" Height="12"
-                        Fill="Red" Stroke="Black"
-                        StrokeThickness="0.5"/>
-                            <TextBlock FontWeight="Bold" Padding="4,0,0,0"
-                        Margin="0" VerticalAlignment="Top" Foreground="White" Text="!"
-                        ToolTip="{Binding RelativeSource={RelativeSource Self},
-                     Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Ellipse Width="12" Height="12" Fill="Red" Stroke="Black" StrokeThickness="0.5"/>
+                            <TextBlock FontWeight="Bold" Padding="4,0,0,0" Margin="0" VerticalAlignment="Top" Foreground="White" Text="!" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -32,9 +27,7 @@
                 <Trigger Property="Validation.HasError" Value="true">
                     <Setter Property="BorderThickness" Value="2"/>
                     <Setter Property="BorderBrush" Value="Red"/>
-                    <Setter Property="ToolTip"
-              Value="{Binding RelativeSource={RelativeSource Self},
-                     Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -42,9 +35,9 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.Background>
+        <!--<Grid.Background>
             <SolidColorBrush Color="DarkCyan"></SolidColorBrush>
-        </Grid.Background>
+        </Grid.Background>-->
         
         <Menu Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
@@ -73,6 +66,18 @@
         </StatusBar>
         
         <TabControl ClipToBounds="False" SnapsToDevicePixels="False" Margin="6,29,6,29">
+            <TabItem Header="Analyse">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                </Grid>
+            </TabItem>
             <TabItem Header="Main">
                 <Grid>
                     <Image Margin="14,70,0,287" x:Name="image1" Stretch="None" Width="320" HorizontalAlignment="Left" />
@@ -145,7 +150,7 @@
                             <toolkit:DataGridTemplateColumn Header="Expression">
                                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <ComboBox ItemsSource="{Binding}" SelectedItem="{Binding Path=ExpressionOID}"></ComboBox>                                       
+                                        <ComboBox ItemsSource="{Binding ElementName=dataSet.Expression, Path=ExpressionColumn}"></ComboBox>                                       
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                 <toolkit:DataGridTemplateColumn.CellTemplate>
@@ -179,35 +184,73 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Artifical Neural Network Configurator">
-                <StackPanel>
-                    <Label Margin="6">Please, feel free to configure the ANN the way you like!</Label>
-                    <toolkit:DataGrid 
-                        RowStyle="{StaticResource RowStyle}"
-                        Margin="6"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Left"
-                        MinHeight="90"
-                        AlternatingRowBackground="AntiqueWhite" 
-                        CanUserAddRows="True" 
-                        CanUserDeleteRows="True" 
-                        CanUserSortColumns="True" 
-                        Name="dgridHiddenLayer"
-                        ItemsSource="{Binding}"
-                        AutoGenerateColumns="False"
-                        HorizontalGridLinesBrush="AntiqueWhite"
-                        VerticalGridLinesBrush="AntiqueWhite" 
-                        GridLinesVisibility="All"
-                        HeadersVisibility="All" AreRowDetailsFrozen="False" RowDetailsVisibilityMode="Visible" SelectionMode="Single">
-                        <toolkit:DataGrid.Columns>
-                            <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=NeuronsColumn}" />
-                        </toolkit:DataGrid.Columns>
-                    </toolkit:DataGrid>
-                    <Button HorizontalAlignment="Left" Name="ApplyAnnSettings" Margin="6" Click="ApplyAnnSettings_Click">Apply</Button>
-                    <Canvas Name="annCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="annCanvas_SizeChanged" Background="LightGray">
+            <TabItem Header="Artifical Neural Network Configurator" VerticalAlignment="Stretch">
+                <Grid Name="annGrid" SizeChanged="annGrid_SizeChanged">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>                    
+                    <StackPanel  HorizontalAlignment="Center">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0">Num Layers: </Label>
+                        <Label Grid.Column="1" Grid.Row="0" Content="{Binding Path=self.ann.NumLayers}"></Label>
+                        <Button Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Name="ApplyAnnSettings" Margin="6" Click="ApplyAnnSettings_Click">Apply</Button>
+                        <toolkit:DataGrid 
+                            Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2"
+                            RowStyle="{StaticResource RowStyle}"
+                            Margin="6"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch"
+                            MinHeight="90"
+                            AlternatingRowBackground="AntiqueWhite" 
+                            CanUserAddRows="True" 
+                            CanUserDeleteRows="True" 
+                            CanUserSortColumns="False" 
+                            Name="dgridHiddenLayer"
+                            ItemsSource="{Binding}"
+                            AutoGenerateColumns="False"
+                            HorizontalGridLinesBrush="AntiqueWhite"
+                            VerticalGridLinesBrush="AntiqueWhite" 
+                            HorizontalScrollBarVisibility="Auto"
+                            VerticalScrollBarVisibility="Auto"
+                            GridLinesVisibility="All"
+                            HeadersVisibility="All"
+                            AreRowDetailsFrozen="False"
+                            RowDetailsVisibilityMode="Visible"
+                            SelectionMode="Single">
 
-                    </Canvas>
-                </StackPanel>
+                                <toolkit:DataGrid.Columns>
+                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=NeuronsColumn}" />
+                                </toolkit:DataGrid.Columns>
+                            
+                            </toolkit:DataGrid>
+                        </Grid>
+                        </StackPanel>                
+                        <Border Name="annBorder" Grid.Column="1" Margin="6"
+                                BorderBrush="Gray"
+                                BorderThickness="10"
+                                Background="Gray"
+                                Padding="0"                                
+                                CornerRadius="5"
+                                OverridesDefaultStyle="True" ClipToBounds="True">
+                            <Canvas Canvas.Left="0" Canvas.Top="0" Width="Auto" Height="Auto" ClipToBounds="True"
+                                        Name="annCanvas"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        SizeChanged="annCanvas_SizeChanged"
+                                        Background="Gray" >                            
+                        </Canvas>
+                        </Border>
+                    </Grid>
             </TabItem>
         </TabControl>
 

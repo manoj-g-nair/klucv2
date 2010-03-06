@@ -4,11 +4,7 @@
 // that uses this DLL. This way any other project whose source files include this file see 
 // KLULIB_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
-#ifdef KLULIB_EXPORTS
-#define KLULIB_API __declspec(dllexport)
-#else
-#define KLULIB_API __declspec(dllimport)
-#endif
+#include "klu_types.h"
 
 extern "C" {
 
@@ -21,5 +17,7 @@ KLULIB_API void queryCaptureImage(unsigned char ** data, int * width, int * heig
 KLULIB_API int klu_initializeLibrary(void);
 
 KLULIB_API int klu_deinitializeLibrary(void);
+
+KLULIB_API int testStruct(KluTestStruct * p);
 
 }

@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "common.hpp"
+#include "klu_common.hpp"
 
 using namespace std;
 using namespace cv;
@@ -350,7 +350,7 @@ IplImage * extractGrayScaleROI(const IplImage * image)
 	return regImg;
 }
 //------------------------------------------------------------------------------
-EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
+KluEyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
                                         const CvPoint & eyeCenter,
                                         CvMemStorage * storage,                                        
 										const char * windowContrastStretch1,
@@ -361,7 +361,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 {
 	CV_Assert(image != NULL && storage != NULL);
 
-	EyeFeaturePoints fp;
+	KluEyeFeaturePoints fp;
 
 	// Create a copy of the eye region image
 	IplImage * regImg = extractGrayScaleROI(image);
@@ -527,7 +527,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 	return fp;
 }
 //------------------------------------------------------------------------------
-MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
+KluMouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 											CvMemStorage * storage,
 											const char * windowContrastStretch1,
 											const char * windowContrastStretch2,
@@ -537,7 +537,7 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 {
 	CV_Assert(image != NULL && storage != NULL);
 
-	MouthFeaturePoints fp;
+	KluMouthFeaturePoints fp;
 
 	// Create a copy of the eye region image
 	IplImage * regImg = extractGrayScaleROI(image);
@@ -727,15 +727,15 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 	return fp;
 }
 //------------------------------------------------------------------------------
-void drawFfps(IplImage * image, const FaceFeaturePoints & ffp)
+void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp)
 {
     // Draw mouth feature points
-    //drawCross(image, ffp.mouth.cornerLeft, COL_YELLOW);
-    //drawCross(image, ffp.mouth.cornerRight, COL_YELLOW);
-    //drawCross(image, ffp.mouth.upperLipMiddle, COL_YELLOW);
-    //drawCross(image, ffp.mouth.lowerLipMiddle, COL_YELLOW);
-    //drawCross(image, ffp.mouth.upperLipLeft, COL_YELLOW);
-    //drawCross(image, ffp.mouth.lowerLipLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipCornerLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipCornerRight, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipUpCenter, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipBottomCenter, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipUpLeft, COL_YELLOW);
+    //drawCross(image, ffp.mouth.lipBottomLeft, COL_YELLOW);
     //drawCross(image, ffp.mouth.upperLipRight, COL_YELLOW);
     //drawCross(image, ffp.mouth.lowerLipRight, COL_YELLOW);
     // Lips

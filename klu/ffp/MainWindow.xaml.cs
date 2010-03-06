@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -134,6 +135,8 @@ namespace ffp
             tam.EmoticonTableAdapter.Fill(dataSet.Emoticon);
             tam.TrainingTableAdapter.Fill(dataSet.Training);
             tam.ImageTableAdapter.Fill(dataSet.Image);
+
+        
 
             // Bind data to controls                  
             dgridExpressions.DataContext = dataSet.Expression;
@@ -341,17 +344,14 @@ namespace ffp
         /// </summary>
         private void DrawANN()
         {
-            #region Draw the Neurons and weights in one go
-
             // Clear Canvas
             annCanvas.Children.Clear();
 
             // Save positions of neurons in this array
             Point[] neuronPos = new Point[ann.GetTotalNumberOfNeurons()];
 
-            double layerDist = (double)myWindow.Width / (double)ann.NumLayers;
             double neuronDiameter = 20.0;
-
+            double layerDist = (double)annCanvas.ActualWidth / (double)(ann.NumLayers-1) - neuronDiameter;
 
             RadialGradientBrush neuronBrush = new RadialGradientBrush();
             neuronBrush.RadiusX = 1.0;
@@ -360,44 +360,56 @@ namespace ffp
             neuronBrush.GradientStops.Add(new GradientStop(Colors.White, 0.0));
             neuronBrush.GradientStops.Add(new GradientStop(Colors.Black, 1.0));
 
-            // Iterate over every layer
+            #region Iterate over every layer
             for (int l = 0; l < ann.NumLayers; l++)
             {
-                double neuronDist = (double)myWindow.Height / (double)ann.GetNumNeurons(l);
 
-                // Iterare over every neuron on the current layer
+                double neuronDist;
+
+                if (ann.GetNumNeurons(l) > 1)
+                {
+                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l)-1) - neuronDiameter;
+                }
+                else
+                {
+                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l));
+                }
+
+                #region Iterare over every neuron on the current layer
                 for (int n = 0; n < ann.GetNumNeurons(l); n++)
                 {
-                    Ellipse e = new Ellipse();
-                    e.Stroke = Brushes.Blue;
+                    Ellipse e = new Ellipse();                    
+                    e.Stroke = Brushes.White;
                     e.Width = neuronDiameter;
                     e.Height = neuronDiameter;
                     e.StrokeThickness = 2.0;
-                    e.Fill = Brushes.Blue;
+                    e.Fill = Brushes.White;
+
                     Canvas.SetLeft(e, layerDist * l);
                     Canvas.SetTop(e, neuronDist * n);
+
                     annCanvas.Children.Add(e);
 
+                    // Safe the point of the current neuron for line drawing
                     neuronPos[ann.GetNumberOfNeuronsBefore(l) + n] = new Point(layerDist * l, neuronDist * n);
 
-                    if (l > 0)
+                    #region Draw all connections from previous layer to current neuron.
+                    for (int i = 0; l > 0 && i < ann.GetNumNeurons(l - 1); i++)
                     {
-                        // Draw all connections from previous layer to current neuron.                     
-                        for (int i = 0; l > 0 && i < ann.GetNumNeurons(l - 1); i++)
-                        {
-                            Line line = new Line();
-                            line.X1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].X + neuronDiameter / 2.0;
-                            line.Y1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].Y + neuronDiameter / 2.0;
-                            line.X2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].X + neuronDiameter / 2.0;
-                            line.Y2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].Y + neuronDiameter / 2.0;
-                            line.Stroke = Brushes.Blue;
-                            line.StrokeThickness = 1;
-                            annCanvas.Children.Add(line);
-                        }
-                    }
-                }
-            }
+                        Line line = new Line();
+                        line.X1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].X + neuronDiameter / 2.0;
+                        line.Y1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].Y + neuronDiameter / 2.0;
+                        line.X2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].X + neuronDiameter / 2.0;
+                        line.Y2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].Y + neuronDiameter / 2.0;
+                        line.Stroke = Brushes.White;
+                        line.StrokeThickness = 1;
 
+                        annCanvas.Children.Add(line);
+                    }
+                    #endregion
+                }
+                #endregion
+            }
             #endregion
         }
 
@@ -429,6 +441,12 @@ namespace ffp
             }
 
             DrawANN();
+        }
+
+        private void annGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Console.WriteLine("Width/Height: " + annBorder.Width + "/" + annBorder.Height);
+            Console.WriteLine("Actual.Width/Actual.Height: " + annBorder.ActualWidth + "/" + annBorder.ActualHeight);
         }
     }
 }

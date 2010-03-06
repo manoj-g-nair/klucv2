@@ -173,10 +173,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\common.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\dllmain.cpp"
 				>
 				<FileConfiguration
@@ -197,6 +193,10 @@
 						CompileAsManaged="0"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\klu_common.cpp"
+				>
 			</File>
 			<File
 				RelativePath=".\klulib.cpp"
@@ -229,7 +229,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\common.hpp"
+				RelativePath=".\klu_common.hpp"
+				>
+			</File>
+			<File
+				RelativePath=".\klu_types.h"
 				>
 			</File>
 			<File

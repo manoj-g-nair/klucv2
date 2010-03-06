@@ -4,29 +4,13 @@
  * $Id$
  */
 
-//#define CV_NO_BACKWARD_COMPATIBILITY
-//#define HIGHGUI_NO_BACKWARD_COMPATIBILITY
+#ifndef KLU_COMMON_H_
+#define KLU_COMMON_H_
 
 /**
- * OpenCV includes
+ * Project includes
  */
-#include <cv.h>
-#include <highgui.h>
-#include <ml.h>
-
-/**
- * C includes
- */
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <cassert>
-#include <cmath>
-
-#include <float.h>
-#include <limits.h>
-#include <time.h>
-#include <ctype.h>
+#include "klu_types.h"
 
 /**
  * C++ / STL includes
@@ -45,7 +29,7 @@
 #endif
 
 /**
- * \name Predefined colors
+ * \name predefined_colors Predefined colors
  * @{
  */
 #define COL_LAWN_GREEN 		CV_RGB(124, 252, 0)
@@ -63,6 +47,8 @@
 
 /**
  * This namespace contains common convenience functions and data types.
+ *
+ * @author Konrad Kleine, Jens Lukowski
  */
 namespace klu
 {
@@ -71,6 +57,8 @@ extern bool g_enableVisDebug;
 
 /**
  * This struct encapsulates all program options and variables.
+ *
+ * @author Konrad Kleine, Jens Lukowski
  */
 struct ApplicationEnvironment
 {
@@ -95,77 +83,25 @@ struct ApplicationEnvironment
 /**
  * Returns \c true if all library functionalities could be initialized;
  * otherwise \c false is returned.
+ *
+ * @author Konrad Kleine, Jens Lukowski
  */
 bool initializeLibrary(void);
 
 /**
  * Returns \c true if all library functionalities could be deinitialized;
  * otherwise \c false is returned.
+ *
+ * @author Konrad Kleine, Jens Lukowski
  */
 bool deinitializeLibrary(void);
-
-/**
- * \name Datatypes for Feature Points.
- * @{
- */
-
-/**
- * The \c EyeFeaturePoints struct contains the X-Y coordinates of
- * all the feature points for one eye. Coordinates are considered
- * to be image and not region coordinates.
- *
- * @author Konrad Kleine, Jens Lukowski
- */  
-struct EyeFeaturePoints
-{
-    CvPoint center;
-    CvPoint upperLid;
-    CvPoint lowerLid;
-    CvPoint cornerLeft; // from your point of view
-    CvPoint cornerRight;// from your point of view
-};
-
-/**
- * The \c MouthFeaturePoints struct contains the X-Y coordinates of
- * all the feature points for the mouth. Coordinates are considered
- * to be image and not region coordinates.
- *
- * @author Konrad Kleine, Jens Lukowski
- */  
-struct MouthFeaturePoints
-{
-    CvPoint upperLipMiddle;
-    CvPoint lowerLipMiddle;
-    CvPoint upperLipRight;
-    CvPoint lowerLipRight;
-    CvPoint upperLipLeft;
-    CvPoint lowerLipLeft;
-    CvPoint cornerLeft; // from your point of view
-    CvPoint cornerRight;// from your point of view
-};
-  
-/**
- * The \c FaceFeaturePoints struct combines all feature points for
- * eye, mouth etc. in one group.
- *
- * @author Konrad Kleine, Jens Lukowski
- */
-struct FaceFeaturePoints
-{
-    EyeFeaturePoints leftEye;
-    EyeFeaturePoints rightEye;
-	MouthFeaturePoints mouth;
-};
-
-/**
- * @}
- */
 
 /**
  * The \c GrayStats structure contains statistical information of an
  * OpenCV \c IplImage.
  *
  * @see getGrayStats()
+ * @author Konrad Kleine, Jens Lukowski
  */
 struct GrayStats
 {
@@ -292,7 +228,7 @@ void stretchContrast(IplImage * img,
 IplImage * extractGrayScaleROI(const IplImage * image);
 
 /**
- *	Detects the all the eye-feature points (see \c EyeFeaturePoints) in
+ *	Detects the all the eye-feature points (see \c KluEyeFeaturePoints) in
  *	the \a image. You should set the ROI of for the \a image using the
  *	OpenCV function \c cvSetImageROI() to the eye region before calling
  *	this function.
@@ -311,7 +247,7 @@ IplImage * extractGrayScaleROI(const IplImage * image);
  *
  * @author Konrad Kleine, Jens Lukowski
  */
-EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
+KluEyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
                                         const CvPoint & eyeCenter,
                                         CvMemStorage * storage,                                            
 										const char * windowContrastStretch1 = NULL,
@@ -321,7 +257,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
 										const char * windowFeaturePoints = NULL);
 										
 /**
- *	Detects the all the mouth-feature points (see \c MouthFeaturePoints) in
+ *	Detects the all the mouth-feature points (see \c KluMouthFeaturePoints) in
  *	the \a image. You should set the ROI of for the \a image using the
  *	OpenCV function \c cvSetImageROI() to the mouth region before calling
  *	this function.
@@ -335,7 +271,7 @@ EyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
  *
  * @author Konrad Kleine, Jens Lukowski
  */
-MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
+KluMouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
 											CvMemStorage * storage,
 											const char * windowContrastStretch1,
 											const char * windowContrastStretch2,
@@ -349,5 +285,7 @@ MouthFeaturePoints detectMouthFeaturePoints(const IplImage * image,
  *
  * @author Konrad Kleine, Jens Lukowski
  */
-void drawFfps(IplImage * image, const FaceFeaturePoints & ffp);
+void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp);
 }
+
+#endif
