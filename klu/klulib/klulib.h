@@ -18,4 +18,8 @@ KLULIB_API void freeCapture(void);
 
 KLULIB_API void queryCaptureImage(unsigned char ** data, int * width, int * height, int * nChannels, int * widthStep);
 
+KLULIB_API int klu_initializeLibrary(void);
+
+KLULIB_API int klu_deinitializeLibrary(void);
+
 }

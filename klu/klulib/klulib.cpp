@@ -3,11 +3,12 @@
 
 #include "stdafx.h"
 #include "klulib.h"
+#include "common.hpp"
 
 extern "C" {
-
+//------------------------------------------------------------------------------
 CvCapture * g_capture = NULL;
-
+//------------------------------------------------------------------------------
 KLULIB_API int createCapture(void)
 {
     if ( !g_capture )
@@ -31,7 +32,7 @@ KLULIB_API int createCapture(void)
     
     return g_capture ? 1 : 0;
 }
-
+//------------------------------------------------------------------------------
 KLULIB_API void freeCapture(void)
 {
     if ( g_capture )
@@ -40,7 +41,7 @@ KLULIB_API void freeCapture(void)
         g_capture = NULL; // This is probably not needed. Anyway, be safe.
     }
 }
-
+//------------------------------------------------------------------------------
 KLULIB_API void queryCaptureImage(unsigned char ** data, int * width, int * height, int * nChannels, int * widthStep)
 {
     IplImage * image = cvQueryFrame(g_capture);
@@ -50,6 +51,15 @@ KLULIB_API void queryCaptureImage(unsigned char ** data, int * width, int * heig
     *nChannels = image->nChannels;
     *widthStep = image->widthStep;
 }
-
-
+//------------------------------------------------------------------------------
+KLULIB_API int klu_initializeLibrary(void)
+{
+    return klu::initializeLibrary() ? 1 : 0;
 }
+//------------------------------------------------------------------------------
+KLULIB_API int klu_deinitializeLibrary(void)
+{
+    return klu::deinitializeLibrary() ? 1 : 0;
+}
+//------------------------------------------------------------------------------
+} // end extern "C" {
