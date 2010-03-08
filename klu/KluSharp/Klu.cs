@@ -10,7 +10,6 @@ using System.Windows;
 // For interface to C DLL
 using System.Runtime.InteropServices;
 
-
 namespace KluSharp
 {
     [StructLayout(LayoutKind.Sequential)]
@@ -48,6 +47,33 @@ namespace KluSharp
             // A good place to deinitialize the library
             FreeCapture();
         }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern Int32 klu_createAndSaveAnn(
+            [In, MarshalAs(UnmanagedType.LPArray)] int[] numNeuronsPerLayer,
+            int numLayers,
+            int activationFunction,
+            [In, MarshalAs(UnmanagedType.LPStr)] string filepath
+        );
+
+        /// <summary>
+        /// Create a neural network using the given parameters and saves it as a reusable
+        /// OpenCV XML file to the desired "filepath".
+        /// </summary>
+        /// <param name="numNeuronsPerLayer"></param>
+        /// <param name="activationFunction"></param>
+        /// <param name="filepath"></param>
+        /// <returns></returns>
+        public bool CreateAndSaveAnn(int[] numNeuronsPerLayer, ANN.ActivationFunction activationFunction, string filepath)
+        {
+            int res = klu_createAndSaveAnn(numNeuronsPerLayer, numNeuronsPerLayer.Count(), (int)activationFunction, filepath);
+            return res == 1;
+        }
+
 
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]

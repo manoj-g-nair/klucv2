@@ -62,9 +62,31 @@ KLULIB_API int klu_deinitializeLibrary(void)
     return klu::deinitializeLibrary() ? 1 : 0;
 }
 //------------------------------------------------------------------------------
+
 KLULIB_API int testStruct(KluTestStruct * p)
 {
     return p->x + p->y;
+}
+//------------------------------------------------------------------------------
+KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, int numLayers, int activationFunction, const char * filepath)
+{
+    if ( !numNeuronsPerLayer || !filepath || numLayers < 0 )
+    {
+        return 0;
+    }
+
+    CvMat layerSizes = cvMat(1, numLayers, CV_32SC1, numNeuronsPerLayer);
+
+	// Parameters for activation function
+	double alpha = 1.0;
+	double beta = 1.0;
+
+	//// Create the ANN
+	CvANN_MLP net(&layerSizes, activationFunction, alpha, beta);
+
+    net.save(filepath, "FFPANN");
+  
+    return 1;
 }
 //------------------------------------------------------------------------------
 } // end extern "C" {

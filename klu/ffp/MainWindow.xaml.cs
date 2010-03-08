@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,17 +25,17 @@ namespace ffp
         /// <summary>
         /// This member is a wrapper object provides access to the klu C DLL.
         /// </summary>
-        private Klu klu;
+        Klu klu;
 
         /// <summary>
         /// This is the timer used to query camera images.
         /// </summary>
-        private DispatcherTimer captureTimer;
+        DispatcherTimer captureTimer;
 
         /// <summary>
         /// This is a temporary bitmap which acts as a container for camera images.
         /// </summary>
-        private System.Drawing.Bitmap tmpBitmap;
+        System.Drawing.Bitmap tmpBitmap;
 
         /// <summary>
         /// This stores all table adapters.
@@ -69,18 +70,21 @@ namespace ffp
             {
                 #region Initialize ANN stuff
                 ann = new ANN();
-                ann.NumLayers = 2;
+                ann.NumLayers = 3;
                 ann.SetNumNeurons(0, 4);
-                ann.SetNumNeurons(1, 1);
+                ann.SetNumNeurons(1, 3);
+                ann.SetNumNeurons(2, 1);
 
                 // Bind certain labels to ANN stuff
-                annNumLayers.DataContext = ann;
+                //annNumLayers.DataContext = ann;
 
-                // Bind DataGrid to DataSet
+                // Bind DataGrid to ANN-DataSet now
                 dataSetAnn = new DataSet("HiddenLayer");
                 dataSetAnn.Tables.Add("HiddenLayerTable");
                 uint tmp = 0;
-                dataSetAnn.Tables[0].Columns.Add("NeuronsColumn", tmp.GetType());
+                dataSetAnn.Tables[0].Columns.Add("Neurons", tmp.GetType());
+                tmp = 3;
+                dataSetAnn.Tables[0].Rows.Add(tmp);
                 dgridHiddenLayer.DataContext = dataSetAnn.Tables[0];
                 #endregion
 
@@ -442,8 +446,6 @@ namespace ffp
                 ann.SetNumNeurons(i + 1, Convert.ToInt32(dataSetAnn.Tables[0].Rows[i].ItemArray[0]));
             }
 
-            annNumLayers.DataContext = ann;
-
             drawANN();
         }
 
@@ -493,7 +495,27 @@ namespace ffp
             if (result == true)
             {
                 // Save document
-                string filename = dlg.FileName;
+                string filepath = dlg.FileName;
+
+                Console.WriteLine("Saving neural network to " + filepath);
+                
+                Hashtable hashtable = new Hashtable();
+                hashtable.Add("identity", ANN.ActivationFunction.Identity);
+                hashtable.Add("sigmoid", ANN.ActivationFunction.Sigmoid);
+                hashtable.Add("gaussian", ANN.ActivationFunction.Gaussian);
+                hashtable.Add("Identity", ANN.ActivationFunction.Identity);
+                hashtable.Add("Sigmoid", ANN.ActivationFunction.Sigmoid);
+                hashtable.Add("Gaussian", ANN.ActivationFunction.Gaussian);
+                
+                ANN.ActivationFunction actFunc = ANN.ActivationFunction.Sigmoid;
+                if (hashtable.ContainsKey(annActivation.Text))
+                {
+                    // TODO: (Ko) Use combobox key and not it's values (important for translation)
+                    Console.WriteLine("Using activation function: " + hashtable[annActivation.Text]);
+                    actFunc = (ANN.ActivationFunction)hashtable[annActivation.Text];
+                }
+
+                klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, filepath);
             }
 
             // Call OpenCV wrapper from KluSharp library here.

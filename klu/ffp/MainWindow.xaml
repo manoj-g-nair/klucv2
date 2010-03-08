@@ -35,9 +35,9 @@
     </Window.Resources>
 
     <Grid>
-        <!--<Grid.Background>
+        <Grid.Background>
             <SolidColorBrush Color="DarkCyan"></SolidColorBrush>
-        </Grid.Background>-->
+        </Grid.Background>
 
         <Menu Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
@@ -200,7 +200,7 @@
                     <StackPanel  HorizontalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -210,8 +210,14 @@
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save to File</Button>
-                            <Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
-                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>
+                            <!--<Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
+                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>-->
+                            <Label Grid.Column="0" Grid.Row="1">Activation:</Label>
+                            <ComboBox Grid.Column="1" Grid.Row="1" Name="annActivation">
+                                <ComboBoxItem Name="identity">Identity</ComboBoxItem>
+                                <ComboBoxItem Name="sigmoid" IsSelected="True">Sigmoid</ComboBoxItem>
+                                <ComboBoxItem Name="gaussian">Gaussian</ComboBoxItem>
+                            </ComboBox>
                             <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>                   
                             <toolkit:DataGrid  Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"                            
                             RowStyle="{StaticResource RowStyle}"
@@ -225,21 +231,19 @@
                             CanUserSortColumns="False" 
                             Name="dgridHiddenLayer"
                             ItemsSource="{Binding}"
-                            AutoGenerateColumns="False"
                             HorizontalGridLinesBrush="AntiqueWhite"
                             VerticalGridLinesBrush="AntiqueWhite" 
                             HorizontalScrollBarVisibility="Visible"
                             VerticalScrollBarVisibility="Visible"
                             GridLinesVisibility="All"
                             HeadersVisibility="All"
-                            AreRowDetailsFrozen="False"
-                            RowDetailsVisibilityMode="Visible"
-                            SelectionMode="Single">
+                            SelectionMode="Single"
+                            AutoGenerateColumns="False">
 
                                 <toolkit:DataGrid.Columns>
-                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" />
+                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=Neurons}" />
                                 </toolkit:DataGrid.Columns>
-
+                                
                             </toolkit:DataGrid>
                         </Grid>
                     </StackPanel>

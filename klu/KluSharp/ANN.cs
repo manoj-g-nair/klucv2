@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Linq;
 
-namespace ffp
+namespace KluSharp
 {
     /// <summary>
     /// Represents the basic structure of an artifical neural network
     /// </summary>
-    class ANN
+    public class ANN
     {
+        public enum ActivationFunction { Identity = 0, Sigmoid = 1, Gaussian = 2 };
+
         private int[] numNeuronsPerLayer = null;
-        
+
         /// <summary>
-        /// The number of layers in the neural network
+        /// Gets the number of neurons on each layer as an array.
+        /// </summary>
+        public int[] NumNeuronsPerLayer
+        {
+            get { return numNeuronsPerLayer; }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of layers in the neural network.
         /// </summary>
         public int NumLayers
         {
@@ -30,6 +40,14 @@ namespace ffp
         public int GetTotalNumberOfNeurons()
         {
             return numNeuronsPerLayer.Sum();
+        }
+
+        /// <summary>
+        /// Gets the total number of neurons in the ANN.
+        /// </summary>
+        public int TotalNumberOfNeurons
+        {
+            get { return GetTotalNumberOfNeurons(); }
         }
 
         /// <summary>

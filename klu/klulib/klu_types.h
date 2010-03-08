@@ -35,6 +35,13 @@ KLULIB_API typedef struct KluTestStruct
     int y;
 } KluTestStruct;
 
+KLULIB_API typedef enum
+{
+    IdentityActivation = 0,
+    SigmoidActivation = 1,
+    GaussianActivation = 2
+} KluAnnActivation;
+
 /**
  * \name ffp_datatypes Datatypes for Feature Points.
  * @{

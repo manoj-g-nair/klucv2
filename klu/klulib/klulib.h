@@ -20,4 +20,6 @@ KLULIB_API int klu_deinitializeLibrary(void);
 
 KLULIB_API int testStruct(KluTestStruct * p);
 
+KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, int numLayers, int activationFunction, const char * filepath); 
+
 }
