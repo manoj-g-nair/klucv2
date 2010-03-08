@@ -89,7 +89,7 @@
                     <Button Height="23" Margin="0,72,330,0" Name="stopLiveBt" VerticalAlignment="Top" Click="stopLiveBt_Click" HorizontalAlignment="Right" Width="88">Stop Live</Button>
                     <Button Height="23" Margin="343,14,424,0" Name="createCaptureBt" VerticalAlignment="Top" Click="createCaptureBt_Click">Create Capture</Button>
                     <Label Height="36.663" Margin="340,101,0,0" Name="label2" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86.658">Capture every</Label>
-                    <TextBox Height="23" Margin="0,103,375,0" Name="captureTimeTextBox" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55.55" HorizontalContentAlignment="Right" TextInput="captureTimeTextBox_TextInput">33</TextBox>
+                    <TextBox Height="23" Margin="0,103,375,0" Name="captureTimeTextBox" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55.55" HorizontalContentAlignment="Right" TextInput="captureTimeTextBox_TextInput">90</TextBox>
                     <Label Height="36.663" Margin="0,101,325,0" Name="msLabel" VerticalAlignment="Top" HorizontalAlignment="Right" Width="43.329">ms</Label>
                 </Grid>
             </TabItem>
@@ -200,7 +200,7 @@
                     <StackPanel  HorizontalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -212,8 +212,8 @@
                             <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save to File</Button>
                             <!--<Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
                             <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>-->
-                            <Label Grid.Column="0" Grid.Row="1">Activation:</Label>
-                            <ComboBox Grid.Column="1" Grid.Row="1" Name="annActivation">
+                            <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>
+                            <ComboBox Margin="6"  Grid.Column="1" Grid.Row="1" Name="annActivation">
                                 <ComboBoxItem Name="identity">Identity</ComboBoxItem>
                                 <ComboBoxItem Name="sigmoid" IsSelected="True">Sigmoid</ComboBoxItem>
                                 <ComboBoxItem Name="gaussian">Gaussian</ComboBoxItem>

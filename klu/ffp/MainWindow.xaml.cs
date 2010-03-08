@@ -101,8 +101,10 @@ namespace ffp
                 captureTimer.Tick += new EventHandler(
                     delegate(object s, EventArgs a)
                     {
-                        klu.QueryCaptureImage2(ref tmpBitmap);
-                        //tmpBitmap = klu.QueryCaptureImage();
+                        //klu.QueryCaptureImage2(ref tmpBitmap);
+                        //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                        klu.ProcessCaptureImage();
+                        klu.GetLastProcessedImage(ref tmpBitmap);
                         klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
                     }
                 );

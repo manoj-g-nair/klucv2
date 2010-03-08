@@ -8,18 +8,38 @@
 
 extern "C" {
 
-KLULIB_API int createCapture(void);
+    KLULIB_API int createCapture(void);
 
-KLULIB_API void freeCapture(void);
+    KLULIB_API void freeCapture(void);
 
-KLULIB_API void queryCaptureImage(unsigned char ** data, int * width, int * height, int * nChannels, int * widthStep);
+    KLULIB_API void queryCaptureImage(unsigned char ** data, 
+        int * width, 
+        int * height, 
+        int * nChannels, 
+        int * widthStep);
 
-KLULIB_API int klu_initializeLibrary(void);
+    KLULIB_API int klu_getLastProcessedImage(unsigned char ** data, 
+        int * width, 
+        int * height, 
+        int * nChannels, 
+        int * widthStep);
 
-KLULIB_API int klu_deinitializeLibrary(void);
+    KLULIB_API int klu_initializeLibrary(void);
 
-KLULIB_API int testStruct(KluTestStruct * p);
+    KLULIB_API int klu_deinitializeLibrary(void);
 
-KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, int numLayers, int activationFunction, const char * filepath); 
+    KLULIB_API int testStruct(KluTestStruct * p);
+
+    KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, 
+        int numLayers, 
+        int activationFunction, 
+        const char * filepath); 
+
+    KLULIB_API int klu_processStillImage(const char * filepath, 
+        KluProcessOptions * processOptions, 
+        KluFaceFeaturePoints * ffp);
+
+    KLULIB_API int klu_processCaptureImage(KluProcessOptions * processOptions, 
+        KluFaceFeaturePoints * ffp);
 
 }

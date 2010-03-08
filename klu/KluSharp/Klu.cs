@@ -19,6 +19,49 @@ namespace KluSharp
         public Int32 B;
     };
 
+    [StructLayout(LayoutKind.Sequential)]
+    public class ProcessOptions
+    {
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public class KluPoint
+    {
+        public Int32 X;
+        public Int32 Y;
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public class EyeFeaturePoints
+    {
+        public KluPoint EyeCenter;
+        public KluPoint LidUpCenter;
+        public KluPoint LidBottomCenter;
+        public KluPoint LidCornerLeft; // from your point of view
+        public KluPoint LidCornerRight;// from your point of view
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public class MouthFeaturePoints
+    {
+        public KluPoint LipUpCenter;
+        public KluPoint LipBottomCenter;
+        public KluPoint LipUpRight;
+        public KluPoint LipBottomRight;
+        public KluPoint LipUpLeft;
+        public KluPoint LipBottomLeft;
+        public KluPoint LipCornerLeft; // from your point of view
+        public KluPoint LipCornerRight;// from your point of view
+    };
+
+    [StructLayout(LayoutKind.Sequential)]
+    public class FaceFeaturePoints
+    {
+        public EyeFeaturePoints leftEye;
+        public EyeFeaturePoints rightEye;
+        public MouthFeaturePoints mouth;
+    };
+
     /// <summary>
     /// This class encapsulates the C klu DLL library and provides some
     /// methods to image content from the library.
@@ -212,6 +255,42 @@ namespace KluSharp
             }
         }
 
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern Int32 klu_processCaptureImage(
+            [In, MarshalAs(UnmanagedType.LPStruct)] ProcessOptions processOptions,
+            [Out, MarshalAs(UnmanagedType.LPStruct)] FaceFeaturePoints ffp);
+
+        public bool ProcessCaptureImage()
+        {
+            ProcessOptions options = new ProcessOptions();
+            FaceFeaturePoints ffp = new FaceFeaturePoints();
+            int res = klu_processCaptureImage(options, ffp);
+            return res == 1;
+        }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        unsafe private static extern int klu_getLastProcessedImage(byte** data, int* width, int* height, int* nChannels, int* widthStep);
+
+        public void GetLastProcessedImage(ref System.Drawing.Bitmap bitmap)
+        {
+            unsafe
+            {
+                int width, height, widthStep, channels;
+                byte* imageData;
+                int res = klu_getLastProcessedImage(&imageData, &width, &height, &channels, &widthStep);
+                Console.WriteLine("klu_getLastProcessedImage: " + res); 
+                //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
+                convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
+            }
+        }
 
         /// <summary>
         /// Implicitly converts the old System.Drawing.Bitmap (GDI) "bitmap" to a new
