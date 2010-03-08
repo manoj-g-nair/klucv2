@@ -295,6 +295,24 @@ namespace KluSharp
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
+        private static extern Int32 klu_processStillImage(
+            [In, MarshalAs(UnmanagedType.LPStr)] string filepath,
+            [In, MarshalAs(UnmanagedType.LPStruct)] ProcessOptions processOptions,
+            [Out, MarshalAs(UnmanagedType.LPStruct)] FaceFeaturePoints ffp);
+
+        public bool ProcessStillImage(string filepath)
+        {
+            ProcessOptions options = new ProcessOptions();
+            FaceFeaturePoints ffp = new FaceFeaturePoints();
+            int res = klu_processStillImage(filepath, options, ffp);
+            return res == 1;
+        }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
         unsafe private static extern int klu_getLastProcessedImage(byte** data, int* width, int* height, int* nChannels, int* widthStep);
 
         public void GetLastProcessedImage(ref System.Drawing.Bitmap bitmap)
@@ -329,6 +347,22 @@ namespace KluSharp
                 System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
 
             image.Source = bitmapSource;
+
+            // TODO: Will this cause a crash?
+            DeleteObject(hBitmap);
+        }
+
+        public void SetImageBrushFromBitmap(ref System.Windows.Media.ImageBrush image, ref System.Drawing.Bitmap bitmap)
+        {
+            IntPtr hBitmap = bitmap.GetHbitmap();
+
+            System.Windows.Media.Imaging.BitmapSource bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                hBitmap,
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+
+            image.ImageSource = bitmapSource;
 
             // TODO: Will this cause a crash?
             DeleteObject(hBitmap);

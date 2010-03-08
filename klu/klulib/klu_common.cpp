@@ -790,7 +790,6 @@ namespace klu
 
         tic();
         CvSize minFaceSize = cvSize(200, 200);
-        /*CvSize minFaceSize = cvSize(50, 50);*/
         vector<CvRect> faceRects = detectObjects(image, app.cascadeFace, app.memStorage, minFaceSize);
         
         // TODO: (Ko) Maby return here, to speed up things a little bit

@@ -73,7 +73,7 @@ namespace ffp
                 ann.NumLayers = 3;
                 ann.SetNumNeurons(0, 4);
                 ann.SetNumNeurons(1, 3);
-                ann.SetNumNeurons(2, 1);
+                ann.SetNumNeurons(2, 1);                
 
                 // Bind certain labels to ANN stuff
                 //annNumLayers.DataContext = ann;
@@ -105,7 +105,8 @@ namespace ffp
                         //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
                         klu.ProcessCaptureImage();
                         klu.GetLastProcessedImage(ref tmpBitmap);
-                        klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                        //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                        klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
                     }
                 );
                 #endregion
@@ -192,7 +193,7 @@ namespace ffp
             }
 
             tmpBitmap = klu.QueryCaptureImage();
-            klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);                        
+            //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);                        
         }
 
         /// <summary>
@@ -256,7 +257,29 @@ namespace ffp
         /// <param name="e"></param>
         private void processStill_Click(object sender, RoutedEventArgs e)
         {
+            // Configure save file dialog box
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
+            dlg.DefaultExt = "."; // Default file extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Title = "Load images";
 
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string[] filepaths = dlg.FileNames;
+
+                foreach (string filepath in filepaths)
+                {                    
+                    klu.ProcessStillImage(filepath);
+                    klu.GetLastProcessedImage(ref tmpBitmap);
+                    klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                    //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                }
+            }    
         }
 
         /// <summary>
@@ -518,11 +541,7 @@ namespace ffp
                 }
 
                 klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, filepath);
-            }
-
-            // Call OpenCV wrapper from KluSharp library here.
-            // ...
-            
+            }            
         }
     }
 }
