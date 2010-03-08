@@ -367,6 +367,7 @@ namespace klu
         CV_Assert(image != NULL && storage != NULL);
 
         KluEyeFeaturePoints fp;
+        memset(&fp, '\0', sizeof(fp));
 
         // Create a copy of the eye region image
         IplImage * regImg = extractGrayScaleROI(image);
@@ -543,6 +544,7 @@ namespace klu
         CV_Assert(image != NULL && storage != NULL);
 
         KluMouthFeaturePoints fp;
+        memset(&fp, '\0', sizeof(fp));
 
         // Create a copy of the eye region image
         IplImage * regImg = extractGrayScaleROI(image);
@@ -788,7 +790,15 @@ namespace klu
 
         tic();
         CvSize minFaceSize = cvSize(200, 200);
+        /*CvSize minFaceSize = cvSize(50, 50);*/
         vector<CvRect> faceRects = detectObjects(image, app.cascadeFace, app.memStorage, minFaceSize);
+        
+        // TODO: (Ko) Maby return here, to speed up things a little bit
+        //if (faceRects.size() < 0)
+        //{
+        //    return false;
+        //}
+        
         CvRect rightEyeSearchWindow;
         CvRect leftEyeSearchWindow;
         CvRect mouthSearchWindow;

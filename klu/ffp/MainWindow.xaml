@@ -82,7 +82,7 @@
             </TabItem>
             <TabItem Name="mainTabItem" Header="Main">
                 <Grid>
-                    <Image Margin="14,70,0,287" x:Name="image1" Stretch="None" Width="320" HorizontalAlignment="Left" />
+                    <Image Margin="14,70,0,287" x:Name="image1" Stretch="None" Width="320" Height="280" HorizontalAlignment="Left" />
                     <Button Height="23" Name="freeCaptureBt" Click="freeCaptureBt_Click" Width="88" HorizontalAlignment="Right" Margin="0,14,330,0" VerticalAlignment="Top">Free Capture</Button>
                     <Button Height="23" Margin="343,43,330,0" Name="querySingleFrameBt" VerticalAlignment="Top" Click="querySingleFrameBt_Click">Query Single Frame</Button>
                     <Button Height="23" Margin="343,72,424,0" Name="startLiveBt" VerticalAlignment="Top" Click="startLiveBt_Click">Start Live</Button>

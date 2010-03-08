@@ -90,7 +90,7 @@ namespace ffp
 
                 #region Intialize encapsulated OpenCV subsystem
                 klu = new Klu();
-                tmpBitmap = new System.Drawing.Bitmap(320, 240);
+                tmpBitmap = new System.Drawing.Bitmap(640, 480);
 
                 // Create a Timer with a Normal Priority
                 captureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);

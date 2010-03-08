@@ -73,13 +73,29 @@ namespace KluSharp
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         private static extern bool DeleteObject(IntPtr hObject);
 
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_initializeLibrary();
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_deinitializeLibrary();
+
         /// <summary>
         /// Constructs a new Klu object and initializes the wrapped C DLL library.
         /// </summary>
         public Klu()
         {
             // A good place to initialize the library
-            tmpBitmap = new System.Drawing.Bitmap(320, 240);
+            tmpBitmap = new System.Drawing.Bitmap(320, 280);
+
+            klu_initializeLibrary();
         }
 
         /// <summary>
@@ -88,7 +104,9 @@ namespace KluSharp
         ~Klu()
         {
             // A good place to deinitialize the library
-            FreeCapture();
+            //FreeCapture();
+
+            klu_deinitializeLibrary();
         }
 
 #if DEBUG
@@ -286,7 +304,6 @@ namespace KluSharp
                 int width, height, widthStep, channels;
                 byte* imageData;
                 int res = klu_getLastProcessedImage(&imageData, &width, &height, &channels, &widthStep);
-                Console.WriteLine("klu_getLastProcessedImage: " + res); 
                 //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
                 convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
             }
