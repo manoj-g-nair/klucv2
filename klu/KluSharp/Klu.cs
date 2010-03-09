@@ -19,10 +19,11 @@ namespace KluSharp
         public Int32 DrawAnthropometricPoints;
         public Int32 DrawSearchRectangles;
         public Int32 DrawFaceRectangle;
-        public Int32 DrawFramesPerSecond;
+        public Int32 DrawDetectionTime;
         public Int32 DrawFeaturePoints;
         public Int32 DoEyeProcessing;
         public Int32 DoMouthProcessing;
+        public Int32 DoVisualDebug;
     };
 
     [StructLayout(LayoutKind.Sequential)]

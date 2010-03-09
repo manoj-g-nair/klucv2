@@ -14,7 +14,6 @@ namespace klu
 {
     //------------------------------------------------------------------------------
     long g_autoSaveImages = 0;
-    bool g_enableVisDebug = false;
     //------------------------------------------------------------------------------
     bool initializeLibrary(void)
     {
@@ -27,11 +26,12 @@ namespace klu
         app.cascadeLeftEye = (CvHaarClassifierCascade*) cvLoad("../../../../data/haarcascades/haarcascade_mcs_lefteye.xml", 0, 0, 0 );
         app.cascadeRightEye = (CvHaarClassifierCascade*) cvLoad("../../../../data/haarcascades/haarcascade_mcs_righteye.xml", 0, 0, 0 );
         app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../../../../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
-        app.memStorage = cvCreateMemStorage(0);    
+        app.memStorage = cvCreateMemStorage(0); 
+        app.kernel1 = cvCreateStructuringElementEx(3, 3, 1, 1, CV_SHAPE_RECT, NULL);
 
-        cout << app.cascadeFace << app.cascadeLeftEye << app.cascadeRightEye << app.cascadeMouth << app.memStorage << endl;
+        cout << app.kernel1 << app.cascadeFace << app.cascadeLeftEye << app.cascadeRightEye << app.cascadeMouth << app.memStorage << endl;
 
-        if ( app.cascadeFace && app.cascadeLeftEye && app.cascadeRightEye && app.cascadeMouth && app.memStorage )
+        if ( app.kernel1 && app.cascadeFace && app.cascadeLeftEye && app.cascadeRightEye && app.cascadeMouth && app.memStorage )
         {        
             return true;
         }
@@ -64,6 +64,11 @@ namespace klu
             cvReleaseImage(&app.lastImage);
         }
 
+        if ( app.kernel1 )
+        {
+            cvReleaseStructuringElement(&app.kernel1);
+        }
+
         cvDestroyAllWindows();
 
         return true;
@@ -90,7 +95,7 @@ namespace klu
     {
         if ( wndName && img )
         {
-            if (g_enableVisDebug)
+            if (app.processOptions.doVisualDebug)
             {
                 cvNamedWindow(wndName, 0);
                 cvShowImage(wndName, img);
@@ -573,6 +578,10 @@ namespace klu
         // Saturation (this is not very well documented in
         stretchContrast(regImg, lowerBound, stats.max, upperBound, 255);
         visDebug(windowContrastStretch1, regImg);
+        
+        //cvErode(regImg, regImg, app.erodeKernel1, 1);
+        cvDilate(regImg, regImg, app.kernel1, 2);
+        visDebug("Contrast strectch 1 after kernel applied", regImg);
 
         stretchContrast(regImg, stats.min, stats.avg, 0, stats.min);
         visDebug(windowContrastStretch2, regImg);
@@ -731,15 +740,15 @@ namespace klu
         return fp;
     }
     //------------------------------------------------------------------------------
-    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp, const KluProcessOptions * options)
+    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp)
     {
-        if ( !image || !options )
+        if ( !image )
         {
             return;
         }
 
         // Lips
-        if (options->doMouthProcessing)
+        if (app.processOptions.doMouthProcessing)
         {
             cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW);
             cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
@@ -757,7 +766,7 @@ namespace klu
         drawCross(image, ffp.rightEye.center, COL_YELLOW);
 
         // Lids
-        if (options->doEyeProcessing)
+        if (app.processOptions.doEyeProcessing)
         {
             drawCross(image, ffp.rightEye.cornerLeft, COL_YELLOW);
             drawCross(image, ffp.rightEye.cornerRight, COL_YELLOW);
@@ -771,12 +780,11 @@ namespace klu
     }
     //------------------------------------------------------------------------------
     bool processImageFrame(IplImage * image,
-        const KluProcessOptions * options, 
         KluFaceFeaturePoints * ffp)
     {
         static char buf[255];
 
-        if ( !image || !options || !ffp )
+        if ( !image || !ffp )
         {
             return false;
         }
@@ -827,7 +835,7 @@ namespace klu
                     rightEyeRect.x += rightEyeSearchWindow.x;
                     rightEyeRect.y += rightEyeSearchWindow.y;
 
-                    if ( options->doEyeProcessing)
+                    if ( app.processOptions.doEyeProcessing)
                     {
                         // Find right eye feature points
                         cvSetImageROI(app.grayscale, rightEyeRect);
@@ -857,7 +865,7 @@ namespace klu
                     leftEyeRect.x += leftEyeSearchWindow.x;
                     leftEyeRect.y += leftEyeSearchWindow.y;
 
-                    if ( options->doEyeProcessing)
+                    if ( app.processOptions.doEyeProcessing)
                     {
                         // Find left eye feature points
                         cvSetImageROI(app.grayscale, leftEyeRect);
@@ -874,7 +882,7 @@ namespace klu
                 /**
                 * Find mouth
                 */
-                if (options->doMouthProcessing )
+                if (app.processOptions.doMouthProcessing )
                 {
                     double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
                     CvPoint mouthCenter = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 1.1);
@@ -904,14 +912,14 @@ namespace klu
         /**
         * Draw object/face rects
         */        
-        for (vector<CvRect>::size_type i=0; options->drawFaceRectangle && i<faceRects.size(); i++)
+        for (vector<CvRect>::size_type i=0; app.processOptions.drawFaceRectangle && i<faceRects.size(); i++)
         {
             drawRect(image, faceRects[i], COL_RED);
         }
 
         double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
 
-        if (options->drawSearchRectangles)
+        if (app.processOptions.drawSearchRectangles)
         {
             drawRect(image, rightEyeSearchWindow, COL_GREEN);
             drawRect(image, leftEyeSearchWindow, COL_BLUE);
@@ -923,7 +931,7 @@ namespace klu
             drawRect(image, mouthRect, COL_LIME_GREEN);
         }
 
-        if (options->drawAnthropometricPoints)
+        if (app.processOptions.drawAnthropometricPoints)
         {
             // Draw eye-midpoint connection line
             cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE);
@@ -941,12 +949,12 @@ namespace klu
             drawCross(image, mouthCenter);
         }
 
-        if (options->drawFeaturePoints)
+        if (app.processOptions.drawFeaturePoints)
         {
-            drawFfps(image, *ffp, options);
+            drawFfps(image, *ffp);
         }
 
-        if (options->drawFramesPerSecond)
+        if (app.processOptions.drawDetectionTime)
         {
             // Print processing time for detection (after ROI reset!!)
             memset(buf, '\0', 255);

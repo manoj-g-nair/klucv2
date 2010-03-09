@@ -41,11 +41,21 @@
 
         <Menu Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
+                <MenuItem Header="_Open" Name="fileOpenMenuItem" Click="processStill_Click" InputGestureText="Ctrl+O"></MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="E_xit" InputGestureText="Ctrl+X" Click="closeApplication" />
             </MenuItem>
-            <MenuItem Header="_View" InputGestureText="Ctrl+F">
-                <MenuItem Name="showExpertOptionsMenuItem" Click="showExpertOptionsMenuItem_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
+            <MenuItem Header="Op_tions" InputGestureText="Ctrl+T">
+                <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="drawAnthropometricPointsMenuItem" Click="optionsMenuToggled_Click"  Header="Draw Anthropometric Points" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="drawSearchRectanglesMenuItem" Click="optionsMenuToggled_Click" Header="Draw Search Rectangles" IsChecked="False" IsCheckable="True" />
+                <MenuItem Name="drawFaceRectangleMenuItem" Click="optionsMenuToggled_Click" Header="Draw Face Rectangle" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="drawDetectionTimeMenuItem" Click="optionsMenuToggled_Click" Header="Draw Detection Time" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points MenuItem" IsChecked="False" IsCheckable="True" />
+                <Separator></Separator>
+                <MenuItem Name="doEyeProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Eye Processing" IsChecked="False" IsCheckable="True" />
+                <MenuItem Name="doMouthProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Mouth Processing" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="doVisualDebugMenuItem" Click="optionsMenuToggled_Click" Header="Do Visual Debug" IsChecked="False" IsCheckable="True" />
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
                 <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
@@ -106,10 +116,10 @@
                         <Button Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
                         <Button Name="processNextButton" Click="processNextButton_Click">Next</Button>
                         <Label>Expression:</Label>
-                        <ComboBox></ComboBox>
+                        <ComboBox IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" HorizontalAlignment="Stretch" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression">
+
+                        </ComboBox>
                         <Button>Save</Button>
-                        
-                        <MediaElement></MediaElement>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -220,8 +230,8 @@
                     <StackPanel  HorizontalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition></RowDefinition>
@@ -229,7 +239,8 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Button Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save to File</Button>
+                            <Button Grid.Column="0" Grid.Row="0" Name="loadAnnButton" ToolTip="Click here to load an ANN you have already saved." Click="loadAnnButton_Click" Margin="6">Load</Button>
+                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save</Button>
                             <!--<Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
                             <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>-->
                             <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>

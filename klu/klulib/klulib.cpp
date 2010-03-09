@@ -112,6 +112,28 @@ extern "C" {
         return 1;
     }
     //------------------------------------------------------------------------------
+    //KLULIB_API int klu_loadAnn(int * numNeuronsPerLayer, 
+    //    int * numLayers, 
+    //    int * activationFunction, 
+    //    const char * filepath)
+    //{
+    //    if ( !numNeuronsPerLayer || !filepath || !numLayers || !activationFunction )
+    //    {
+    //        return 0;
+    //    }
+
+    //    CvANN_MLP net;
+
+    //    net.load(filepath, "FFPANN");
+
+    //    *activationFunction = net.activ_func;
+
+    //    CvMat * layerSizes = net.get_layer_sizes();
+    //    
+
+    //    return 1;
+    //}
+    //------------------------------------------------------------------------------
     KLULIB_API int klu_processStillImage(const char * filepath,
         KluProcessOptions * processOptions, 
         KluFaceFeaturePoints * ffp)
@@ -120,6 +142,8 @@ extern "C" {
         {
             return 0;
         }
+
+        app.processOptions = *processOptions;
 
         if ( !app.capture )
         {
@@ -146,7 +170,7 @@ extern "C" {
         // Prepare the grayscale image... speeds up processing function for capture images
         app.grayscale = cvCreateImage(cvSize(app.lastImage->width, app.lastImage->height), IPL_DEPTH_8U, 1);
 
-        bool result = processImageFrame(app.lastImage, processOptions, ffp);
+        bool result = processImageFrame(app.lastImage, ffp);
 
         return result ? 1 : 0;
     }
@@ -158,6 +182,8 @@ extern "C" {
         {
             return 0;
         }
+
+        app.processOptions = *processOptions;
 
         // Release the last image if it was a still image
         if ( app.mode == ProcessStill && app.lastImage )
@@ -185,7 +211,7 @@ extern "C" {
             app.grayscale = cvCreateImage(cvSize(app.lastImage->width, app.lastImage->height), IPL_DEPTH_8U, 1);
         }
 
-        bool result = processImageFrame(app.lastImage, processOptions, ffp);
+        bool result = processImageFrame(app.lastImage, ffp);
     
         return result ? 1 : 0;
     }

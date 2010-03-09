@@ -91,8 +91,9 @@ namespace ffp
                 processOptions.DrawAnthropometricPoints = 0;
                 processOptions.DrawSearchRectangles = 0;
                 processOptions.DrawFaceRectangle = 1;
-                processOptions.DrawFramesPerSecond = 1;
+                processOptions.DrawDetectionTime = 1;
                 processOptions.DrawFeaturePoints = 1;
+                processOptions.DoVisualDebug = 0;
 
                 #region Initialize ANN stuff          
 
@@ -182,11 +183,10 @@ namespace ffp
             tam.TrainingTableAdapter.Fill(dataSet.Training);
             tam.ImageTableAdapter.Fill(dataSet.Image);
 
-        
-
             // Bind data to controls                  
             dgridExpressions.DataContext = dataSet.Expression;
-            dgridTraining.DataContext = dataSet.Training;      
+            dgridTraining.DataContext = dataSet.Training;
+            expressionSelectorComboBox.DataContext = dataSet.Expression;
         }
 
         ///// <summary>
@@ -307,17 +307,6 @@ namespace ffp
 
                 fileProcessIdx = -1;
                 processNextFile();
-
-                //// Save document
-                //string[] filepaths = dlg.FileNames;
-
-                //foreach (string filepath in filepaths)
-                //{
-                //    klu.ProcessStillImage(filepath, ref processOptions, ref ffp);
-                //    klu.GetLastProcessedImage(ref tmpBitmap);
-                //    //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
-                //    klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                //}
             }    
         }
 
@@ -557,21 +546,58 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void showExpertOptionsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void optionsMenuToggled_Click(object sender, RoutedEventArgs e)
         {
-            if ( showExpertOptionsMenuItem.IsChecked )
+            MenuItem menuItem = sender as MenuItem;
+
+            switch (menuItem.Name)
             {
-                annConfigurationTabItem.Visibility = Visibility.Visible;
-                expressionsTabItem.Visibility = Visibility.Visible;
-                trainingDatasetsTabItem.Visibility = Visibility.Visible;
-                exportTabItem.Visibility = Visibility.Visible;
-            }
-            else
+                case "showExpertOptionsMenuItem":
+                    if (menuItem.IsChecked)
+                    {
+                        annConfigurationTabItem.Visibility = Visibility.Visible;
+                        expressionsTabItem.Visibility = Visibility.Visible;
+                        trainingDatasetsTabItem.Visibility = Visibility.Visible;
+                        exportTabItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        annConfigurationTabItem.Visibility = Visibility.Hidden;
+                        expressionsTabItem.Visibility = Visibility.Hidden;
+                        trainingDatasetsTabItem.Visibility = Visibility.Hidden;
+                        exportTabItem.Visibility = Visibility.Hidden;
+                    }
+                    break;
+                case "drawAnthropometricPointsMenuItem":
+                    processOptions.DrawAnthropometricPoints = processOptions.DrawAnthropometricPoints == 1 ? 0 : 1;
+                    break;
+                case "drawSearchRectanglesMenuItem":
+                    processOptions.DrawSearchRectangles = processOptions.DrawSearchRectangles == 1 ? 0 : 1;
+                    break;
+                case "drawFaceRectangleMenuItem":
+                    processOptions.DrawFaceRectangle = processOptions.DrawFaceRectangle == 1 ? 0 : 1;
+                    break;
+                case "drawDetectionTimeMenuItem":
+                    processOptions.DrawDetectionTime = processOptions.DrawDetectionTime == 1 ? 0 : 1;
+                    break;
+                case "drawFeaturePointsMenuItem":
+                    processOptions.DrawFeaturePoints = processOptions.DrawFeaturePoints == 1 ? 0 : 1;
+                    break;
+                case "doEyeProcessingMenuItem":
+                    processOptions.DoEyeProcessing = processOptions.DoEyeProcessing == 1 ? 0 : 1;
+                    break;
+                case "doMouthProcessingMenuItem":
+                    processOptions.DoMouthProcessing = processOptions.DoMouthProcessing == 1 ? 0 : 1;
+                    break;
+                case "doVisualDebugMenuItem":
+                    processOptions.DoVisualDebug = processOptions.DoVisualDebug == 1 ? 0 : 1;
+                    break;
+            };
+
+            if (filesToProcess.Count > 0)
             {
-                annConfigurationTabItem.Visibility = Visibility.Hidden;
-                expressionsTabItem.Visibility = Visibility.Hidden;
-                trainingDatasetsTabItem.Visibility = Visibility.Hidden;
-                exportTabItem.Visibility = Visibility.Hidden;
+                fileProcessIdx--;
+                processNextFile();
             }
         }
 
@@ -640,6 +666,29 @@ namespace ffp
             else
             {
                 captureTimer.Start();
+            }
+        }
+
+        private void loadAnnButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void expressionSelectorComboBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            ComboBox cbox = sender as ComboBox;
+            if (e.Key == Key.Enter)
+            {
+                try
+                {
+                    dataSet.Expression.AddExpressionRow(cbox.Text, null);
+                }
+                catch (Exception ex)
+                {
+                    cbox.BorderBrush = Brushes.Red;
+                    cbox.BorderThickness = new Thickness(2.0);
+                    cbox.ToolTip = ex.Message;
+                }                
             }
         }
     }

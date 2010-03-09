@@ -41,10 +41,11 @@ extern "C" {
         int drawAnthropometricPoints;
         int drawSearchRectangles;
         int drawFaceRectangle;
-        int drawFramesPerSecond;
+        int drawDetectionTime;
         int drawFeaturePoints;
         int doEyeProcessing;
         int doMouthProcessing;
+        int doVisualDebug;
     } KluProcessOptions;
 
     /**

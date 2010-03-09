@@ -8,6 +8,9 @@
 
 extern "C" {
 
+#define ANN_INPUT_SIZE 4;
+#define ANN_OUTPUT_SIZE 1;
+
     KLULIB_API int klu_createCapture(void);
 
     KLULIB_API int klu_freeCapture(void);
@@ -28,6 +31,11 @@ extern "C" {
         int numLayers, 
         int activationFunction, 
         const char * filepath); 
+
+    //KLULIB_API int klu_loadAnn(int * numNeuronsPerLayer, 
+    //    int * numLayers, 
+    //    int * activationFunction, 
+    //    const char * filepath); 
 
     KLULIB_API int klu_processStillImage(const char * filepath, 
         KluProcessOptions * processOptions, 

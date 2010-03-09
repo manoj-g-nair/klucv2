@@ -53,7 +53,6 @@
 namespace klu
 {
     extern long g_autoSaveImages;
-    extern bool g_enableVisDebug;
 
     enum ProcessMode { ProcessStill, ProcessCapture };
     /**
@@ -69,6 +68,8 @@ namespace klu
         ProcessMode mode;
         IplImage * grayscale; 
         IplImage * lastImage;
+        IplConvKernel * kernel1;
+        KluProcessOptions processOptions;
         CvHaarClassifierCascade * cascadeFace;
         CvHaarClassifierCascade * cascadeMouth;
         CvHaarClassifierCascade * cascadeRightEye;
@@ -281,7 +282,7 @@ namespace klu
     *
     * @author Konrad Kleine, Jens Lukowski
     */
-    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp, const KluProcessOptions * options);
+    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp);
 
     /**
     * This function processes an image frame. The image frame can come from a
@@ -292,7 +293,6 @@ namespace klu
     * @author Konrad Kleine, Jens Lukowski
     */
     bool processImageFrame(IplImage * image,
-        const KluProcessOptions * options, 
         KluFaceFeaturePoints * ffp);
 }
 
