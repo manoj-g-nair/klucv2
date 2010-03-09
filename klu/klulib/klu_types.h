@@ -29,12 +29,6 @@
 #endif
 
 extern "C" {
-    KLULIB_API typedef struct KluTestStruct
-    {
-        int x;
-        int y;
-    } KluTestStruct;
-
     KLULIB_API typedef enum
     {
         IdentityActivation = 0,
@@ -44,7 +38,13 @@ extern "C" {
 
     KLULIB_API typedef struct KluProcessOptions
     {
-        // TODO: (Ko) Add options here
+        int drawAnthropometricPoints;
+        int drawSearchRectangles;
+        int drawFaceRectangle;
+        int drawFramesPerSecond;
+        int drawFeaturePoints;
+        int doEyeProcessing;
+        int doMouthProcessing;
     } KluProcessOptions;
 
     /**

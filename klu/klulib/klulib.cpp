@@ -12,51 +12,38 @@ extern "C" {
     //------------------------------------------------------------------------------
     klu::ApplicationEnvironment app;
     //------------------------------------------------------------------------------
-    KLULIB_API int createCapture(void)
+    KLULIB_API int klu_createCapture(void)
     {
         if ( !app.capture )
         {
             app.capture = cvCreateCameraCapture(CV_CAP_ANY);
 
-            if ( app.capture )
-            {        
-                // Manipulate properties of the camera.
-                cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH, double(320));
-                cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT, double(240));
-                int camWidth = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH);
-                int camHeight = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT);
+            //if ( app.capture )
+            //{        
+            //    // Manipulate properties of the camera.
+            //    cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH, double(320));
+            //    cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT, double(240));
+            //    int camWidth = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH);
+            //    int camHeight = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT);
 
-                if ( camWidth != 320 || camHeight != 240 )
-                {
-                    freeCapture();
-                }
-            }
+            //    if ( camWidth != 320 || camHeight != 240 )
+            //    {
+            //        freeCapture();
+            //    }
+            //}
         }
 
         return app.capture ? 1 : 0;
     }
     //------------------------------------------------------------------------------
-    KLULIB_API void freeCapture(void)
+    KLULIB_API int klu_freeCapture(void)
     {
         if ( app.capture )
         {
             cvReleaseCapture(&app.capture);
             app.capture = NULL; // This is probably not needed. Anyway, be safe.
         }
-    }
-    //------------------------------------------------------------------------------
-    KLULIB_API void queryCaptureImage(unsigned char ** data, 
-        int * width, 
-        int * height, 
-        int * nChannels, 
-        int * widthStep)
-    {
-        IplImage * image = cvQueryFrame(app.capture);
-        *data = reinterpret_cast<unsigned char*>(image->imageData);
-        *width = image->width;
-        *height = image->height;
-        *nChannels = image->nChannels;
-        *widthStep = image->widthStep;
+        return 1;
     }
     //------------------------------------------------------------------------------
     KLULIB_API int klu_getLastProcessedImage(unsigned char ** data, 
@@ -79,6 +66,18 @@ extern "C" {
         return 1;
     }
     //------------------------------------------------------------------------------
+    KLULIB_API int klu_getLastProcessedImageDims(int * width, int * height)
+    {
+        if ( !width || !height || !app.lastImage)
+        {
+           return 0;
+        }
+
+        *width = app.lastImage->width;
+        *height = app.lastImage->height;
+        return 1;
+    }
+    //------------------------------------------------------------------------------
     KLULIB_API int klu_initializeLibrary(void)
     {
         return klu::initializeLibrary() ? 1 : 0;
@@ -87,12 +86,6 @@ extern "C" {
     KLULIB_API int klu_deinitializeLibrary(void)
     {
         return klu::deinitializeLibrary() ? 1 : 0;
-    }
-    //------------------------------------------------------------------------------
-
-    KLULIB_API int testStruct(KluTestStruct * p)
-    {
-        return p->x + p->y;
     }
     //------------------------------------------------------------------------------
     KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, 
@@ -131,15 +124,15 @@ extern "C" {
         if ( !app.capture )
         {
             cvReleaseCapture(&app.capture);
-        }
+        }        
 
-        app.mode = ProcessStill;
-
-        // Do NOT release the image if it wasn't a captured image.
+        // Do NOT release the image if it was a captured image.
         if ( app.lastImage && app.mode != ProcessCapture )
         {
             cvReleaseImage(&app.lastImage);
         }
+
+        app.mode = ProcessStill;
 
         // This image won't be deleted until the next to call to a klu_processXXX function.
         // The calling application thereby gets the opportunity to query and display the image.

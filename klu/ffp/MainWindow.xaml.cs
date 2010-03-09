@@ -60,6 +60,19 @@ namespace ffp
         DataSet dataSetAnn;
 
         /// <summary>
+        /// Feature points from the last processed image
+        /// </summary>
+        FaceFeaturePoints ffp;
+
+        /// <summary>
+        /// Define how to process images (either still or moving images)
+        /// </summary>
+        ProcessOptions processOptions;
+
+        System.Collections.ArrayList filesToProcess;
+        int fileProcessIdx;
+
+        /// <summary>
         /// The main entry point for this window.
         /// </summary>
         public MainWindow()
@@ -68,7 +81,21 @@ namespace ffp
 
             try
             {
-                #region Initialize ANN stuff
+                fileProcessIdx = 0;
+                filesToProcess = new ArrayList();
+                processOptions = new ProcessOptions();
+                ffp = new FaceFeaturePoints();
+
+                processOptions.DoEyeProcessing = 0;
+                processOptions.DoMouthProcessing = 1;
+                processOptions.DrawAnthropometricPoints = 0;
+                processOptions.DrawSearchRectangles = 0;
+                processOptions.DrawFaceRectangle = 1;
+                processOptions.DrawFramesPerSecond = 1;
+                processOptions.DrawFeaturePoints = 1;
+
+                #region Initialize ANN stuff          
+
                 ann = new ANN();
                 ann.NumLayers = 3;
                 ann.SetNumNeurons(0, 4);
@@ -90,7 +117,7 @@ namespace ffp
 
                 #region Intialize encapsulated OpenCV subsystem
                 klu = new Klu();
-                tmpBitmap = new System.Drawing.Bitmap(640, 480);
+                tmpBitmap = new System.Drawing.Bitmap(10, 10);
 
                 // Create a Timer with a Normal Priority
                 captureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
@@ -101,12 +128,23 @@ namespace ffp
                 captureTimer.Tick += new EventHandler(
                     delegate(object s, EventArgs a)
                     {
-                        //klu.QueryCaptureImage2(ref tmpBitmap);
-                        //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                        klu.ProcessCaptureImage();
+                        klu.ProcessCaptureImage(ref processOptions, ref ffp);
+
+                        // Ensure the image (bitmap) we are writing to has the correct dimensions
+                        int width = 0, height = 0;
+                        klu.GetLastProcessedImageDims(ref width, ref height);
+
+                        if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                        {
+                            Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
+                            tmpBitmap.Dispose();
+                            GC.Collect();
+                            tmpBitmap = new System.Drawing.Bitmap(width, height);
+                        }
+
                         klu.GetLastProcessedImage(ref tmpBitmap);
-                        //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                        klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                        klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                        //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
                     }
                 );
                 #endregion
@@ -151,94 +189,19 @@ namespace ffp
             dgridTraining.DataContext = dataSet.Training;      
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void createCaptureBt_Click(object sender, RoutedEventArgs e)
-        {
-            if ( klu.CreateCapture() )
-            {
-                statusText.Text = "Capture Created!";
-            }
-            else
-            {
-                statusText.Text = "Failed to create Capture!";
-            }
-            
-        }
+        ///// <summary>
+        ///// Callback which sets the capture time interval in ms.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void captureTimeTextBox_TextInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    int value = Math.Min(1, Convert.ToInt32(captureTimeTextBox.Text));
+        //    captureTimeTextBox.Text = Convert.ToString(value);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void freeCaptureBt_Click(object sender, RoutedEventArgs e)
-        {
-            klu.FreeCapture();
-            statusText.Text = "Capture freed!";
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void querySingleFrameBt_Click(object sender, RoutedEventArgs e)
-        {
-            if ( !klu.CreateCapture() )
-            {
-                return;
-            }
-
-            tmpBitmap = klu.QueryCaptureImage();
-            //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);                        
-        }
-
-        /// <summary>
-        /// Callback which start the camera live view.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void startLiveBt_Click(object sender, RoutedEventArgs e)
-        {
-            if ( !klu.CreateCapture() )
-            {
-                return;
-            }
-
-            // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
-            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(captureTimeTextBox.Text));
-
-            // Start the timer
-            captureTimer.Start();
-        }
-
-        /// <summary>
-        /// Stops the internal timer which is responsible for updating the (live) image
-        /// and doing the processing.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void stopLiveBt_Click(object sender, RoutedEventArgs e)
-        {
-            captureTimer.Stop();            
-        }
-
-        /// <summary>
-        /// Callback which sets the capture time interval in ms.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void captureTimeTextBox_TextInput(object sender, TextCompositionEventArgs e)
-        {
-            int value = Math.Min(1, Convert.ToInt32(captureTimeTextBox.Text));
-            captureTimeTextBox.Text = Convert.ToString(value);
-
-            // Also adjust the timer.
-            captureTimer.Interval = TimeSpan.FromMilliseconds(value);            
-        }
+        //    // Also adjust the timer.
+        //    captureTimer.Interval = TimeSpan.FromMilliseconds(value);            
+        //}
 
         /// <summary>
         /// Starts the processing of video images.
@@ -250,6 +213,68 @@ namespace ffp
 
         }
 
+        private void processNextFile()
+        {
+            fileProcessIdx++;
+
+            // Start infront if we reach the end
+            if (fileProcessIdx >= filesToProcess.Count)
+            {
+                fileProcessIdx = 0;
+            }            
+
+            if (fileProcessIdx < filesToProcess.Count)
+            {
+                klu.ProcessStillImage((string)filesToProcess[fileProcessIdx], ref processOptions, ref ffp);
+
+                int width = 0, height = 0;
+                klu.GetLastProcessedImageDims(ref width, ref height);
+
+                if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                {
+                    Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
+                    tmpBitmap.Dispose();
+                    GC.Collect();
+                    tmpBitmap = new System.Drawing.Bitmap(width, height);
+                }
+
+                klu.GetLastProcessedImage(ref tmpBitmap);
+                //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+            }
+        }
+
+        private void processPreviousFile()
+        {
+            fileProcessIdx--;
+
+            // Start infront if we reach the end
+            if (fileProcessIdx < 0)
+            {
+                fileProcessIdx = filesToProcess.Count - 1;
+            }
+
+            if (fileProcessIdx >= 0 && fileProcessIdx < filesToProcess.Count)
+            {
+                klu.ProcessStillImage((string)filesToProcess[fileProcessIdx], ref processOptions, ref ffp);
+
+                int width = 0, height = 0;
+                klu.GetLastProcessedImageDims(ref width, ref height);
+
+                if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                {
+                    Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
+                    tmpBitmap.Dispose();
+                    GC.Collect();
+                    tmpBitmap = new System.Drawing.Bitmap(width, height);
+                }                
+                
+                klu.GetLastProcessedImage(ref tmpBitmap);
+                //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+            }
+        }
+
         /// <summary>
         /// Starts the processing of still images.
         /// </summary>
@@ -257,11 +282,12 @@ namespace ffp
         /// <param name="e"></param>
         private void processStill_Click(object sender, RoutedEventArgs e)
         {
-            // Configure save file dialog box
+            // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
             dlg.DefaultExt = "."; // Default file extension
             dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga|All files (*.*)|*.*"; // Filter files by extension
             dlg.Title = "Load images";
+            dlg.Multiselect = true;
 
             // Show save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
@@ -269,16 +295,29 @@ namespace ffp
             // Process save file dialog box results
             if (result == true)
             {
-                // Save document
-                string[] filepaths = dlg.FileNames;
+                stopAllProcessing();
 
-                foreach (string filepath in filepaths)
-                {                    
-                    klu.ProcessStillImage(filepath);
-                    klu.GetLastProcessedImage(ref tmpBitmap);
-                    klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
-                    //klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                }
+                processPreviousButton.IsEnabled = true;
+                processNextButton.IsEnabled = true;
+                processPlayPauseButton.IsEnabled = false;
+
+                filesToProcess.Clear();
+
+                filesToProcess.AddRange(dlg.FileNames);
+
+                fileProcessIdx = -1;
+                processNextFile();
+
+                //// Save document
+                //string[] filepaths = dlg.FileNames;
+
+                //foreach (string filepath in filepaths)
+                //{
+                //    klu.ProcessStillImage(filepath, ref processOptions, ref ffp);
+                //    klu.GetLastProcessedImage(ref tmpBitmap);
+                //    //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                //    klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                //}
             }    
         }
 
@@ -289,7 +328,45 @@ namespace ffp
         /// <param name="e"></param>
         private void processCamera_Click(object sender, RoutedEventArgs e)
         {
+            processPreviousButton.IsEnabled = false;
+            processNextButton.IsEnabled = false;
+            processPlayPauseButton.IsEnabled = true;
 
+            filesToProcess.Clear();
+
+            if (!klu.CreateCapture())
+            {
+                return;
+            }
+
+            // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
+            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(30));//captureTimeTextBox.Text));
+
+            // Start the timer
+            captureTimer.Start();
+
+            statusText.Text = "Started camera processing";
+        }
+
+        /// <summary>
+        /// Stops all camera or video processing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void processStopMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            stopAllProcessing();
+        }
+
+        private void stopAllProcessing()
+        {
+            // Stops the internal timer which is responsible for updating the (live) image
+            // and doing the processing.
+            captureTimer.Stop();
+
+            klu.FreeCapture();
+
+            statusText.Text = "All processing stopped";
         }
 
         /// <summary>
@@ -542,6 +619,28 @@ namespace ffp
 
                 klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, filepath);
             }            
+        }
+
+        private void processNextButton_Click(object sender, RoutedEventArgs e)
+        {
+            processNextFile();
+        }
+
+        private void processPreviousButton_Click(object sender, RoutedEventArgs e)
+        {
+            processPreviousFile();
+        }
+
+        private void processPlayPauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (captureTimer.IsEnabled)
+            {
+                captureTimer.Stop();
+            }
+            else
+            {
+                captureTimer.Start();
+            }
         }
     }
 }

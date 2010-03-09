@@ -48,9 +48,17 @@
                 <MenuItem Name="showExpertOptionsMenuItem" Click="showExpertOptionsMenuItem_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
-                <MenuItem Header="Video" Name="processVideoMenuItem" Click="processVideo_Click"/>
+                <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
                 <MenuItem Header="Still Image(s)" Name="processStillMenuItem" Click="processStill_Click"/>
                 <MenuItem Header="Camera" Name="processCameraMenuItem" Click="processCamera_Click"/>
+                <Separator></Separator>
+                <MenuItem Header="Process interval">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox Name="processInterval">50</TextBox>
+                        <Label>ms</Label>
+                    </StackPanel>
+                </MenuItem>
+                <MenuItem Header="Stop processing" ToolTip="This will only affect video or camera processing" Name="processStopMenuItem" Click="processStopMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Training" Name="trainMenu">
                 <MenuItem Header="Start Training" Name="startTrainingMenuItem" Click="startTrainingMenuItem_Click"/>
@@ -68,48 +76,41 @@
         </StatusBar>
 
         <TabControl ClipToBounds="False" SnapsToDevicePixels="False" Margin="6,29,6,29">
-            <TabItem Name="analyseTabItem" Header="Analyse">
+            <TabItem Name="analyseTabItem" Header="Analyze">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
-                        <Border Background="DimGray" Margin="10" BorderBrush="DarkGray" BorderThickness=".0,.0,2,2" CornerRadius="18">
+                        <Border Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">
+                            <Image Name="image1" Width="Auto" Height="Auto" Stretch="Uniform" />
+                        </Border>
+                        <!--<Border Background="DimGray" Margin="10" BorderBrush="DarkGray" BorderThickness=".0,.0,2,2" CornerRadius="18">
                             <Border BorderBrush="White" BorderThickness="5" CornerRadius="15" >
                                 <Border BorderBrush="Black" BorderThickness="2" CornerRadius="12">                                    
                                     <Border.Background>                                        
-                                        <ImageBrush Stretch="None" x:Name="imageBrush" TileMode="Tile">
-                                            <!--<ImageBrush.ImageSource>
-                                                <BitmapImage x:Name="image1"></BitmapImage>                                                
-                                            </ImageBrush.ImageSource>-->
+                                        <ImageBrush Stretch="None" x:Name="imageBrush" TileMode="Tile">                                           
                                         </ImageBrush>
                                     </Border.Background>
                                 </Border>
                             </Border>
-                        </Border>
+                        </Border>-->
                     </Grid>
                     <!--<Border MaxWidth="1" MaxHeight="1" BorderBrush="Red" BorderThickness="5" CornerRadius="5" Background="Red">
                         <Image Name="image1" Stretch="UniformToFill" />
                     </Border>-->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                        
+                        <Button Name="processPreviousButton" Click="processPreviousButton_Click">Prev</Button>
+                        <Button Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
+                        <Button Name="processNextButton" Click="processNextButton_Click">Next</Button>
                         <Label>Expression:</Label>
                         <ComboBox></ComboBox>
                         <Button>Save</Button>
+                        
                         <MediaElement></MediaElement>
                     </StackPanel>
-                </Grid>
-            </TabItem>
-            <TabItem Name="mainTabItem" Header="Main">
-                <Grid>
-                    <Button Height="23" Name="freeCaptureBt" Click="freeCaptureBt_Click" Width="88" HorizontalAlignment="Right" Margin="0,14,330,0" VerticalAlignment="Top">Free Capture</Button>
-                    <Button Height="23" Margin="343,43,330,0" Name="querySingleFrameBt" VerticalAlignment="Top" Click="querySingleFrameBt_Click">Query Single Frame</Button>
-                    <Button Height="23" Margin="343,72,424,0" Name="startLiveBt" VerticalAlignment="Top" Click="startLiveBt_Click">Start Live</Button>
-                    <Button Height="23" Margin="0,72,330,0" Name="stopLiveBt" VerticalAlignment="Top" Click="stopLiveBt_Click" HorizontalAlignment="Right" Width="88">Stop Live</Button>
-                    <Button Height="23" Margin="343,14,424,0" Name="createCaptureBt" VerticalAlignment="Top" Click="createCaptureBt_Click">Create Capture</Button>
-                    <Label Height="36.663" Margin="340,101,0,0" Name="label2" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86.658">Capture every</Label>
-                    <TextBox Height="23" Margin="0,103,375,0" Name="captureTimeTextBox" VerticalAlignment="Top" HorizontalAlignment="Right" Width="55.55" HorizontalContentAlignment="Right" TextInput="captureTimeTextBox_TextInput">90</TextBox>
-                    <Label Height="36.663" Margin="0,101,325,0" Name="msLabel" VerticalAlignment="Top" HorizontalAlignment="Right" Width="43.329">ms</Label>
                 </Grid>
             </TabItem>
             <TabItem Name="expressionsTabItem" Header="Expressions" VerticalAlignment="Stretch">
@@ -266,8 +267,8 @@
                             </toolkit:DataGrid>
                         </Grid>
                     </StackPanel>
-                    <Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="Gray" BorderThickness="5" Background="Gray" CornerRadius="5">
-                        <Canvas Name="annCanvas" Background="Gray" SizeChanged="annCanvas_SizeChanged"></Canvas>
+                    <Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="DimGray" BorderThickness="5" Background="DimGray" CornerRadius="5">
+                        <Canvas Name="annCanvas" Background="DimGray" SizeChanged="annCanvas_SizeChanged"></Canvas>
                     </Border>
                 </Grid>
             </TabItem>

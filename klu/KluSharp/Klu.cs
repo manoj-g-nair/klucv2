@@ -12,16 +12,17 @@ using System.Runtime.InteropServices;
 
 namespace KluSharp
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public class TestStruct
-    {
-        public Int32 A;
-        public Int32 B;
-    };
-
+    #region Structures for interacting with the DLL
     [StructLayout(LayoutKind.Sequential)]
     public class ProcessOptions
     {
+        public Int32 DrawAnthropometricPoints;
+        public Int32 DrawSearchRectangles;
+        public Int32 DrawFaceRectangle;
+        public Int32 DrawFramesPerSecond;
+        public Int32 DrawFeaturePoints;
+        public Int32 DoEyeProcessing;
+        public Int32 DoMouthProcessing;
     };
 
     [StructLayout(LayoutKind.Sequential)]
@@ -61,6 +62,7 @@ namespace KluSharp
         public EyeFeaturePoints rightEye;
         public MouthFeaturePoints mouth;
     };
+    #endregion
 
     /// <summary>
     /// This class encapsulates the C klu DLL library and provides some
@@ -68,11 +70,7 @@ namespace KluSharp
     /// </summary>
     public class Klu
     {
-        System.Drawing.Bitmap tmpBitmap;
-
-        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
-        private static extern bool DeleteObject(IntPtr hObject);
-
+        #region Constructor and Destructor
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
@@ -91,10 +89,7 @@ namespace KluSharp
         /// Constructs a new Klu object and initializes the wrapped C DLL library.
         /// </summary>
         public Klu()
-        {
-            // A good place to initialize the library
-            tmpBitmap = new System.Drawing.Bitmap(320, 280);
-
+        {            
             klu_initializeLibrary();
         }
 
@@ -108,7 +103,9 @@ namespace KluSharp
 
             klu_deinitializeLibrary();
         }
+        #endregion
 
+        #region Create and save ANN
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
@@ -128,41 +125,31 @@ namespace KluSharp
         /// <param name="numNeuronsPerLayer"></param>
         /// <param name="activationFunction"></param>
         /// <param name="filepath"></param>
-        /// <returns></returns>
+        /// <returns>true if successful; otherwise false</returns>
         public bool CreateAndSaveAnn(int[] numNeuronsPerLayer, ANN.ActivationFunction activationFunction, string filepath)
         {
             int res = klu_createAndSaveAnn(numNeuronsPerLayer, numNeuronsPerLayer.Count(), (int)activationFunction, filepath);
             return res == 1;
         }
+        #endregion
 
-
+        #region Create and free capture
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
-        private static extern Int32 testStruct([Out, MarshalAs(UnmanagedType.LPStruct)] TestStruct t);
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>Returns 1 if successful; otherwise 0 is returned.</returns>
-#if DEBUG
-        [DllImport(@"..\..\..\Debug\klulib.dll")]
-#else
-        [DllImport(@"..\..\..\Release\klulib.dll")]
-#endif
-        private static extern int createCapture();
+        private static extern int klu_createCapture();
 
         /// <summary>
         /// Creates a camera capture inside the DLL. If there already is a camera capture,
         /// it will be used without creating a new one if this method is called twice.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true if successful; otherwise false</returns>
         public bool CreateCapture()
         {
-            return (createCapture() == 1);
-        }
+            return (klu_createCapture() == 1);
+        }        
 
         /// <summary>
         /// 
@@ -172,21 +159,18 @@ namespace KluSharp
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
-        private static extern void freeCapture();
+        private static extern int klu_freeCapture();
 
         /// <summary>
         /// 
         /// </summary>
-        public void FreeCapture()
+        public bool FreeCapture()
         {
-            freeCapture();
-            TestStruct t = new TestStruct();
-            t.A = 3;
-            t.B = 9;
-            testStruct(t);
-            Console.WriteLine("Output (Sum): " + testStruct(t));
+            return (klu_freeCapture() == 1);
         }
+        #endregion
 
+        #region Convert binary OpenCV data to "System.Drawing.Bitmap"
         /// <summary>
         /// Writes raw OpenCV image data into the System.Drawing.Bitmap object.
         /// </summary>
@@ -200,6 +184,11 @@ namespace KluSharp
         {
             unsafe
             {
+                if (imageData == null)
+                {
+                    return;
+                }
+
                 int nl = height;
                 int nc = width * channels;
                 int step = widthStep;
@@ -216,116 +205,105 @@ namespace KluSharp
                 }
             }
         }
+        #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        /// <param name="nChannels"></param>
-        /// <param name="widthStep"></param>
+        #region Process capture image
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
-        unsafe private static extern void queryCaptureImage(byte** data, int* width, int* height, int* nChannels, int* widthStep);
-        //safe alternative (didn't work):
-        //private static extern void queryImage(out byte data, out int width, out int height, out int nChannels, out int widthStep);
-
-        /// <summary>
-        /// Queries an image from the capture device previously created with
-        /// "CreateCapture()".
-        /// 
-        /// Use this function if your are programming with WindowsForms.
-        /// 
-        /// If you want to set the image in a WPF Image control use this code:
-        /// 
-        ///    System.Drawing.Bitmap bitmap = klu.QueryCaptureImage())
-        ///    klu.SetWpfImageFromBitmap(ref YOUR_WPF_IMAGE, ref bitmap);
-        /// 
-        /// </summary>
-        /// <returns>Returns the queried image as a System.Drawing.Bitmap</returns>
-        public System.Drawing.Bitmap QueryCaptureImage()
-        {
-            unsafe
-            {
-                int width, height, widthStep, channels;
-                byte* imageData;
-                queryCaptureImage(&imageData, &width, &height, &channels, &widthStep);
-                //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
-                //convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
-                convertToBitmap2(ref tmpBitmap, ref imageData, width, height, channels, widthStep);
-                return tmpBitmap;
-            }
-        }
-
-        public void QueryCaptureImage2(ref System.Drawing.Bitmap bitmap)
-        {
-            unsafe
-            {
-                int width, height, widthStep, channels;
-                byte* imageData;
-                queryCaptureImage(&imageData, &width, &height, &channels, &widthStep);
-                //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
-                convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
-            }
-        }
-
-#if DEBUG
-        [DllImport(@"..\..\..\Debug\klulib.dll")]
-#else
-        [DllImport(@"..\..\..\Release\klulib.dll")]
-#endif
-        private static extern Int32 klu_processCaptureImage(
+        private static extern int klu_processCaptureImage(
             [In, MarshalAs(UnmanagedType.LPStruct)] ProcessOptions processOptions,
             [Out, MarshalAs(UnmanagedType.LPStruct)] FaceFeaturePoints ffp);
 
-        public bool ProcessCaptureImage()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>true if successful; otherwise false</returns>
+        public bool ProcessCaptureImage(ref ProcessOptions options, ref FaceFeaturePoints ffp)
         {
-            ProcessOptions options = new ProcessOptions();
-            FaceFeaturePoints ffp = new FaceFeaturePoints();
-            int res = klu_processCaptureImage(options, ffp);
-            return res == 1;
+            return (klu_processCaptureImage(options, ffp) == 1);
         }
+        #endregion
 
+        #region Process still image
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
-        private static extern Int32 klu_processStillImage(
+        private static extern int klu_processStillImage(
             [In, MarshalAs(UnmanagedType.LPStr)] string filepath,
             [In, MarshalAs(UnmanagedType.LPStruct)] ProcessOptions processOptions,
             [Out, MarshalAs(UnmanagedType.LPStruct)] FaceFeaturePoints ffp);
 
-        public bool ProcessStillImage(string filepath)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filepath">Path to the file that shall be processed</param>
+        /// <returns>true if successful; otherwise false</returns>
+        public bool ProcessStillImage(string filepath, ref ProcessOptions options, ref FaceFeaturePoints ffp)
         {
-            ProcessOptions options = new ProcessOptions();
-            FaceFeaturePoints ffp = new FaceFeaturePoints();
-            int res = klu_processStillImage(filepath, options, ffp);
-            return res == 1;
+            return (klu_processStillImage(filepath, options, ffp) == 1);
         }
+        #endregion
 
+        #region Get last processed image and it's dims
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
         [DllImport(@"..\..\..\Release\klulib.dll")]
 #endif
         unsafe private static extern int klu_getLastProcessedImage(byte** data, int* width, int* height, int* nChannels, int* widthStep);
-
-        public void GetLastProcessedImage(ref System.Drawing.Bitmap bitmap)
+        
+        /// <summary>
+        /// Writes the last processed image into the bitmap.
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns>true if successful; otherwise false</returns>
+        public bool GetLastProcessedImage(ref System.Drawing.Bitmap bitmap)
         {
+            int res = 0;
             unsafe
             {
-                int width, height, widthStep, channels;
+                int width = 0, height = 0, widthStep = 0, channels = 0;
                 byte* imageData;
-                int res = klu_getLastProcessedImage(&imageData, &width, &height, &channels, &widthStep);
-                //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
-                convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
+                res = klu_getLastProcessedImage(&imageData, &width, &height, &channels, &widthStep);
+                //Console.WriteLine("klu_getLastProcessedImage " + res);
+                if (res == 1)
+                {
+                    //System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(width, height);
+                    convertToBitmap2(ref bitmap, ref imageData, width, height, channels, widthStep);
+                }
             }
+            return res == 1;
         }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_getLastProcessedImageDims(out int width, out int height);
+
+        /// <summary>
+        /// Stores the width and height of the last processed image.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns>true if successful; otherwise false</returns>
+        public bool GetLastProcessedImageDims(ref int width, ref int height)
+        {
+            int res = klu_getLastProcessedImageDims(out width, out height);
+            return res == 1;
+        }
+        #endregion
+
+        #region Set a bitmap as the source of an image or an image brush.
+
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        private static extern bool DeleteObject(IntPtr hObject);
 
         /// <summary>
         /// Implicitly converts the old System.Drawing.Bitmap (GDI) "bitmap" to a new
@@ -336,7 +314,7 @@ namespace KluSharp
         /// </summary>
         /// <param name="image">The WPF image control</param>
         /// <param name="bitmap">The System.Drawing.Bitmap object to set as the image's "Source" attribute</param>
-        public void SetWpfImageFromBitmap(ref System.Windows.Controls.Image image, ref System.Drawing.Bitmap bitmap)
+        public bool SetWpfImageFromBitmap(ref System.Windows.Controls.Image image, ref System.Drawing.Bitmap bitmap)
         {
             IntPtr hBitmap = bitmap.GetHbitmap();
 
@@ -350,9 +328,11 @@ namespace KluSharp
 
             // TODO: Will this cause a crash?
             DeleteObject(hBitmap);
+
+            return true;
         }
 
-        public void SetImageBrushFromBitmap(ref System.Windows.Media.ImageBrush image, ref System.Drawing.Bitmap bitmap)
+        public bool SetImageBrushFromBitmap(ref System.Windows.Media.ImageBrush image, ref System.Drawing.Bitmap bitmap)
         {
             IntPtr hBitmap = bitmap.GetHbitmap();
 
@@ -366,6 +346,9 @@ namespace KluSharp
 
             // TODO: Will this cause a crash?
             DeleteObject(hBitmap);
+
+            return true;
         }
+        #endregion
     }
 }

@@ -65,9 +65,6 @@ namespace klu
     {
         CvCapture * capture; // NULL if no capture is being used.
         bool isExiting;
-        bool drawSearchRects;
-        bool drawAnthropometricPoints;
-        bool drawFfps;
         CvFont font;
         ProcessMode mode;
         IplImage * grayscale; 
@@ -284,7 +281,7 @@ namespace klu
     *
     * @author Konrad Kleine, Jens Lukowski
     */
-    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp);
+    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp, const KluProcessOptions * options);
 
     /**
     * This function processes an image frame. The image frame can come from a

@@ -18,9 +18,6 @@ namespace klu
     //------------------------------------------------------------------------------
     bool initializeLibrary(void)
     {
-        app.drawAnthropometricPoints = true;
-        app.drawSearchRects = true;
-        app.drawFfps = true;
         cvInitFont(&(app.font), CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
         app.grayscale = NULL;	
         app.lastImage = NULL;
@@ -734,41 +731,43 @@ namespace klu
         return fp;
     }
     //------------------------------------------------------------------------------
-    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp)
+    void drawFfps(IplImage * image, const KluFaceFeaturePoints & ffp, const KluProcessOptions * options)
     {
-        // Draw mouth feature points
-        //drawCross(image, ffp.mouth.lipCornerLeft, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lipCornerRight, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lipUpCenter, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lipBottomCenter, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lipUpLeft, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lipBottomLeft, COL_YELLOW);
-        //drawCross(image, ffp.mouth.upperLipRight, COL_YELLOW);
-        //drawCross(image, ffp.mouth.lowerLipRight, COL_YELLOW);
-        // Lips
-        cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW);
-        cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
-        cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
-        cvLine(image, ffp.mouth.upperLipMiddle, ffp.mouth.upperLipRight, COL_YELLOW);
-        cvLine(image, ffp.mouth.upperLipRight, ffp.mouth.cornerRight, COL_YELLOW);
-        cvLine(image, ffp.mouth.cornerRight, ffp.mouth.lowerLipRight, COL_YELLOW);
-        cvLine(image, ffp.mouth.lowerLipRight, ffp.mouth.lowerLipMiddle, COL_YELLOW);
-        cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW);
-        cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW);       
+        if ( !image || !options )
+        {
+            return;
+        }
 
-        // Draw eye feature points
-        // Centers
+        // Lips
+        if (options->doMouthProcessing)
+        {
+            cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW);
+            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
+            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
+            cvLine(image, ffp.mouth.upperLipMiddle, ffp.mouth.upperLipRight, COL_YELLOW);
+            cvLine(image, ffp.mouth.upperLipRight, ffp.mouth.cornerRight, COL_YELLOW);
+            cvLine(image, ffp.mouth.cornerRight, ffp.mouth.lowerLipRight, COL_YELLOW);
+            cvLine(image, ffp.mouth.lowerLipRight, ffp.mouth.lowerLipMiddle, COL_YELLOW);
+            cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW);
+            cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW);       
+        }
+        
+        // Draw eye centers, no matter what
         drawCross(image, ffp.leftEye.center, COL_YELLOW);
         drawCross(image, ffp.rightEye.center, COL_YELLOW);
+
         // Lids
-        drawCross(image, ffp.rightEye.cornerLeft, COL_YELLOW);
-        drawCross(image, ffp.rightEye.cornerRight, COL_YELLOW);
-        drawCross(image, ffp.rightEye.upperLid, COL_YELLOW);
-        drawCross(image, ffp.rightEye.lowerLid, COL_YELLOW);
-        drawCross(image, ffp.leftEye.cornerLeft, COL_YELLOW);
-        drawCross(image, ffp.leftEye.cornerRight, COL_YELLOW);
-        drawCross(image, ffp.leftEye.upperLid, COL_YELLOW);
-        drawCross(image, ffp.leftEye.lowerLid, COL_YELLOW);
+        if (options->doEyeProcessing)
+        {
+            drawCross(image, ffp.rightEye.cornerLeft, COL_YELLOW);
+            drawCross(image, ffp.rightEye.cornerRight, COL_YELLOW);
+            drawCross(image, ffp.rightEye.upperLid, COL_YELLOW);
+            drawCross(image, ffp.rightEye.lowerLid, COL_YELLOW);
+            drawCross(image, ffp.leftEye.cornerLeft, COL_YELLOW);
+            drawCross(image, ffp.leftEye.cornerRight, COL_YELLOW);
+            drawCross(image, ffp.leftEye.upperLid, COL_YELLOW);
+            drawCross(image, ffp.leftEye.lowerLid, COL_YELLOW);
+        }
     }
     //------------------------------------------------------------------------------
     bool processImageFrame(IplImage * image,
@@ -828,10 +827,17 @@ namespace klu
                     rightEyeRect.x += rightEyeSearchWindow.x;
                     rightEyeRect.y += rightEyeSearchWindow.y;
 
-                    // Find right eye feature points
-                    cvSetImageROI(app.grayscale, rightEyeRect);
-                    ffp->rightEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(rightEyeRect), app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
-                    cvResetImageROI(app.grayscale);
+                    if ( options->doEyeProcessing)
+                    {
+                        // Find right eye feature points
+                        cvSetImageROI(app.grayscale, rightEyeRect);
+                        ffp->rightEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(rightEyeRect), app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
+                        cvResetImageROI(app.grayscale);
+                    }
+                    else
+                    {                    
+                        ffp->rightEye.center = getRectMidPoint(rightEyeRect);
+                    }
                 }
                 cvResetImageROI(image);
 
@@ -851,51 +857,61 @@ namespace klu
                     leftEyeRect.x += leftEyeSearchWindow.x;
                     leftEyeRect.y += leftEyeSearchWindow.y;
 
-                    // Find left eye feature points
-                    cvSetImageROI(app.grayscale, leftEyeRect);
-                    ffp->leftEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(leftEyeRect), app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
-                    cvResetImageROI(app.grayscale);
+                    if ( options->doEyeProcessing)
+                    {
+                        // Find left eye feature points
+                        cvSetImageROI(app.grayscale, leftEyeRect);
+                        ffp->leftEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(leftEyeRect), app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
+                        cvResetImageROI(app.grayscale);
+                    }
+                    else
+                    {
+                        ffp->leftEye.center = getRectMidPoint(leftEyeRect);
+                    }
                 }
                 cvResetImageROI(image);
 
                 /**
                 * Find mouth
                 */
-                double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
-                CvPoint mouthCenter = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 1.1);
-
-                mouthSearchWindow = faceRect;
-                mouthSearchWindow.height /= 2;
-                mouthSearchWindow.y += mouthSearchWindow.height;
-
-                cvSetImageROI(image, mouthSearchWindow);
-                mouthRects = detectObjects(image, app.cascadeMouth, app.memStorage, cvSize(120, 60));
-                if (mouthRects.size() > 0)
+                if (options->doMouthProcessing )
                 {
-                    mouthRect = mouthRects[0];
-                    mouthRect.x += mouthSearchWindow.x;
-                    mouthRect.y += mouthSearchWindow.y;
+                    double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
+                    CvPoint mouthCenter = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 1.1);
 
-                    cvSetImageROI(app.grayscale, mouthRect);
-                    ffp->mouth = detectMouthFeaturePoints(app.grayscale, app.memStorage, "M Contrast Stretch 1", "M Contrast Stretch 2","M Threshold", "M Contour", "M Feature Points");
-                    cvResetImageROI(app.grayscale);
+                    mouthSearchWindow = faceRect;
+                    mouthSearchWindow.height /= 2;
+                    mouthSearchWindow.y += mouthSearchWindow.height;
+
+                    cvSetImageROI(image, mouthSearchWindow);
+                    mouthRects = detectObjects(image, app.cascadeMouth, app.memStorage, cvSize(120, 60));
+                    if (mouthRects.size() > 0)
+                    {
+                        mouthRect = mouthRects[0];
+                        mouthRect.x += mouthSearchWindow.x;
+                        mouthRect.y += mouthSearchWindow.y;
+
+                        cvSetImageROI(app.grayscale, mouthRect);
+                        ffp->mouth = detectMouthFeaturePoints(app.grayscale, app.memStorage, "M Contrast Stretch 1", "M Contrast Stretch 2","M Threshold", "M Contour", "M Feature Points");
+                        cvResetImageROI(app.grayscale);
+                    }
+                    cvResetImageROI(image);
                 }
-                cvResetImageROI(image);
             }
         }
         double processingTime = toc();
 
         /**
-        * Draw object rects
-        */
-        for (vector<CvRect>::size_type i=0; i<faceRects.size(); i++)
+        * Draw object/face rects
+        */        
+        for (vector<CvRect>::size_type i=0; options->drawFaceRectangle && i<faceRects.size(); i++)
         {
             drawRect(image, faceRects[i], COL_RED);
         }
 
         double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
 
-        if (app.drawSearchRects)
+        if (options->drawSearchRectangles)
         {
             drawRect(image, rightEyeSearchWindow, COL_GREEN);
             drawRect(image, leftEyeSearchWindow, COL_BLUE);
@@ -907,7 +923,7 @@ namespace klu
             drawRect(image, mouthRect, COL_LIME_GREEN);
         }
 
-        if (app.drawAnthropometricPoints)
+        if (options->drawAnthropometricPoints)
         {
             // Draw eye-midpoint connection line
             cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE);
@@ -925,20 +941,23 @@ namespace klu
             drawCross(image, mouthCenter);
         }
 
-        if (app.drawFfps)
+        if (options->drawFeaturePoints)
         {
-            drawFfps(image, *ffp);
+            drawFfps(image, *ffp, options);
         }
 
-        // Print processing time for detection (after ROI reset!!)
-        memset(buf, '\0', 255);
-        sprintf(buf, "Detection Time: %0.3gms", processingTime);
-        CvSize textBoundings;
-        int ymin;
-        cvGetTextSize(buf, &app.font, &textBoundings, &ymin);
-        CvPoint org = cvPoint(0, image->height - 8);
-        cvRectangle(image, cvPoint(org.x, org.y + ymin), cvPoint(org.x + textBoundings.width, org.y - textBoundings.height), cvScalar(0,0,0,0.5), CV_FILLED);
-        cvPutText(image, buf, cvPoint(0, image->height - 8), &app.font, CV_RGB(0,255,0));		
+        if (options->drawFramesPerSecond)
+        {
+            // Print processing time for detection (after ROI reset!!)
+            memset(buf, '\0', 255);
+            sprintf(buf, "Detection Time: %0.3gms", processingTime);
+            CvSize textBoundings;
+            int ymin;
+            cvGetTextSize(buf, &app.font, &textBoundings, &ymin);
+            CvPoint org = cvPoint(0, image->height - 8);
+            cvRectangle(image, cvPoint(org.x, org.y + ymin), cvPoint(org.x + textBoundings.width, org.y - textBoundings.height), cvScalar(0,0,0,0.5), CV_FILLED);
+            cvPutText(image, buf, cvPoint(0, image->height - 8), &app.font, CV_RGB(0,255,0));		
+        }
 
         //==========================
         //==========================
