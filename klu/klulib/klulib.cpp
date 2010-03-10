@@ -90,7 +90,9 @@ extern "C" {
     //------------------------------------------------------------------------------
     KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, 
         int numLayers, 
-        int activationFunction, 
+        int activationFunction,
+        double alpha,
+        double beta,
         const char * filepath)
     {
         if ( !numNeuronsPerLayer || !filepath || numLayers < 0 )
@@ -98,11 +100,8 @@ extern "C" {
             return 0;
         }
 
-        CvMat layerSizes = cvMat(1, numLayers, CV_32SC1, numNeuronsPerLayer);
-
-        // Parameters for activation function
-        double alpha = 1.0;
-        double beta = 1.0;
+        //CvMat layerSizes = cvMat(1, numLayers, CV_32SC1, numNeuronsPerLayer);
+        CvMat layerSizes = cvMat(numLayers, 1, CV_32SC1, numNeuronsPerLayer);
 
         //// Create the ANN
         CvANN_MLP net(&layerSizes, activationFunction, alpha, beta);
@@ -133,6 +132,73 @@ extern "C" {
 
     //    return 1;
     //}
+     //------------------------------------------------------------------------------
+    KLULIB_API int klu_loadAnn(const char * filepath)
+    {
+        if ( !filepath )
+        {
+            return 0;
+        }
+
+        app.ann.load(filepath, "FFPANN");
+
+        return 1;
+    }
+    //------------------------------------------------------------------------------
+    KLULIB_API int klu_trainAnn(const KluTrainOptions * options,
+                                int numTrainingSets,
+                                float * inputs,
+                                int numInputNeurons,
+                                float * outputs,
+                                int numOutputNeurons)
+    {
+        if ( !options || !inputs || !outputs )
+        {
+            return 0;
+        }
+
+        cv::Mat inMat(numTrainingSets, numInputNeurons, CV_32FC1, inputs);
+        cv::Mat outMat(numTrainingSets, numOutputNeurons, CV_32FC1, outputs);
+        cv::Mat weightMat(numTrainingSets, 1, CV_32FC1, cv::Scalar(1.0f));
+
+        CvANN_MLP_TrainParams params(
+                cvTermCriteria(
+                    options->termination.terminationType,
+                    options->termination.maxIteration,
+                    options->termination.epsilon
+                ),
+                options->algorithm,
+                options->algorithm == BackpropAlgorithm ? options->backpropDeltaWeightScale : options->rpropDeltaWeight0,
+                options->algorithm == RpropAlgorithm ? options->backpropMomentumScale : options->rpropDeltaWeightMin
+        );
+        
+        app.ann.train(inMat, outMat, weightMat, cv::Mat(), params, 0);
+
+        return 1;
+    }
+    //------------------------------------------------------------------------------
+    KLULIB_API int klu_predictAnn(float * inputs,
+                                  int numInputNeurons,
+                                  float * results,
+                                  int numResults)
+    {
+        if ( !inputs || !results )
+        {
+            return 0;
+        }
+   
+        CvMat sample = cvMat(1, numInputNeurons, CV_32FC1, inputs);
+        CvMat predout = cvMat(1, numResults, CV_32FC1, results);
+
+        for (int i=0; i<numInputNeurons; i++)
+        {
+            sample.data.fl[i] = inputs[i];
+        }
+
+        app.ann.predict(&sample, &predout);
+
+        return 1;
+    }
     //------------------------------------------------------------------------------
     KLULIB_API int klu_processStillImage(const char * filepath,
         KluProcessOptions * processOptions, 

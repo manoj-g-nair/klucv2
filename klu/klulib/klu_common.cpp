@@ -27,7 +27,7 @@ namespace klu
         app.cascadeRightEye = (CvHaarClassifierCascade*) cvLoad("../../../../data/haarcascades/haarcascade_mcs_righteye.xml", 0, 0, 0 );
         app.cascadeMouth = (CvHaarClassifierCascade*) cvLoad("../../../../data/haarcascades/haarcascade_mcs_mouth.xml", 0, 0, 0 );
         app.memStorage = cvCreateMemStorage(0); 
-        app.kernel1 = cvCreateStructuringElementEx(3, 3, 1, 1, CV_SHAPE_RECT, NULL);
+        app.kernel1 = cvCreateStructuringElementEx(3, 3, 1, 1, CV_SHAPE_CROSS, NULL);
 
         cout << app.kernel1 << app.cascadeFace << app.cascadeLeftEye << app.cascadeRightEye << app.cascadeMouth << app.memStorage << endl;
 
@@ -579,12 +579,16 @@ namespace klu
         stretchContrast(regImg, lowerBound, stats.max, upperBound, 255);
         visDebug(windowContrastStretch1, regImg);
         
-        //cvErode(regImg, regImg, app.erodeKernel1, 1);
-        cvDilate(regImg, regImg, app.kernel1, 2);
-        visDebug("Contrast strectch 1 after kernel applied", regImg);
+        ////cvErode(regImg, regImg, app.erodeKernel1, 1);
+        //cvDilate(regImg, regImg, app.kernel1, 2);
+        //visDebug("Contrast strectch 1 after kernel applied", regImg);
 
         stretchContrast(regImg, stats.min, stats.avg, 0, stats.min);
         visDebug(windowContrastStretch2, regImg);
+
+        //cvErode(regImg, regImg, app.erodeKernel1, 1);
+        cvDilate(regImg, regImg, app.kernel1, 1);
+        visDebug("Contrast strectch 1 after kernel applied", regImg);
 
         // Threshold iteration
         unsigned char t;
@@ -818,6 +822,8 @@ namespace klu
             CvRect faceRect = faceRects[0];
             if ( faceRect.width != -1 && faceRect.height != -1 )
             {
+                ffp->faceRegion = faceRect;
+
                 CvSize eyeSize = cvSize(40, 30);
 
                 /**

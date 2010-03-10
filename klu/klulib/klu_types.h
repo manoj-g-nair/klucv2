@@ -29,12 +29,56 @@
 #endif
 
 extern "C" {
+
+
     KLULIB_API typedef enum
     {
         IdentityActivation = 0,
         SigmoidActivation = 1,
         GaussianActivation = 2
     } KluAnnActivation;
+
+    KLULIB_API typedef enum
+    {
+        MaxIterationTermination = 0,
+        EpsilonTermination = 1        
+    } KluTrainingTerminationType;    
+
+    KLULIB_API typedef struct KluTerminationCriteria
+    {
+        int terminationType;
+        float epsilon;
+        int maxIteration;
+    } KluTerminationCriteria;
+
+    KLULIB_API typedef enum
+    {
+        // LeCun, L. Bottou, G.B. Orr and K.-R. Muller,
+        // “Efficient backprop”,
+        // in Neural Networks—Tricks of the Trade, Springer Lecture Notes in Computer Sciences 1524, pp.5-50, 1998.
+        BackpropAlgorithm = 0,
+        // Riedmiller and H. Braun,
+        // “A Direct Adaptive Method for Faster Backpropagation Learning: The RPROP Algorithm”,
+        // Proc. ICNN, San Francisco (1993)
+        RpropAlgorithm = 1        
+    } KluTrainingAlgorithm;  
+
+    KLULIB_API typedef struct KluTrainOptions
+    {
+        KluTerminationCriteria termination;
+        KluTrainingAlgorithm algorithm;
+
+        // backpropagation parameters
+        double backpropDeltaWeightScale;    // default = 0.1
+        double backpropMomentumScale;       // default = 0.1
+
+        // rprop parameters
+        double rpropDeltaWeight0;           // default = 1
+        double rpropDeltaWeightPlus;        // default = 1.2
+        double rpropDeltaWeightMinus;       // default = 0.5
+        double rpropDeltaWeightMin;         // default = FLT_EPSILON (smallest floating point number such that (1.0+FLT_EPSILON != 1.0)
+        double rpropDeltaWeightMax;         // default = 50
+    } KluTrainOptions;
 
     KLULIB_API typedef struct KluProcessOptions
     {
@@ -99,6 +143,7 @@ extern "C" {
         KluEyeFeaturePoints leftEye;
         KluEyeFeaturePoints rightEye;
         KluMouthFeaturePoints mouth;
+        CvRect faceRegion;
     } KluFaceFeaturePoints;
 
     /**

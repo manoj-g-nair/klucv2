@@ -30,12 +30,31 @@ extern "C" {
     KLULIB_API int klu_createAndSaveAnn(int * numNeuronsPerLayer, 
         int numLayers, 
         int activationFunction, 
+        double alpha,
+        double beta,
         const char * filepath); 
 
     //KLULIB_API int klu_loadAnn(int * numNeuronsPerLayer, 
     //    int * numLayers, 
     //    int * activationFunction, 
-    //    const char * filepath); 
+    //    const char * filepath);
+
+    KLULIB_API int klu_loadAnn(const char * filepath);
+
+    /**
+     * Automatically initializes the weights and normalizes the inputs.
+     */
+    KLULIB_API int klu_trainAnn(const KluTrainOptions * options,
+                                int numTrainingSets,
+                                float * inputs,
+                                int numInputNeurons,
+                                float * outputs,
+                                int numOutputNeurons);
+
+    KLULIB_API int klu_predictAnn(float * inputs,
+                                  int numInputNeurons,
+                                  float * results,
+                                  int numResults);
 
     KLULIB_API int klu_processStillImage(const char * filepath, 
         KluProcessOptions * processOptions, 

@@ -99,19 +99,19 @@ namespace ffp
 
                 ann = new ANN();
                 ann.NumLayers = 3;
-                ann.SetNumNeurons(0, 4);
-                ann.SetNumNeurons(1, 3);
+                ann.SetNumNeurons(0, 16);
+                ann.SetNumNeurons(1, 6);
                 ann.SetNumNeurons(2, 1);                
 
                 // Bind certain labels to ANN stuff
-                //annNumLayers.DataContext = ann;
+                annNumLayers.DataContext = ann;
 
                 // Bind DataGrid to ANN-DataSet now
                 dataSetAnn = new DataSet("HiddenLayer");
                 dataSetAnn.Tables.Add("HiddenLayerTable");
                 uint tmp = 0;
                 dataSetAnn.Tables[0].Columns.Add("Neurons", tmp.GetType());
-                tmp = 3;
+                tmp = 6;
                 dataSetAnn.Tables[0].Rows.Add(tmp);
                 dgridHiddenLayer.DataContext = dataSetAnn.Tables[0];
                 #endregion
@@ -432,7 +432,44 @@ namespace ffp
         /// <param name="e"></param>
         private void startTrainingMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = "."; // Default file extension
+            dlg.Filter = "Neural network (*.xml)|*.xml|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Title = "Select the neural network you want to train?";
+            dlg.Multiselect = false;
 
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                bool res = klu.LoadANN(dlg.FileName);
+
+                Console.WriteLine("Load ANN success? " + res );
+
+                if ( !res )
+                {
+                    return;
+                }
+
+                statusText.Text = "ANN loaded: " + dlg.FileName;
+
+                TerminationCriteria terminationCriteria = new TerminationCriteria();
+                terminationCriteria.TerminationType = Convert.ToInt32(TrainingTermination.MaxIterationTermination);
+                terminationCriteria.MaxIteration = 100;
+
+                TrainOptions options = new TrainOptions();
+                options.Algorithm = TrainingAlgorithm.BackpropAlgorithm;
+                options.Termination = terminationCriteria;
+
+                statusText.Text = "Now training...";
+
+                res = klu.TrainAnn(options);
+
+                Console.WriteLine("Training success? " + res);
+
+                statusText.Text = "Training result: " + res;
+            }
         }
 
         /// <summary>
@@ -474,7 +511,7 @@ namespace ffp
                 #region Iterare over every neuron on the current layer
                 for (int n = 0; n < ann.GetNumNeurons(l); n++)
                 {
-                    Ellipse e = new Ellipse();                    
+                    Ellipse e = new Ellipse();
                     e.Stroke = Brushes.White;
                     e.Width = neuronDiameter;
                     e.Height = neuronDiameter;
@@ -529,7 +566,7 @@ namespace ffp
         private void applyAnnSettings_Click(object sender, RoutedEventArgs e)
         {
             ann.NumLayers = 2 + dataSetAnn.Tables[0].Rows.Count;
-            ann.SetNumNeurons(0, 4);
+            ann.SetNumNeurons(0, 16);
             ann.SetNumNeurons(dataSetAnn.Tables[0].Rows.Count + 1, 1);
 
             for (int i = 0; i < dataSetAnn.Tables[0].Rows.Count; i++)
@@ -569,28 +606,28 @@ namespace ffp
                     }
                     break;
                 case "drawAnthropometricPointsMenuItem":
-                    processOptions.DrawAnthropometricPoints = processOptions.DrawAnthropometricPoints == 1 ? 0 : 1;
+                    processOptions.DrawAnthropometricPoints = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "drawSearchRectanglesMenuItem":
-                    processOptions.DrawSearchRectangles = processOptions.DrawSearchRectangles == 1 ? 0 : 1;
+                    processOptions.DrawSearchRectangles = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "drawFaceRectangleMenuItem":
-                    processOptions.DrawFaceRectangle = processOptions.DrawFaceRectangle == 1 ? 0 : 1;
+                    processOptions.DrawFaceRectangle = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "drawDetectionTimeMenuItem":
-                    processOptions.DrawDetectionTime = processOptions.DrawDetectionTime == 1 ? 0 : 1;
+                    processOptions.DrawDetectionTime = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "drawFeaturePointsMenuItem":
-                    processOptions.DrawFeaturePoints = processOptions.DrawFeaturePoints == 1 ? 0 : 1;
+                    processOptions.DrawFeaturePoints = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "doEyeProcessingMenuItem":
-                    processOptions.DoEyeProcessing = processOptions.DoEyeProcessing == 1 ? 0 : 1;
+                    processOptions.DoEyeProcessing = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "doMouthProcessingMenuItem":
-                    processOptions.DoMouthProcessing = processOptions.DoMouthProcessing == 1 ? 0 : 1;
+                    processOptions.DoMouthProcessing = menuItem.IsChecked ? 0 : 1;
                     break;
                 case "doVisualDebugMenuItem":
-                    processOptions.DoVisualDebug = processOptions.DoVisualDebug == 1 ? 0 : 1;
+                    processOptions.DoVisualDebug = menuItem.IsChecked ? 0 : 1;
                     break;
             };
 
@@ -643,7 +680,7 @@ namespace ffp
                     actFunc = (ANN.ActivationFunction)hashtable[annActivation.Text];
                 }
 
-                klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, filepath);
+                klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, Convert.ToDouble(annAlpha.Text), Convert.ToDouble(annBeta.Text), filepath);
             }            
         }
 
@@ -690,6 +727,49 @@ namespace ffp
                     cbox.ToolTip = ex.Message;
                 }                
             }
+        }
+
+        /// <summary>
+        /// Calculates from fixed (integer) to relative coordinates
+        /// </summary>
+        /// <param name="coord"></param>
+        /// <param name="begin"></param>
+        /// <param name="dim"></param>
+        /// <returns>(double) (coord - begin) / (double) dim</returns>
+        private double i2r(int coord, int begin, int dim)
+        {
+            return (double) (coord - begin) / (double) dim;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int expressionOID = Convert.ToInt32(expressionSelectorComboBox.SelectedValue);
+
+            // Convert facial coordinates (for mouth only atm.) to relative face coordinates.
+
+            int x = ffp.FaceRectangle.X;
+            int y = ffp.FaceRectangle.Y;
+            int w = ffp.FaceRectangle.Width;
+            int h = ffp.FaceRectangle.Height;
+            
+            // Calculate the eye distance
+            double dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
+            double dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
+            double eyeDist = Math.Sqrt(dx * dx + dy * dy);
+
+            dataSet.Training.AddTrainingRow(
+                dataSet.Expression.FindByExpressionOID(expressionOID),
+                null,
+                i2r(ffp.Mouth.LipCornerLeft.X, x, w),   i2r(ffp.Mouth.LipCornerLeft.Y, y, h), 
+                i2r(ffp.Mouth.LipCornerRight.X, x, w),  i2r(ffp.Mouth.LipCornerRight.Y, y, h), 
+                i2r(ffp.Mouth.LipUpLeft.X, x, w),       i2r(ffp.Mouth.LipUpLeft.Y, y, h),
+                i2r(ffp.Mouth.LipUpCenter.X, x, w),     i2r(ffp.Mouth.LipUpCenter.Y, y, h), 
+                i2r(ffp.Mouth.LipUpRight.X, x, w),      i2r(ffp.Mouth.LipUpRight.Y, y, h), 
+                i2r(ffp.Mouth.LipBottomLeft.X, x, w),   i2r(ffp.Mouth.LipBottomLeft.Y, y, h), 
+                i2r(ffp.Mouth.LipBottomCenter.X, x, w), i2r(ffp.Mouth.LipBottomCenter.Y, y, h),
+                i2r(ffp.Mouth.LipBottomRight.X, x, w),  i2r(ffp.Mouth.LipBottomRight.Y, y, h),
+                eyeDist
+            );
         }
     }
 }

@@ -69,6 +69,7 @@ namespace klu
         IplImage * grayscale; 
         IplImage * lastImage;
         IplConvKernel * kernel1;
+        CvANN_MLP ann;
         KluProcessOptions processOptions;
         CvHaarClassifierCascade * cascadeFace;
         CvHaarClassifierCascade * cascadeMouth;

@@ -12,59 +12,6 @@ using System.Runtime.InteropServices;
 
 namespace KluSharp
 {
-    #region Structures for interacting with the DLL
-    [StructLayout(LayoutKind.Sequential)]
-    public class ProcessOptions
-    {
-        public Int32 DrawAnthropometricPoints;
-        public Int32 DrawSearchRectangles;
-        public Int32 DrawFaceRectangle;
-        public Int32 DrawDetectionTime;
-        public Int32 DrawFeaturePoints;
-        public Int32 DoEyeProcessing;
-        public Int32 DoMouthProcessing;
-        public Int32 DoVisualDebug;
-    };
-
-    [StructLayout(LayoutKind.Sequential)]
-    public class KluPoint
-    {
-        public Int32 X;
-        public Int32 Y;
-    };
-
-    [StructLayout(LayoutKind.Sequential)]
-    public class EyeFeaturePoints
-    {
-        public KluPoint EyeCenter;
-        public KluPoint LidUpCenter;
-        public KluPoint LidBottomCenter;
-        public KluPoint LidCornerLeft; // from your point of view
-        public KluPoint LidCornerRight;// from your point of view
-    };
-
-    [StructLayout(LayoutKind.Sequential)]
-    public class MouthFeaturePoints
-    {
-        public KluPoint LipUpCenter;
-        public KluPoint LipBottomCenter;
-        public KluPoint LipUpRight;
-        public KluPoint LipBottomRight;
-        public KluPoint LipUpLeft;
-        public KluPoint LipBottomLeft;
-        public KluPoint LipCornerLeft; // from your point of view
-        public KluPoint LipCornerRight;// from your point of view
-    };
-
-    [StructLayout(LayoutKind.Sequential)]
-    public class FaceFeaturePoints
-    {
-        public EyeFeaturePoints leftEye;
-        public EyeFeaturePoints rightEye;
-        public MouthFeaturePoints mouth;
-    };
-    #endregion
-
     /// <summary>
     /// This class encapsulates the C klu DLL library and provides some
     /// methods to image content from the library.
@@ -116,6 +63,8 @@ namespace KluSharp
             [In, MarshalAs(UnmanagedType.LPArray)] int[] numNeuronsPerLayer,
             int numLayers,
             int activationFunction,
+            double alpha,
+            double beta,
             [In, MarshalAs(UnmanagedType.LPStr)] string filepath
         );
 
@@ -127,9 +76,9 @@ namespace KluSharp
         /// <param name="activationFunction"></param>
         /// <param name="filepath"></param>
         /// <returns>true if successful; otherwise false</returns>
-        public bool CreateAndSaveAnn(int[] numNeuronsPerLayer, ANN.ActivationFunction activationFunction, string filepath)
+        public bool CreateAndSaveAnn(int[] numNeuronsPerLayer, ANN.ActivationFunction activationFunction, double alpha, double beta, string filepath)
         {
-            int res = klu_createAndSaveAnn(numNeuronsPerLayer, numNeuronsPerLayer.Count(), (int)activationFunction, filepath);
+            int res = klu_createAndSaveAnn(numNeuronsPerLayer, numNeuronsPerLayer.Count(), (int)activationFunction, alpha, beta, filepath);
             return res == 1;
         }
         #endregion
@@ -225,6 +174,20 @@ namespace KluSharp
         public bool ProcessCaptureImage(ref ProcessOptions options, ref FaceFeaturePoints ffp)
         {
             return (klu_processCaptureImage(options, ffp) == 1);
+        }
+        #endregion
+
+        #region Load ANN
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_loadAnn([In, MarshalAs(UnmanagedType.LPStr)] string filepath);
+
+        public bool LoadANN(string filepath)
+        {
+            return (klu_loadAnn(filepath) == 1);
         }
         #endregion
 
@@ -349,6 +312,59 @@ namespace KluSharp
             DeleteObject(hBitmap);
 
             return true;
+        }
+        #endregion
+
+        #region Train ANN
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_trainAnn(
+            [In, MarshalAs(UnmanagedType.LPStruct)] TrainOptions options,
+            int numTrainingSets,
+            [In, MarshalAs(UnmanagedType.LPArray)] float[] inputs,
+            int numInputNeurons,
+            [In, MarshalAs(UnmanagedType.LPArray)] float[] outputs,
+            int numOutputNeurons);
+
+        /// <summary>
+        /// Trains the ANN that has been previously been loaded using "LoadANN()"
+        /// </summary>
+        /// <param name="?"></param>
+        /// <returns></returns>
+        public bool TrainAnn(TrainOptions options)
+        {
+            const int numTrainingSets = 4;
+            const int numInputLayers = 16;
+            const int numOutputLayers = 1;
+            float[] inputs = new float[numTrainingSets * numInputLayers];
+            float[] outputs = new float[numTrainingSets * numOutputLayers];
+
+            return (klu_trainAnn(options, numTrainingSets, inputs, numInputLayers, outputs, numOutputLayers) == 1);
+        }
+        #endregion  
+        
+        #region Predict ANN output
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_predictAnn(
+                                    [In, MarshalAs(UnmanagedType.LPArray)] float[] inputs,
+                                    int numInputNeurons,
+                                    [In, MarshalAs(UnmanagedType.LPArray)] float[] results,
+                                    int numResults);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public bool PredictANN()
+        {
+            return true;//(klu_predictAnn(...) == 1);
         }
         #endregion
     }

@@ -51,7 +51,7 @@
                 <MenuItem Name="drawSearchRectanglesMenuItem" Click="optionsMenuToggled_Click" Header="Draw Search Rectangles" IsChecked="False" IsCheckable="True" />
                 <MenuItem Name="drawFaceRectangleMenuItem" Click="optionsMenuToggled_Click" Header="Draw Face Rectangle" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="drawDetectionTimeMenuItem" Click="optionsMenuToggled_Click" Header="Draw Detection Time" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points MenuItem" IsChecked="False" IsCheckable="True" />
+                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points" IsChecked="False" IsCheckable="True" />
                 <Separator></Separator>
                 <MenuItem Name="doEyeProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Eye Processing" IsChecked="False" IsCheckable="True" />
                 <MenuItem Name="doMouthProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Mouth Processing" IsChecked="True" IsCheckable="True" />
@@ -116,10 +116,9 @@
                         <Button Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
                         <Button Name="processNextButton" Click="processNextButton_Click">Next</Button>
                         <Label>Expression:</Label>
-                        <ComboBox IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" HorizontalAlignment="Stretch" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression">
-
+                        <ComboBox IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" HorizontalAlignment="Stretch" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
                         </ComboBox>
-                        <Button>Save</Button>
+                        <Button Click="Button_Click">Save</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -197,6 +196,23 @@
                                 </toolkit:DataGridTemplateColumn.CellTemplate>
                             </toolkit:DataGridTemplateColumn>
                             <toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />
+                            <toolkit:DataGridTemplateColumn Header="Coordinates">
+                                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <!--TODO-->
+                                    </DataTemplate>
+                                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                                <toolkit:DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock>{</TextBlock>
+                                            <Label Content="{Binding Path=LipCornerLeftX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipCornerLeftY, StringFormat=F3}" />
+                                            <TextBlock>}</TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkit:DataGridTemplateColumn.CellTemplate>
+                            </toolkit:DataGridTemplateColumn>
                             <!-- Use Text="{Binding Date, StringFormat=f}" for float vars -->
                             <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
                         </toolkit:DataGrid.Columns>
@@ -238,19 +254,29 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <Button Grid.Column="0" Grid.Row="0" Name="loadAnnButton" ToolTip="Click here to load an ANN you have already saved." Click="loadAnnButton_Click" Margin="6">Load</Button>
-                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save</Button>
-                            <!--<Label Grid.Column="0" Grid.Row="1">Num Layers:</Label>
-                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="1" Content="{Binding Path=NumLayers}"></Label>-->
+                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save</Button>                            
                             <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>
                             <ComboBox Margin="6"  Grid.Column="1" Grid.Row="1" Name="annActivation">
                                 <ComboBoxItem Name="identity">Identity</ComboBoxItem>
                                 <ComboBoxItem Name="sigmoid" IsSelected="True">Sigmoid</ComboBoxItem>
                                 <ComboBoxItem Name="gaussian">Gaussian</ComboBoxItem>
                             </ComboBox>
-                            <Button Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>
-                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2"                            
+                            
+                            <Label Margin="6" Grid.Column="0" Grid.Row="2">
+                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">Alpha:</Hyperlink>
+                            </Label>
+                            <TextBox Margin="6" Name="annAlpha" Grid.Column="1" Grid.Row="2">1.0</TextBox>
+                            <Label Margin="6" Grid.Column="0" Grid.Row="3">
+                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">Beta:</Hyperlink>
+                            </Label>
+                            <TextBox Margin="6" Name="annBeta" Grid.Column="1" Grid.Row="3" ToolTip="See http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">1.0</TextBox>
+                            <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>
+                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"                            
                             RowStyle="{StaticResource RowStyle}"
                             Margin="6"
                             VerticalAlignment="Stretch"
@@ -276,9 +302,12 @@
                                 </toolkit:DataGrid.Columns>
 
                             </toolkit:DataGrid>
+                            <Label Grid.Column="0" Grid.Row="6">Num Layers:</Label>
+                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="6" Content="{Binding Path=NumLayers, NotifyOnTargetUpdated=True}"></Label>
                         </Grid>
                     </StackPanel>
-                    <Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="DimGray" BorderThickness="5" Background="DimGray" CornerRadius="5">
+                    <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">
+                    <!--<Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="DimGray" BorderThickness="5" Background="DimGray" CornerRadius="5">-->
                         <Canvas Name="annCanvas" Background="DimGray" SizeChanged="annCanvas_SizeChanged"></Canvas>
                     </Border>
                 </Grid>
