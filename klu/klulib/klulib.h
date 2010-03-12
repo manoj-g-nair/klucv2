@@ -56,7 +56,8 @@ extern "C" {
                                 float * inputs,
                                 int numInputNeurons,
                                 float * outputs,
-                                int numOutputNeurons);
+                                int numOutputNeurons,
+                                int * terminatedAfterIter);
 
     KLULIB_API int klu_predictAnn(float * inputs,
                                   int numInputNeurons,

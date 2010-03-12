@@ -108,6 +108,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressionConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -217,7 +218,6 @@
     <Resource Include="img\16x16\edit-select-all.png" />
     <Resource Include="img\16x16\edit-undo.png" />
     <Resource Include="img\16x16\folder-new.png" />
-    <Resource Include="img\16x16\format-indent-less.png" />
     <Resource Include="img\16x16\format-indent-more.png" />
     <Resource Include="img\16x16\format-justify-center.png" />
     <Resource Include="img\16x16\format-justify-fill.png" />

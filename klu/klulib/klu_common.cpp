@@ -587,8 +587,9 @@ namespace klu
         visDebug(windowContrastStretch2, regImg);
 
         //cvErode(regImg, regImg, app.erodeKernel1, 1);
-        cvDilate(regImg, regImg, app.kernel1, 1);
-        visDebug("Contrast strectch 1 after kernel applied", regImg);
+
+        //cvDilate(regImg, regImg, app.kernel1, 1);
+        //visDebug("Contrast strectch 1 after kernel applied", regImg);
 
         // Threshold iteration
         unsigned char t;

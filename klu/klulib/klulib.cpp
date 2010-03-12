@@ -166,9 +166,10 @@ extern "C" {
                                 float * inputs,
                                 int numInputNeurons,
                                 float * outputs,
-                                int numOutputNeurons)
+                                int numOutputNeurons,
+                                int * terminatedAfterIter)
     {
-        if ( !options || !inputs || !outputs )
+        if ( !options || !inputs || !outputs || terminatedAfterIter )
         {
             return 0;
         }
@@ -188,7 +189,7 @@ extern "C" {
                 options->algorithm == RpropAlgorithm ? options->backpropMomentumScale : options->rpropDeltaWeightMin
         );
         
-        app.ann.train(inMat, outMat, weightMat, cv::Mat(), params, 0);
+        *terminatedAfterIter = app.ann.train(inMat, outMat, weightMat, cv::Mat(), params, 0);
 
         return 1;
     }

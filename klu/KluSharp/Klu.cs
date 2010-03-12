@@ -341,22 +341,29 @@ namespace KluSharp
             [In, MarshalAs(UnmanagedType.LPArray)] float[] inputs,
             int numInputNeurons,
             [In, MarshalAs(UnmanagedType.LPArray)] float[] outputs,
-            int numOutputNeurons);
+            int numOutputNeurons,
+            out int terminatedAfterIter
+            );
 
         /// <summary>
         /// Trains the ANN that has been previously been loaded using "LoadANN()"
         /// </summary>
         /// <param name="?"></param>
         /// <returns></returns>
-        public bool TrainAnn(TrainOptions options, int numTrainingSets, float[] inputs, float[] outputs)
+        public bool TrainAnn(TrainOptions options, int numTrainingSets, float[] inputs, float[] outputs, ref int terminatedAfterIter)
         {
-            //const int numTrainingSets = 4;
             int numInputLayers = inputs.Count() / numTrainingSets;
             int numOutputLayers = 1;
-            //float[] inputs = new float[numTrainingSets * numInputLayers];
-            //float[] outputs = new float[numTrainingSets * numOutputLayers];
+            Console.WriteLine("Starting Training with theses parameters:" +
+                "Number of Training Datasets: " + numTrainingSets +
+                "Number of Input Layers: " + numInputLayers +
+                "Number of Output Layers: " + numOutputLayers);
 
-            return (klu_trainAnn(options, numTrainingSets, inputs, numInputLayers, outputs, numOutputLayers) == 1);
+            int res = klu_trainAnn(options, numTrainingSets, inputs, numInputLayers, outputs, numOutputLayers, out terminatedAfterIter);
+
+            Console.WriteLine("Training finished after iteration #: " + terminatedAfterIter);
+
+            return (res == 1);
         }
         #endregion  
         

@@ -47,6 +47,12 @@ namespace ffp
         /// </summary>
         TrainingDataSet dataSet;
 
+        public TrainingDataSet Pups
+        {
+            get { return dataSet; }
+            set { dataSet = value; }
+        }
+
         /// <summary>
         /// This is a small wrapper around the structure NOT the logic of an ANN.
         /// </summary>
@@ -192,9 +198,14 @@ namespace ffp
             tam.TrainingTableAdapter.Fill(dataSet.Training);
             tam.ImageTableAdapter.Fill(dataSet.Image);
 
-            // Bind data to controls                  
-            dgridExpressions.DataContext = dataSet.Expression;
-            dgridTraining.DataContext = dataSet.Training;
+            // Bind data to controls 
+            dgridExpressions.ItemsSource = dataSet.Expression;
+            //dgridExpressions.DataContext = dataSet.Expression;
+            dgridTraining.ItemsSource = dataSet.Training;
+
+            //TrainingDataSet.TrainingRow row = dataSet.Training.FindByTrainingOID(0);
+            //row.ExpressionRow.Expression
+            //trainingGrid.DataContext = dataSet;
             expressionSelectorComboBox.DataContext = dataSet.Expression;
         }
 
@@ -519,7 +530,8 @@ namespace ffp
 
                 klu.SaveANN(dlg.FileName + ".untrained.xml");
 
-                res = klu.TrainAnn(options, numTrainingSets, inputs, outputs);
+                int iters = -10;
+                res = klu.TrainAnn(options, numTrainingSets, inputs, outputs, ref iters);
 
                 Console.WriteLine("Training success? " + res);
 
@@ -571,7 +583,7 @@ namespace ffp
 
                 if (ann.GetNumNeurons(l) > 1)
                 {
-                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l)-1) - neuronDiameter;
+                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l));
                 }
                 else
                 {
@@ -872,11 +884,7 @@ namespace ffp
         /// <param name="e"></param>
         private void captureResolutionMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            captureTimer.Stop();
             klu.ConfigureCaptureResolutionDialog();
-            klu.FreeCapture();
-            klu.CreateCapture();
-            captureTimer.Start();
         }
 
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)

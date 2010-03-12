@@ -42,7 +42,7 @@
 
     <Grid>
         <Grid.Background>
-            <SolidColorBrush Color="DarkCyan"></SolidColorBrush>
+            <SolidColorBrush Color="#FF555555"></SolidColorBrush>
         </Grid.Background>
 
         <Menu Height="23" VerticalAlignment="Top">
@@ -133,7 +133,7 @@
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Row="0" Grid.ColumnSpan="3">
-                        <Border Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">
+                        <Border Background="#FF333333" Margin="6" BorderBrush="DimGray" BorderThickness="2">
                             <Image Name="image1" Width="Auto" Height="Auto" Stretch="None" />
                         </Border>    
                     </Grid>
@@ -245,7 +245,7 @@
                         HorizontalGridLinesBrush="AntiqueWhite"
                         VerticalGridLinesBrush="AntiqueWhite" 
                         GridLinesVisibility="All"
-                        HeadersVisibility="All"                        
+                        HeadersVisibility="All"
                         >
 
                         <toolkit:DataGrid.RowValidationRules>
@@ -257,12 +257,13 @@
                             <toolkit:DataGridTemplateColumn Header="Expression">
                                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <ComboBox ItemsSource="{Binding ElementName=dataSet.Expression, Path=ExpressionColumn}"></ComboBox>
+                                        <!--<ComboBox ItemsSource="{Binding Path=LipCornerLeftX}"></ComboBox>-->
+                                        <Label Content="{Binding Path=Expression.OID}"></Label>
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                 <toolkit:DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Path=ExpressionOID}" />
+                                        <TextBlock Text="{Binding Path=ExpressionOID, Converter={StaticResource ExpressionConverter}}" />
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellTemplate>
                             </toolkit:DataGridTemplateColumn>
@@ -393,9 +394,9 @@
                             <Label Name="annNumLayers" Grid.Column="2" Grid.Row="5" Content="{Binding Path=NumLayers, NotifyOnTargetUpdated=True}"></Label>
                         </Grid>
                     </StackPanel>
-                    <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">
+                    <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="DimGray" BorderThickness="2">
                     <!--<Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="DimGray" BorderThickness="5" Background="DimGray" CornerRadius="5">-->
-                        <Canvas Name="annCanvas" Background="DimGray" SizeChanged="annCanvas_SizeChanged"></Canvas>
+                        <Canvas Name="annCanvas" Background="#FF333333" SizeChanged="annCanvas_SizeChanged"></Canvas>
                     </Border>
                 </Grid>
             </TabItem>
