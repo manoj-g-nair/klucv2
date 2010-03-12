@@ -284,6 +284,18 @@ namespace ffp
             }
         }
 
+        private void processFirstButton_Click(object sender, RoutedEventArgs e)
+        {
+            fileProcessIdx = -1;
+            processNextFile();
+        }
+
+        private void processLastButton_Click(object sender, RoutedEventArgs e)
+        {
+            fileProcessIdx = filesToProcess.Count - 1;
+            processPreviousFile();
+        }
+
         /// <summary>
         /// Starts the processing of still images.
         /// </summary>

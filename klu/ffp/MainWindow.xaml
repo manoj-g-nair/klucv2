@@ -17,8 +17,9 @@
                 <Setter.Value>
                     <ControlTemplate>
                         <Grid>
-                            <Ellipse Width="12" Height="12" Fill="Red" Stroke="Black" StrokeThickness="0.5"/>
-                            <TextBlock FontWeight="Bold" Padding="4,0,0,0" Margin="0" VerticalAlignment="Top" Foreground="White" Text="!" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Image Source="/ffp;component/img/16x16/software-update-urgent.png" Width="12" Height="12" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"></Image>
+                            <!--<Ellipse Width="12" Height="12" Fill="Red" Stroke="Black" StrokeThickness="0.5"/>
+                            <TextBlock FontWeight="Bold" Padding="4,0,0,0" Margin="0" VerticalAlignment="Top" Foreground="White" Text="!" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>-->
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -32,6 +33,11 @@
             </Style.Triggers>
         </Style>
 
+        <Style x:Key="ImageButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="6,0,6,0"></Setter>
+            <!--<Setter Property="BorderThickness" Value="0"></Setter>-->
+            <!--<Setter Property="Background" Value="Transparent"></Setter>-->
+        </Style>                
     </Window.Resources>
 
     <Grid>
@@ -41,9 +47,17 @@
 
         <Menu Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
-                <MenuItem Header="_Open" Name="fileOpenMenuItem" Click="processStill_Click" InputGestureText="Ctrl+O"></MenuItem>
+                <MenuItem  Header="_Open" Name="fileOpenMenuItem" Click="processStill_Click" InputGestureText="Ctrl+O">
+                    <MenuItem.Icon>
+                        <Image Source="/ffp;component/img/16x16/document-open.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator></Separator>
-                <MenuItem Header="E_xit" InputGestureText="Ctrl+X" Click="closeApplication" />
+                <MenuItem Header="E_xit" InputGestureText="Ctrl+X" Click="closeApplication">
+                    <MenuItem.Icon>
+                        <Image Source="/ffp;component/img/16x16/system-log-out.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Op_tions" InputGestureText="Ctrl+T">
                 <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
@@ -62,8 +76,15 @@
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
                 <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
-                <MenuItem Header="Still Image(s)" Name="processStillMenuItem" Click="processStill_Click"/>
-                <MenuItem Header="Camera" Name="processCameraMenuItem" Click="processCamera_Click"/>
+                <MenuItem Header="Still Image(s)" Name="processStillMenuItem" Click="processStill_Click">                    <MenuItem.Icon>
+                    <Image Source="/ffp;component/img/16x16/camera-photo.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Camera" Name="processCameraMenuItem" Click="processCamera_Click">
+                    <MenuItem.Icon>
+                        <Image Source="/ffp;component/img/16x16/camera-video.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator></Separator>
                 <MenuItem Header="Process interval">
                     <StackPanel Orientation="Horizontal">
@@ -71,14 +92,22 @@
                         <Label>ms</Label>
                     </StackPanel>
                 </MenuItem>
-                <MenuItem Header="Stop processing" ToolTip="This will only affect video or camera processing" Name="processStopMenuItem" Click="processStopMenuItem_Click"/>
+                <MenuItem Header="Stop processing" ToolTip="This will only affect video or camera processing" Name="processStopMenuItem" Click="processStopMenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="/ffp;component/img/16x16/process-stop.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Training" Name="trainMenu">
                 <MenuItem Header="Start Training" Name="startTrainingMenuItem" Click="startTrainingMenuItem_Click"/>
                 <MenuItem Header="Stop Training" IsEnabled="False" Name="stopTrainingMenuItem" Click="stopTrainingMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="_Info" InputGestureText="Ctrl+I">
-                <MenuItem Header="_About" Name="aboutMenuItem" InputGestureText="Ctrl+A" Click="aboutMenuItem_Click"/>
+                <MenuItem Header="_About" Name="aboutMenuItem" InputGestureText="Ctrl+A" Click="aboutMenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="/ffp;component/img/16x16/help-browser.png" Stretch="None"></Image>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
@@ -110,20 +139,47 @@
                     </Grid>
                     <StackPanel Margin="3" Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="left">
                         <Label Margin="3">Navigation:</Label>
-                        <Button Margin="3" Name="processPreviousButton" Click="processPreviousButton_Click">Prev</Button>
-                        <Button Margin="3" Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
-                        <Button Margin="3" Name="processNextButton" Click="processNextButton_Click">Next</Button>                      
+                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processFirstButton" Click="processFirstButton_Click">
+                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-first.png"></Image>
+                        </Button>
+                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processPreviousButton" Click="processPreviousButton_Click">
+                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-previous.png"></Image>
+                        </Button>
+                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">
+                            <Image Width="Auto" Source="/ffp;component/img/16x16/media-playback-start.png"></Image>
+                        </Button>
+                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processNextButton" Click="processNextButton_Click">
+                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-next.png"></Image>
+                        </Button>
+                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processLastButton" Click="processLastButton_Click">
+                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-last.png"></Image>
+                        </Button>
                     </StackPanel>
                     <StackPanel Margin="3" Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
                         <Label Margin="3">Expression:</Label>
                         <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
                         </ComboBox>
-                        <Button Margin="3" Width="Auto" Click="Button_Click">Classify</Button>
+                        <Button Margin="0" Width="Auto" Click="Button_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="Auto" Source="/ffp;component/img/16x16/media-floppy.png"></Image>
+                                <Label>Classify</Label>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
-                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="right">
+                    <StackPanel Margin="0" Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="right">
                         <Label Margin="3">Image stretching:</Label>
-                        <Button Margin="3" Name="stretchNoneButton" Click="stretchNoneButton_Click" ToolTip="Displays the image as is with no stretching or cropping applied.">None</Button>
-                        <Button Margin="3" Name="stretchUniformButton" Click="stretchUniformButton_Click" ToolTip="Stretches the displayed image to the maximum without cropping.">Uniform</Button>
+                        <Button Margin="3" Name="stretchNoneButton" Click="stretchNoneButton_Click" ToolTip="Displays the image as is with no stretching applied. The image might be cropped though.">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="Auto" Source="/ffp;component/img/16x16/list-remove.png"></Image>
+                                <Label>None</Label>
+                            </StackPanel>
+                        </Button>
+                        <Button Margin="3" Name="stretchUniformButton" Click="stretchUniformButton_Click" ToolTip="Stretches the displayed image to the maximum without cropping.">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Width="Auto" Source="/ffp;component/img/16x16/list-add.png"></Image>
+                                <Label>Uniform</Label>
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Grid>
             </TabItem>
@@ -132,8 +188,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Label Margin="6" Grid.Row="0">Please, feel free edit or add your own Expressions!</Label>
+                    </Grid.RowDefinitions>         
+                    <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left" Source="/ffp;component/img/16x16/face-smile.png" Stretch="None"></Image>
+                        <Label>Please, feel free edit or add your own Expressions!</Label>
+                    </StackPanel>                    
                     <toolkit:DataGrid Grid.Row="1"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
@@ -156,7 +215,7 @@
 
                         <toolkit:DataGrid.Columns>
                             <!--<toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=ExpressionOID}" IsReadOnly="True"/>-->
-                            <toolkit:DataGridTextColumn Header="Name" Binding="{Binding Path=Expression}" />
+                            <toolkit:DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" />
                             <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
                         </toolkit:DataGrid.Columns>
                     </toolkit:DataGrid>
@@ -168,7 +227,10 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Label Margin="6" Grid.Row="0">Please, feel free to manually edit or review your trainings!</Label>
+                    <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
+                        <Image HorizontalAlignment="Left" Source="/ffp;component/img/16x16/x-office-spreadsheet.png" Stretch="None"></Image>
+                        <Label>Please, feel free to manually edit or review your trainings!</Label>
+                    </StackPanel>
                     <toolkit:DataGrid Grid.Row="1"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
@@ -254,7 +316,7 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>-->
-            <TabItem Name="annConfigurationTabItem" Header="Artifical Neural Network Configuration" VerticalAlignment="Stretch">
+            <TabItem Name="annConfigurationTabItem" Header="Artifical Neural Network" VerticalAlignment="Stretch">
                 <Grid Name="annGrid">                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -275,8 +337,18 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="loadAnnButton" Click="loadAnnButton_Click" Margin="6">Load</Button>
-                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save</Button>                            
+                            <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="loadAnnButton" Click="loadAnnButton_Click" Margin="6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/ffp;component/img/16x16/document-open.png" Stretch="None"></Image>
+                                    <Label>Load</Label>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/ffp;component/img/16x16/document-save-as.png" Stretch="None"></Image>
+                                    <Label>Save</Label>
+                                </StackPanel>
+                            </Button>                            
                             <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>
                             <ComboBox Margin="6"  Grid.Column="1" Grid.Row="1" Name="annActivation">
                                 <ComboBoxItem Name="identity">Identity</ComboBoxItem>
@@ -285,7 +357,7 @@
                             </ComboBox>
                             
                             <Label Margin="6" Grid.Column="0" Grid.Row="2">
-                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">Alpha:</Hyperlink>
+                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks" TargetName="_blank">Alpha:</Hyperlink>
                             </Label>
                             <TextBox Margin="6" Name="annAlpha" Grid.Column="1" Grid.Row="2">1.0</TextBox>
                             <Label Margin="6" Grid.Column="0" Grid.Row="3">
