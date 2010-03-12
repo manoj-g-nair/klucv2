@@ -860,7 +860,11 @@ namespace ffp
         /// <param name="e"></param>
         private void captureResolutionMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            captureTimer.Stop();
             klu.ConfigureCaptureResolutionDialog();
+            klu.FreeCapture();
+            klu.CreateCapture();
+            captureTimer.Start();
         }
 
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
@@ -868,6 +872,16 @@ namespace ffp
             MessageBox.Show("This is KLU a Facial Feature Point (FFP) detector and Facial Expression "
             +"Analyzation tool. The project is maintained at the South Westphalia University of Applied Science "
             +" by Konrad Kleine and Jens Lukowski.", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void stretchNoneButton_Click(object sender, RoutedEventArgs e)
+        {
+            image1.Stretch = Stretch.None;
+        }
+
+        private void stretchUniformButton_Click(object sender, RoutedEventArgs e)
+        {
+            image1.Stretch = Stretch.Uniform;
         }
     }
 }

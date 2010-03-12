@@ -98,33 +98,32 @@
                         <RowDefinition></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
                         <Border Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">
-                            <Image Name="image1" Width="Auto" Height="Auto" Stretch="Uniform" />
-                        </Border>
-                        <!--<Border Background="DimGray" Margin="10" BorderBrush="DarkGray" BorderThickness=".0,.0,2,2" CornerRadius="18">
-                            <Border BorderBrush="White" BorderThickness="5" CornerRadius="15" >
-                                <Border BorderBrush="Black" BorderThickness="2" CornerRadius="12">                                    
-                                    <Border.Background>                                        
-                                        <ImageBrush Stretch="None" x:Name="imageBrush" TileMode="Tile">                                           
-                                        </ImageBrush>
-                                    </Border.Background>
-                                </Border>
-                            </Border>
-                        </Border>-->
+                            <Image Name="image1" Width="Auto" Height="Auto" Stretch="None" />
+                        </Border>    
                     </Grid>
-                    <!--<Border MaxWidth="1" MaxHeight="1" BorderBrush="Red" BorderThickness="5" CornerRadius="5" Background="Red">
-                        <Image Name="image1" Stretch="UniformToFill" />
-                    </Border>-->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                        
-                        <Button Name="processPreviousButton" Click="processPreviousButton_Click">Prev</Button>
-                        <Button Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
-                        <Button Name="processNextButton" Click="processNextButton_Click">Next</Button>
-                        <Label>Expression:</Label>
-                        <ComboBox IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" HorizontalAlignment="Stretch" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
+                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="left">
+                        <Label Margin="3">Navigation:</Label>
+                        <Button Margin="3" Name="processPreviousButton" Click="processPreviousButton_Click">Prev</Button>
+                        <Button Margin="3" Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">Play/Pause</Button>
+                        <Button Margin="3" Name="processNextButton" Click="processNextButton_Click">Next</Button>                      
+                    </StackPanel>
+                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                        <Label Margin="3">Expression:</Label>
+                        <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
                         </ComboBox>
-                        <Button Click="Button_Click">Save</Button>
+                        <Button Margin="3" Width="Auto" Click="Button_Click">Classify</Button>
+                    </StackPanel>
+                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="right">
+                        <Label Margin="3">Image stretching:</Label>
+                        <Button Margin="3" Name="stretchNoneButton" Click="stretchNoneButton_Click" ToolTip="Displays the image as is with no stretching or cropping applied.">None</Button>
+                        <Button Margin="3" Name="stretchUniformButton" Click="stretchUniformButton_Click" ToolTip="Stretches the displayed image to the maximum without cropping.">Uniform</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>

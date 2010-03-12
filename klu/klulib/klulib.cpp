@@ -327,6 +327,8 @@ extern "C" {
         CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
         HWND capHandle = cap->capWnd;
         capDlgVideoFormat(capHandle);
+        /*CAPDRIVERCAPS caps = {0};  
+        capDriverGetCaps(m_hCaptureWindow, &caps, sizeof(caps));*/
 #else
         return 0;
 #endif
