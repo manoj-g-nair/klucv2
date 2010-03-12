@@ -26,13 +26,6 @@ namespace KluSharp
 #endif
         private static extern int klu_initializeLibrary();
 
-#if DEBUG
-        [DllImport(@"..\..\..\Debug\klulib.dll")]
-#else
-        [DllImport(@"..\..\..\Release\klulib.dll")]
-#endif
-        private static extern int klu_deinitializeLibrary();
-
         /// <summary>
         /// Constructs a new Klu object and initializes the wrapped C DLL library.
         /// </summary>
@@ -40,6 +33,13 @@ namespace KluSharp
         {            
             klu_initializeLibrary();
         }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_deinitializeLibrary();
 
         /// <summary>
         /// Destroys the Klu object and deinitializes the wrapped C DLL library.
@@ -191,6 +191,20 @@ namespace KluSharp
         }
         #endregion
 
+        #region Load ANN
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_saveAnn([In, MarshalAs(UnmanagedType.LPStr)] string filepath);
+
+        public bool SaveANN(string filepath)
+        {
+            return (klu_saveAnn(filepath) == 1);
+        }
+        #endregion
+
         #region Process still image
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
@@ -334,13 +348,13 @@ namespace KluSharp
         /// </summary>
         /// <param name="?"></param>
         /// <returns></returns>
-        public bool TrainAnn(TrainOptions options)
+        public bool TrainAnn(TrainOptions options, int numTrainingSets, float[] inputs, float[] outputs)
         {
-            const int numTrainingSets = 4;
-            const int numInputLayers = 16;
-            const int numOutputLayers = 1;
-            float[] inputs = new float[numTrainingSets * numInputLayers];
-            float[] outputs = new float[numTrainingSets * numOutputLayers];
+            //const int numTrainingSets = 4;
+            int numInputLayers = inputs.Count() / numTrainingSets;
+            int numOutputLayers = 1;
+            //float[] inputs = new float[numTrainingSets * numInputLayers];
+            //float[] outputs = new float[numTrainingSets * numOutputLayers];
 
             return (klu_trainAnn(options, numTrainingSets, inputs, numInputLayers, outputs, numOutputLayers) == 1);
         }
@@ -359,12 +373,46 @@ namespace KluSharp
                                     int numResults);
 
         /// <summary>
-        /// 
+        /// Uses all the inputs for prediction.
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public bool PredictANN(float[] inputs, float[] results)
+        {
+            return (klu_predictAnn(inputs, inputs.Count(), results, results.Count()) == 1);
+        }
+
+        /// <summary>
+        /// Uses only "numInputs" for prediction.
+        /// TODO: (Ko) Find out if this might come in handy if doing 7 out of 10 validation?
+        /// </summary>
+        /// <param name="inputs"></param>
+        /// <param name="numInputs"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public bool PredictANN(float[] inputs, int numInputs, float[] results, int numResults)
+        {
+            return (klu_predictAnn(inputs, numInputs, results, numResults) == 1);
+        }
+        #endregion
+
+        #region Interface to "low level" VFW configuration dialog
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_configureCaptureDialog();
+
+        /// <summary>
+        /// Instructs the DLL to open the VFW dialog for the capture device.
+        /// If there isn't a capture device, this function will returns false.
         /// </summary>
         /// <returns></returns>
-        public bool PredictANN()
+        public bool ConfigureCaptureDialog()
         {
-            return true;//(klu_predictAnn(...) == 1);
+            return (klu_configureCaptureDialog() == 1);
         }
         #endregion
     }

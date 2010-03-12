@@ -621,23 +621,23 @@ namespace ffp {
             public TrainingRow AddTrainingRow(
                         ExpressionRow parentExpressionRowByFK_Training_Expression, 
                         ImageRow parentImageRowByFK_Training_Image, 
-                        double LipCornerLeftX, 
-                        double LipCornerLeftY, 
-                        double LipCornerRightX, 
-                        double LipCornerRightY, 
-                        double LipUpLeftX, 
-                        double LipUpLeftY, 
-                        double LipUpCenterX, 
-                        double LipUpCenterY, 
-                        double LipUpRightX, 
-                        double LipUpRightY, 
-                        double LipBottomLeftX, 
-                        double LipBottomLeftY, 
-                        double LipBottomCenterX, 
-                        double LipBottomCenterY, 
-                        double LipBottomRightX, 
-                        double LipBottomRightY, 
-                        double EyeDistance) {
+                        float LipCornerLeftX, 
+                        float LipCornerLeftY, 
+                        float LipCornerRightX, 
+                        float LipCornerRightY, 
+                        float LipUpLeftX, 
+                        float LipUpLeftY, 
+                        float LipUpCenterX, 
+                        float LipUpCenterY, 
+                        float LipUpRightX, 
+                        float LipUpRightY, 
+                        float LipBottomLeftX, 
+                        float LipBottomLeftY, 
+                        float LipBottomCenterX, 
+                        float LipBottomCenterY, 
+                        float LipBottomRightX, 
+                        float LipBottomRightY, 
+                        float EyeDistance) {
                 TrainingRow rowTrainingRow = ((TrainingRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
@@ -721,39 +721,39 @@ namespace ffp {
                 base.Columns.Add(this.columnExpressionOID);
                 this.columnImageOID = new global::System.Data.DataColumn("ImageOID", typeof(int), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnImageOID);
-                this.columnLipCornerLeftX = new global::System.Data.DataColumn("LipCornerLeftX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipCornerLeftX = new global::System.Data.DataColumn("LipCornerLeftX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipCornerLeftX);
-                this.columnLipCornerLeftY = new global::System.Data.DataColumn("LipCornerLeftY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipCornerLeftY = new global::System.Data.DataColumn("LipCornerLeftY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipCornerLeftY);
-                this.columnLipCornerRightX = new global::System.Data.DataColumn("LipCornerRightX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipCornerRightX = new global::System.Data.DataColumn("LipCornerRightX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipCornerRightX);
-                this.columnLipCornerRightY = new global::System.Data.DataColumn("LipCornerRightY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipCornerRightY = new global::System.Data.DataColumn("LipCornerRightY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipCornerRightY);
-                this.columnLipUpLeftX = new global::System.Data.DataColumn("LipUpLeftX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpLeftX = new global::System.Data.DataColumn("LipUpLeftX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpLeftX);
-                this.columnLipUpLeftY = new global::System.Data.DataColumn("LipUpLeftY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpLeftY = new global::System.Data.DataColumn("LipUpLeftY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpLeftY);
-                this.columnLipUpCenterX = new global::System.Data.DataColumn("LipUpCenterX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpCenterX = new global::System.Data.DataColumn("LipUpCenterX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpCenterX);
-                this.columnLipUpCenterY = new global::System.Data.DataColumn("LipUpCenterY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpCenterY = new global::System.Data.DataColumn("LipUpCenterY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpCenterY);
-                this.columnLipUpRightX = new global::System.Data.DataColumn("LipUpRightX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpRightX = new global::System.Data.DataColumn("LipUpRightX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpRightX);
-                this.columnLipUpRightY = new global::System.Data.DataColumn("LipUpRightY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipUpRightY = new global::System.Data.DataColumn("LipUpRightY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipUpRightY);
-                this.columnLipBottomLeftX = new global::System.Data.DataColumn("LipBottomLeftX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomLeftX = new global::System.Data.DataColumn("LipBottomLeftX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomLeftX);
-                this.columnLipBottomLeftY = new global::System.Data.DataColumn("LipBottomLeftY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomLeftY = new global::System.Data.DataColumn("LipBottomLeftY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomLeftY);
-                this.columnLipBottomCenterX = new global::System.Data.DataColumn("LipBottomCenterX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomCenterX = new global::System.Data.DataColumn("LipBottomCenterX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomCenterX);
-                this.columnLipBottomCenterY = new global::System.Data.DataColumn("LipBottomCenterY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomCenterY = new global::System.Data.DataColumn("LipBottomCenterY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomCenterY);
-                this.columnLipBottomRightX = new global::System.Data.DataColumn("LipBottomRightX", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomRightX = new global::System.Data.DataColumn("LipBottomRightX", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomRightX);
-                this.columnLipBottomRightY = new global::System.Data.DataColumn("LipBottomRightY", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnLipBottomRightY = new global::System.Data.DataColumn("LipBottomRightY", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLipBottomRightY);
-                this.columnEyeDistance = new global::System.Data.DataColumn("EyeDistance", typeof(double), null, global::System.Data.MappingType.Element);
+                this.columnEyeDistance = new global::System.Data.DataColumn("EyeDistance", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnEyeDistance);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnTrainingOID}, true));
@@ -1820,10 +1820,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipCornerLeftX {
+            public float LipCornerLeftX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipCornerLeftXColumn]));
+                        return ((float)(this[this.tableTraining.LipCornerLeftXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipCornerLeftX\' in table \'Training\' is DBNull.", e);
@@ -1835,10 +1835,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipCornerLeftY {
+            public float LipCornerLeftY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipCornerLeftYColumn]));
+                        return ((float)(this[this.tableTraining.LipCornerLeftYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipCornerLeftY\' in table \'Training\' is DBNull.", e);
@@ -1850,10 +1850,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipCornerRightX {
+            public float LipCornerRightX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipCornerRightXColumn]));
+                        return ((float)(this[this.tableTraining.LipCornerRightXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipCornerRightX\' in table \'Training\' is DBNull.", e);
@@ -1865,10 +1865,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipCornerRightY {
+            public float LipCornerRightY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipCornerRightYColumn]));
+                        return ((float)(this[this.tableTraining.LipCornerRightYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipCornerRightY\' in table \'Training\' is DBNull.", e);
@@ -1880,10 +1880,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpLeftX {
+            public float LipUpLeftX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpLeftXColumn]));
+                        return ((float)(this[this.tableTraining.LipUpLeftXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpLeftX\' in table \'Training\' is DBNull.", e);
@@ -1895,10 +1895,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpLeftY {
+            public float LipUpLeftY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpLeftYColumn]));
+                        return ((float)(this[this.tableTraining.LipUpLeftYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpLeftY\' in table \'Training\' is DBNull.", e);
@@ -1910,10 +1910,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpCenterX {
+            public float LipUpCenterX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpCenterXColumn]));
+                        return ((float)(this[this.tableTraining.LipUpCenterXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpCenterX\' in table \'Training\' is DBNull.", e);
@@ -1925,10 +1925,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpCenterY {
+            public float LipUpCenterY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpCenterYColumn]));
+                        return ((float)(this[this.tableTraining.LipUpCenterYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpCenterY\' in table \'Training\' is DBNull.", e);
@@ -1940,10 +1940,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpRightX {
+            public float LipUpRightX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpRightXColumn]));
+                        return ((float)(this[this.tableTraining.LipUpRightXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpRightX\' in table \'Training\' is DBNull.", e);
@@ -1955,10 +1955,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipUpRightY {
+            public float LipUpRightY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipUpRightYColumn]));
+                        return ((float)(this[this.tableTraining.LipUpRightYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipUpRightY\' in table \'Training\' is DBNull.", e);
@@ -1970,10 +1970,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomLeftX {
+            public float LipBottomLeftX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomLeftXColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomLeftXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomLeftX\' in table \'Training\' is DBNull.", e);
@@ -1985,10 +1985,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomLeftY {
+            public float LipBottomLeftY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomLeftYColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomLeftYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomLeftY\' in table \'Training\' is DBNull.", e);
@@ -2000,10 +2000,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomCenterX {
+            public float LipBottomCenterX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomCenterXColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomCenterXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomCenterX\' in table \'Training\' is DBNull.", e);
@@ -2015,10 +2015,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomCenterY {
+            public float LipBottomCenterY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomCenterYColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomCenterYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomCenterY\' in table \'Training\' is DBNull.", e);
@@ -2030,10 +2030,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomRightX {
+            public float LipBottomRightX {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomRightXColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomRightXColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomRightX\' in table \'Training\' is DBNull.", e);
@@ -2045,10 +2045,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double LipBottomRightY {
+            public float LipBottomRightY {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.LipBottomRightYColumn]));
+                        return ((float)(this[this.tableTraining.LipBottomRightYColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'LipBottomRightY\' in table \'Training\' is DBNull.", e);
@@ -2060,10 +2060,10 @@ namespace ffp {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            public double EyeDistance {
+            public float EyeDistance {
                 get {
                     try {
-                        return ((double)(this[this.tableTraining.EyeDistanceColumn]));
+                        return ((float)(this[this.tableTraining.EyeDistanceColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'EyeDistance\' in table \'Training\' is DBNull.", e);

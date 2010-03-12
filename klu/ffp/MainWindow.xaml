@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ffp"
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
-    Title="Facial Expression Recognition" Height="367.5" Width="882.5"
+    Title="Facial Expression Recognition" Height="586" Width="882.5"
     WindowStartupLocation="CenterScreen" Closing="Window_Closing" x:Name="self">
 
     <Window.Resources>
@@ -47,15 +47,17 @@
             </MenuItem>
             <MenuItem Header="Op_tions" InputGestureText="Ctrl+T">
                 <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawAnthropometricPointsMenuItem" Click="optionsMenuToggled_Click"  Header="Draw Anthropometric Points" IsChecked="True" IsCheckable="True" />
+                <MenuItem Name="drawAnthropometricPointsMenuItem" Click="optionsMenuToggled_Click"  Header="Draw Anthropometric Points" IsChecked="False" IsCheckable="True" />
                 <MenuItem Name="drawSearchRectanglesMenuItem" Click="optionsMenuToggled_Click" Header="Draw Search Rectangles" IsChecked="False" IsCheckable="True" />
                 <MenuItem Name="drawFaceRectangleMenuItem" Click="optionsMenuToggled_Click" Header="Draw Face Rectangle" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="drawDetectionTimeMenuItem" Click="optionsMenuToggled_Click" Header="Draw Detection Time" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points" IsChecked="False" IsCheckable="True" />
+                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points" IsChecked="True" IsCheckable="True" />
                 <Separator></Separator>
                 <MenuItem Name="doEyeProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Eye Processing" IsChecked="False" IsCheckable="True" />
                 <MenuItem Name="doMouthProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Mouth Processing" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="doVisualDebugMenuItem" Click="optionsMenuToggled_Click" Header="Do Visual Debug" IsChecked="False" IsCheckable="True" />
+                <Separator></Separator>
+                <MenuItem Name="configureCaptureDialogMenuItem" Click="configureCaptureDialogMenuItem_Click" Header="Configure Dialog for Capture"></MenuItem>
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
                 <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
@@ -75,14 +77,17 @@
                 <MenuItem Header="Stop Training" IsEnabled="False" Name="stopTrainingMenuItem" Click="stopTrainingMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="_Info" InputGestureText="Ctrl+I">
-                <MenuItem Header="_About" InputGestureText="Ctrl+A"/>
+                <MenuItem Header="_About" Name="aboutMenuItem" InputGestureText="Ctrl+A" Click="aboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
 
-        <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom">
+        <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
             <StatusBarItem>
-                <TextBlock Name="statusText">Ready</TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Name="statusText">Ready</TextBlock>                    
             </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar HorizontalAlignment="Right" Height="15" Visibility="Hidden" IsEnabled="false" Name="statusProgess" IsIndeterminate="True"></ProgressBar>
+            </StatusBarItem>            
         </StatusBar>
 
         <TabControl ClipToBounds="False" SnapsToDevicePixels="False" Margin="6,29,6,29">
@@ -123,11 +128,13 @@
                 </Grid>
             </TabItem>
             <TabItem Name="expressionsTabItem" Header="Expressions" VerticalAlignment="Stretch">
-                <StackPanel VerticalAlignment="Stretch">
-                    <Label Margin="6">Please, feel free edit or add your own Expressions!</Label>
-                    <toolkit:DataGrid 
-                        HorizontalScrollBarVisibility="Visible"
-                        VerticalScrollBarVisibility="Visible"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Margin="6" Grid.Row="0">Please, feel free edit or add your own Expressions!</Label>
+                    <toolkit:DataGrid Grid.Row="1"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
                         VerticalAlignment="Stretch"
@@ -153,14 +160,16 @@
                             <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
                         </toolkit:DataGrid.Columns>
                     </toolkit:DataGrid>
-                </StackPanel>
+                </Grid>
             </TabItem>
             <TabItem Name="trainingDatasetsTabItem" Header="Training Datasets">
-                <StackPanel>
-                    <Label Margin="6">Please, feel free to manually edit or review your trainings!</Label>
-                    <toolkit:DataGrid 
-                        HorizontalScrollBarVisibility="Visible"
-                        VerticalScrollBarVisibility="Visible"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Label Margin="6" Grid.Row="0">Please, feel free to manually edit or review your trainings!</Label>
+                    <toolkit:DataGrid Grid.Row="1"
                         RowStyle="{StaticResource RowStyle}"
                         Margin="6"
                         VerticalAlignment="Stretch"
@@ -174,7 +183,7 @@
                         HorizontalGridLinesBrush="AntiqueWhite"
                         VerticalGridLinesBrush="AntiqueWhite" 
                         GridLinesVisibility="All"
-                        HeadersVisibility="All"
+                        HeadersVisibility="All"                        
                         >
 
                         <toolkit:DataGrid.RowValidationRules>
@@ -195,7 +204,7 @@
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellTemplate>
                             </toolkit:DataGridTemplateColumn>
-                            <toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />
+                            <!--<toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />-->
                             <toolkit:DataGridTemplateColumn Header="Coordinates">
                                 <toolkit:DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
@@ -205,10 +214,23 @@
                                 <toolkit:DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock>{</TextBlock>
                                             <Label Content="{Binding Path=LipCornerLeftX, StringFormat=F3}" />
                                             <Label Content="{Binding Path=LipCornerLeftY, StringFormat=F3}" />
-                                            <TextBlock>}</TextBlock>
+                                            <Label Content="{Binding Path=LipCornerRightX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipCornerRightY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpLeftX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpLeftY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpCenterX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpCenterY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpRightX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipUpRightY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomLeftX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomLeftY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomCenterX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomCenterY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomRightX, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=LipBottomRightY, StringFormat=F3}" />
+                                            <Label Content="{Binding Path=EyeDistance, StringFormat=F3}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </toolkit:DataGridTemplateColumn.CellTemplate>
@@ -217,9 +239,9 @@
                             <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
                         </toolkit:DataGrid.Columns>
                     </toolkit:DataGrid>
-                </StackPanel>
+                </Grid>
             </TabItem>
-            <TabItem Name="exportTabItem" Header="Export">
+            <!--<TabItem Name="exportTabItem" Header="Export" Visibility="Hidden">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <GroupBox Header="Export Training Dataset to" Margin="6">
                         <StackPanel Orientation="Vertical">
@@ -236,26 +258,26 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-            </TabItem>
+            </TabItem>-->
             <TabItem Name="annConfigurationTabItem" Header="Artifical Neural Network Configuration" VerticalAlignment="Stretch">
-                <Grid Name="annGrid">
+                <Grid Name="annGrid">                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <StackPanel  HorizontalAlignment="Center">
+                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
                             <Button Grid.Column="0" Grid.Row="0" Name="loadAnnButton" ToolTip="Click here to load an ANN you have already saved." Click="loadAnnButton_Click" Margin="6">Load</Button>
@@ -276,12 +298,12 @@
                             </Label>
                             <TextBox Margin="6" Name="annBeta" Grid.Column="1" Grid.Row="3" ToolTip="See http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">1.0</TextBox>
                             <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>
-                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2"                            
+                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"                            
                             RowStyle="{StaticResource RowStyle}"
                             Margin="6"
                             VerticalAlignment="Stretch"
                             HorizontalAlignment="Stretch"
-                            MinHeight="90"
+                            MinHeight="200"
                             AlternatingRowBackground="AntiqueWhite" 
                             CanUserAddRows="True" 
                             CanUserDeleteRows="True" 
@@ -290,8 +312,6 @@
                             ItemsSource="{Binding}"
                             HorizontalGridLinesBrush="AntiqueWhite"
                             VerticalGridLinesBrush="AntiqueWhite" 
-                            HorizontalScrollBarVisibility="Visible"
-                            VerticalScrollBarVisibility="Visible"
                             GridLinesVisibility="All"
                             HeadersVisibility="All"
                             SelectionMode="Single"
@@ -302,8 +322,8 @@
                                 </toolkit:DataGrid.Columns>
 
                             </toolkit:DataGrid>
-                            <Label Grid.Column="0" Grid.Row="6">Num Layers:</Label>
-                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="6" Content="{Binding Path=NumLayers, NotifyOnTargetUpdated=True}"></Label>
+                            <Label Grid.Column="0" Grid.Row="5">Num Layers:</Label>
+                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="5" Content="{Binding Path=NumLayers, NotifyOnTargetUpdated=True}"></Label>
                         </Grid>
                     </StackPanel>
                     <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="LightGray" BorderThickness="2">

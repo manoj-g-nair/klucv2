@@ -34,12 +34,19 @@ extern "C" {
         double beta,
         const char * filepath); 
 
-    //KLULIB_API int klu_loadAnn(int * numNeuronsPerLayer, 
-    //    int * numLayers, 
-    //    int * activationFunction, 
-    //    const char * filepath);
+    /**
+     * TODO: (Ko) Complete the implementation and create + fill numNeuronsPerLayer
+     * TODO: (Ko) Add alpha and beta
+     * TODO: (Ko) Complete activation function
+     */
+    KLULIB_API int klu_loadAnnAndGetStructure(int * numNeuronsPerLayer, 
+        int * numLayers, 
+        int * activationFunction, 
+        const char * filepath);
 
     KLULIB_API int klu_loadAnn(const char * filepath);
+
+    KLULIB_API int klu_saveAnn(const char * filepath);
 
     /**
      * Automatically initializes the weights and normalizes the inputs.
@@ -62,5 +69,7 @@ extern "C" {
 
     KLULIB_API int klu_processCaptureImage(KluProcessOptions * processOptions, 
         KluFaceFeaturePoints * ffp);
+
+    KLULIB_API int klu_configureCaptureDialog();
 
 }

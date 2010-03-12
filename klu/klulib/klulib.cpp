@@ -4,6 +4,21 @@
 #include "stdafx.h"
 #include "klulib.h"
 #include "klu_common.hpp"
+#include <Vfw.h>
+
+#ifdef WIN32
+typedef struct CvCaptureCAM_VFW
+{
+    void* vtable;
+    CAPDRIVERCAPS caps;
+    HWND   capWnd;
+    VIDEOHDR* hdr;
+    DWORD  fourcc;
+    HIC    hic;
+    IplImage* rgb_frame;
+    IplImage frame;
+} CvCaptureCAM_VFW;
+#endif
 
 using namespace klu;
 
@@ -15,22 +30,8 @@ extern "C" {
     KLULIB_API int klu_createCapture(void)
     {
         if ( !app.capture )
-        {
-            app.capture = cvCreateCameraCapture(CV_CAP_ANY);
-
-            //if ( app.capture )
-            //{        
-            //    // Manipulate properties of the camera.
-            //    cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH, double(320));
-            //    cvSetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT, double(240));
-            //    int camWidth = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_WIDTH);
-            //    int camHeight = cvGetCaptureProperty(app.capture, CV_CAP_PROP_FRAME_HEIGHT);
-
-            //    if ( camWidth != 320 || camHeight != 240 )
-            //    {
-            //        freeCapture();
-            //    }
-            //}
+        {  
+            app.capture = cvCreateCameraCapture(CV_CAP_VFW);
         }
 
         return app.capture ? 1 : 0;
@@ -111,28 +112,27 @@ extern "C" {
         return 1;
     }
     //------------------------------------------------------------------------------
-    //KLULIB_API int klu_loadAnn(int * numNeuronsPerLayer, 
-    //    int * numLayers, 
-    //    int * activationFunction, 
-    //    const char * filepath)
-    //{
-    //    if ( !numNeuronsPerLayer || !filepath || !numLayers || !activationFunction )
-    //    {
-    //        return 0;
-    //    }
+    KLULIB_API int klu_loadAnnAndGetStructure(int * numNeuronsPerLayer, 
+        int * numLayers, 
+        int * activationFunction, 
+        const char * filepath)
+    {
+        if ( !numNeuronsPerLayer || !filepath || !numLayers || !activationFunction )
+        {
+            return 0;
+        }
 
-    //    CvANN_MLP net;
+        app.ann.load(filepath, "FFPANN");
 
-    //    net.load(filepath, "FFPANN");
+        *numLayers = app.ann.get_layer_count();
+        
+        // TODO: (Ko) Complete the implementation and create + fill numNeuronsPerLayer 
+        // TODO: (Ko) Add alpha and beta
+        // TODO: (Ko) Complete activation function
 
-    //    *activationFunction = net.activ_func;
-
-    //    CvMat * layerSizes = net.get_layer_sizes();
-    //    
-
-    //    return 1;
-    //}
-     //------------------------------------------------------------------------------
+        return 1;
+    }
+    //------------------------------------------------------------------------------
     KLULIB_API int klu_loadAnn(const char * filepath)
     {
         if ( !filepath )
@@ -141,6 +141,18 @@ extern "C" {
         }
 
         app.ann.load(filepath, "FFPANN");
+
+        return 1;
+    }
+    //------------------------------------------------------------------------------
+    KLULIB_API int klu_saveAnn(const char * filepath)
+    {
+        if ( !filepath )
+        {
+            return 0;
+        }
+
+        app.ann.save(filepath, "FFPANN");
 
         return 1;
     }
@@ -280,6 +292,24 @@ extern "C" {
         bool result = processImageFrame(app.lastImage, ffp);
     
         return result ? 1 : 0;
+    }
+    //------------------------------------------------------------------------------
+    KLULIB_API int klu_configureCaptureDialog()
+    {
+        if ( !app.capture )
+        {
+            return 0;
+        }
+
+#ifdef WIN32
+        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
+        HWND capHandle = cap->capWnd;
+        capDlgVideoSource(capHandle);
+#else
+        return 0;
+#endif
+
+        return 1;
     }
     //------------------------------------------------------------------------------
 } // end extern "C" {

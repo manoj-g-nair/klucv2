@@ -329,7 +329,7 @@ namespace ffp
             }
 
             // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
-            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(30));//captureTimeTextBox.Text));
+            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(50));//captureTimeTextBox.Text));
 
             // Start the timer
             captureTimer.Start();
@@ -456,7 +456,7 @@ namespace ffp
 
                 TerminationCriteria terminationCriteria = new TerminationCriteria();
                 terminationCriteria.TerminationType = Convert.ToInt32(TrainingTermination.MaxIterationTermination);
-                terminationCriteria.MaxIteration = 100;
+                terminationCriteria.MaxIteration = 2000; // TODO: (Ko) after checking the saved ANN file I think, there is an error with this number
 
                 TrainOptions options = new TrainOptions();
                 options.Algorithm = TrainingAlgorithm.BackpropAlgorithm;
@@ -464,11 +464,63 @@ namespace ffp
 
                 statusText.Text = "Now training...";
 
-                res = klu.TrainAnn(options);
+                // Enable infinite progess indicator
+                statusProgess.IsEnabled = true;
+                statusProgess.Visibility = Visibility.Visible;
+
+                #region Prepare data to be trained. Involves copying.
+
+                int numTrainingSets = dataSet.Training.Rows.Count;
+                int numInputNeurons = 16;
+                int numOutputNeurons = 1;
+                float[] inputs = new float[numTrainingSets * numInputNeurons];
+                float[] outputs = new float[numTrainingSets * numOutputNeurons];
+
+                for (int i = 0; i < numTrainingSets; i++)
+                {
+                    inputs[i + 0] = dataSet.Training[i].LipCornerLeftX;
+                    inputs[i + 1] = dataSet.Training[i].LipCornerLeftY;
+                    inputs[i + 2] = dataSet.Training[i].LipCornerRightX;
+                    inputs[i + 3] = dataSet.Training[i].LipCornerRightY;
+                    inputs[i + 4] = dataSet.Training[i].LipUpLeftX;
+                    inputs[i + 5] = dataSet.Training[i].LipUpLeftY;
+                    inputs[i + 6] = dataSet.Training[i].LipUpCenterX;
+                    inputs[i + 7] = dataSet.Training[i].LipUpCenterY;
+                    inputs[i + 8] = dataSet.Training[i].LipUpRightX;
+                    inputs[i + 9] = dataSet.Training[i].LipUpRightY;
+                    inputs[i + 10] = dataSet.Training[i].LipBottomLeftX;
+                    inputs[i + 11] = dataSet.Training[i].LipBottomLeftY;
+                    inputs[i + 12] = dataSet.Training[i].LipBottomCenterX;
+                    inputs[i + 13] = dataSet.Training[i].LipBottomCenterY;
+                    inputs[i + 14] = dataSet.Training[i].LipBottomRightX;
+                    inputs[i + 15] = dataSet.Training[i].LipBottomRightY;
+
+                    outputs[i] = dataSet.Training[i].ExpressionOID;
+                }
+                #endregion
+
+                klu.SaveANN(dlg.FileName + ".untrained.xml");
+
+                res = klu.TrainAnn(options, numTrainingSets, inputs, outputs);
 
                 Console.WriteLine("Training success? " + res);
 
+                // Disable infinite progess indicator
+                statusProgess.IsEnabled = false;
+                statusProgess.Visibility = Visibility.Hidden;
+
                 statusText.Text = "Training result: " + res;
+
+                klu.SaveANN(dlg.FileName + ".trained.xml");
+
+                // Let's see if the ANN is trained. (simple for now)
+                // TODO: (Ko) Do 7 out of 10 validation etc.
+
+                // Test the first dataset and compare the predicted output with the expected
+                float[] results = new float[1];
+                klu.PredictANN(inputs, 16, results, 1);
+
+                Console.WriteLine("Expected output: " + dataSet.Training[0].ExpressionOID + " Predicted output: " + results[0]);
             }
         }
 
@@ -595,39 +647,41 @@ namespace ffp
                         annConfigurationTabItem.Visibility = Visibility.Visible;
                         expressionsTabItem.Visibility = Visibility.Visible;
                         trainingDatasetsTabItem.Visibility = Visibility.Visible;
-                        exportTabItem.Visibility = Visibility.Visible;
+                        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
+                        //exportTabItem.Visibility = Visibility.Visible;
                     }
                     else
                     {
                         annConfigurationTabItem.Visibility = Visibility.Hidden;
                         expressionsTabItem.Visibility = Visibility.Hidden;
                         trainingDatasetsTabItem.Visibility = Visibility.Hidden;
-                        exportTabItem.Visibility = Visibility.Hidden;
+                        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
+                        //exportTabItem.Visibility = Visibility.Hidden;
                     }
                     break;
                 case "drawAnthropometricPointsMenuItem":
-                    processOptions.DrawAnthropometricPoints = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "drawSearchRectanglesMenuItem":
-                    processOptions.DrawSearchRectangles = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DrawSearchRectangles = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "drawFaceRectangleMenuItem":
-                    processOptions.DrawFaceRectangle = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DrawFaceRectangle = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "drawDetectionTimeMenuItem":
-                    processOptions.DrawDetectionTime = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DrawDetectionTime = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "drawFeaturePointsMenuItem":
-                    processOptions.DrawFeaturePoints = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DrawFeaturePoints = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "doEyeProcessingMenuItem":
-                    processOptions.DoEyeProcessing = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DoEyeProcessing = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "doMouthProcessingMenuItem":
-                    processOptions.DoMouthProcessing = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DoMouthProcessing = Convert.ToInt32(menuItem.IsChecked);
                     break;
                 case "doVisualDebugMenuItem":
-                    processOptions.DoVisualDebug = menuItem.IsChecked ? 0 : 1;
+                    processOptions.DoVisualDebug = Convert.ToInt32(menuItem.IsChecked);
                     break;
             };
 
@@ -736,9 +790,9 @@ namespace ffp
         /// <param name="begin"></param>
         /// <param name="dim"></param>
         /// <returns>(double) (coord - begin) / (double) dim</returns>
-        private double i2r(int coord, int begin, int dim)
+        private float i2r(int coord, int begin, int dim)
         {
-            return (double) (coord - begin) / (double) dim;
+            return (float)(coord - begin) / (float)dim;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -753,9 +807,9 @@ namespace ffp
             int h = ffp.FaceRectangle.Height;
             
             // Calculate the eye distance
-            double dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
-            double dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
-            double eyeDist = Math.Sqrt(dx * dx + dy * dy);
+            float dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
+            float dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
+            float eyeDist = (float) Math.Sqrt(dx * dx + dy * dy);
 
             dataSet.Training.AddTrainingRow(
                 dataSet.Expression.FindByExpressionOID(expressionOID),
@@ -770,6 +824,23 @@ namespace ffp
                 i2r(ffp.Mouth.LipBottomRight.X, x, w),  i2r(ffp.Mouth.LipBottomRight.Y, y, h),
                 eyeDist
             );
+        }
+
+        /// <summary>
+        /// Pops up a dialog to configure the capture device.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void configureCaptureDialogMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            klu.ConfigureCaptureDialog();
+        }
+
+        private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("This is KLU an Facial Feature Point (FFP) detector and Facial Expression "
+            +"Analyzation tool. The project is maintained at the South Westphalia University of Applied Science "
+            +" by Konrad Kleine and Jens Lukowski.", "About", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
