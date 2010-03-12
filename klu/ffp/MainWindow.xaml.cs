@@ -73,6 +73,15 @@ namespace ffp
         int fileProcessIdx;
 
         /// <summary>
+        /// Used as a dummy for thumbnail creation.
+        /// </summary>
+        /// <returns></returns>
+        public bool ThumbnailCallback()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// The main entry point for this window.
         /// </summary>
         public MainWindow()
@@ -362,20 +371,22 @@ namespace ffp
         /// Call this function to ensure the user has the ability to save
         /// unsaved changes to the dataset. It will open a message box and
         /// asks if the user wants to save those changes.
+        /// NOTE: Currently this function simple saves all the updates made!
         /// </summary>
         private void lastChanceSaving()
-        {
+        {            
             if (dataSet.HasChanges())
             {
-                MessageBoxResult res = MessageBox.Show("You've made some changes that are not yet saved! Do you wish to save them?",
-                    "Prevent data loss?",
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question,
-                    MessageBoxResult.Yes
-                );
+                MessageBoxResult res;
+                //res = MessageBox.Show("You've made some changes that are not yet saved! Do you wish to save them?",
+                //    "Prevent data loss?",
+                //    MessageBoxButton.YesNoCancel,
+                //    MessageBoxImage.Question,
+                //    MessageBoxResult.Yes
+                //);
 
-                if (res == MessageBoxResult.Yes)
-                {
+                //if (res == MessageBoxResult.Yes)
+                //{
                     try
                     {
                         tam.UpdateAll(dataSet);
@@ -383,14 +394,9 @@ namespace ffp
                     }
                     catch (Exception e)
                     {
-                        res = MessageBox.Show(e.Message, "An unhandled exception occured!", MessageBoxButton.YesNo, MessageBoxImage.Error, MessageBoxResult.No);
-
-                        if (res == MessageBoxResult.Yes)
-                        {
-                            throw e;
-                        }
+                        res = MessageBox.Show(e.Message, "An unhandled exception occured!", MessageBoxButton.OK, MessageBoxImage.Error);                        
                     }
-                }
+                //}
             }
         }
 
@@ -824,21 +830,42 @@ namespace ffp
                 i2r(ffp.Mouth.LipBottomRight.X, x, w),  i2r(ffp.Mouth.LipBottomRight.Y, y, h),
                 eyeDist
             );
+
+            // Add a thumbnail to the image table
+            const int thumbnailWidth = 50;
+            const int thumbnailHeight = 50;
+
+            System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+            System.Drawing.Image thumbnail = tmpBitmap.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+            dataSet.Image.AddImageRow(thumbnailWidth, thumbnailHeight, 3, 0, ms.ToArray());
         }
 
         /// <summary>
-        /// Pops up a dialog to configure the capture device.
+        /// Pops up a dialog to configure the capture device's parameters.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void configureCaptureDialogMenuItem_Click(object sender, RoutedEventArgs e)
+        private void captureParametersMenuItem_Click(object sender, RoutedEventArgs e)
         {
             klu.ConfigureCaptureDialog();
         }
 
+        /// <summary>
+        /// Pops up a dialog to configure the capture device's resolution.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void captureResolutionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            klu.ConfigureCaptureResolutionDialog();
+        }
+
         private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("This is KLU an Facial Feature Point (FFP) detector and Facial Expression "
+            MessageBox.Show("This is KLU a Facial Feature Point (FFP) detector and Facial Expression "
             +"Analyzation tool. The project is maintained at the South Westphalia University of Applied Science "
             +" by Konrad Kleine and Jens Lukowski.", "About", MessageBoxButton.OK, MessageBoxImage.Information);
         }

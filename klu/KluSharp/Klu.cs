@@ -397,7 +397,7 @@ namespace KluSharp
         }
         #endregion
 
-        #region Interface to "low level" VFW configuration dialog
+        #region Interface to "low level" VFW configuration dialogs
 #if DEBUG
         [DllImport(@"..\..\..\Debug\klulib.dll")]
 #else
@@ -407,12 +407,31 @@ namespace KluSharp
 
         /// <summary>
         /// Instructs the DLL to open the VFW dialog for the capture device.
+        /// If you want to change the resolution and related parameters, you must call "ConfigureCaptureResolutionDialog"
         /// If there isn't a capture device, this function will returns false.
         /// </summary>
         /// <returns></returns>
         public bool ConfigureCaptureDialog()
         {
             return (klu_configureCaptureDialog() == 1);
+        }
+
+#if DEBUG
+        [DllImport(@"..\..\..\Debug\klulib.dll")]
+#else
+        [DllImport(@"..\..\..\Release\klulib.dll")]
+#endif
+        private static extern int klu_configureCaptureResolutionDialog();
+
+        /// <summary>
+        /// Instructs the DLL to open the VFW dialog for the capture device.
+        /// If you want to change the brightness and related parameters, you must call "ConfigureCaptureDialog"
+        /// If there isn't a capture device, this function will returns false.
+        /// </summary>
+        /// <returns></returns>
+        public bool ConfigureCaptureResolutionDialog()
+        {
+            return (klu_configureCaptureResolutionDialog() == 1);
         }
         #endregion
     }

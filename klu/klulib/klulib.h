@@ -70,6 +70,8 @@ extern "C" {
     KLULIB_API int klu_processCaptureImage(KluProcessOptions * processOptions, 
         KluFaceFeaturePoints * ffp);
 
-    KLULIB_API int klu_configureCaptureDialog();
+    KLULIB_API int klu_configureCaptureDialog(void);
+
+    KLULIB_API int klu_configureCaptureResolutionDialog(void);
 
 }

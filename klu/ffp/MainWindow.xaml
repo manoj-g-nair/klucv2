@@ -57,7 +57,8 @@
                 <MenuItem Name="doMouthProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Mouth Processing" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="doVisualDebugMenuItem" Click="optionsMenuToggled_Click" Header="Do Visual Debug" IsChecked="False" IsCheckable="True" />
                 <Separator></Separator>
-                <MenuItem Name="configureCaptureDialogMenuItem" Click="configureCaptureDialogMenuItem_Click" Header="Configure Dialog for Capture"></MenuItem>
+                <MenuItem Name="captureParametersMenuItem" Click="captureParametersMenuItem_Click" Header="Capture Parameters"></MenuItem>
+                <MenuItem Name="captureResolutionMenuItem" Click="captureResolutionMenuItem_Click" Header="Capture Resolution"></MenuItem>
             </MenuItem>
             <MenuItem Header="Process" Name="processMenu">
                 <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
@@ -205,12 +206,7 @@
                                 </toolkit:DataGridTemplateColumn.CellTemplate>
                             </toolkit:DataGridTemplateColumn>
                             <!--<toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />-->
-                            <toolkit:DataGridTemplateColumn Header="Coordinates">
-                                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <!--TODO-->
-                                    </DataTemplate>
-                                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                            <toolkit:DataGridTemplateColumn Header="Coordinates" IsReadOnly="True">
                                 <toolkit:DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -280,7 +276,7 @@
                                 <RowDefinition Height="Auto"></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Button Grid.Column="0" Grid.Row="0" Name="loadAnnButton" ToolTip="Click here to load an ANN you have already saved." Click="loadAnnButton_Click" Margin="6">Load</Button>
+                            <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="loadAnnButton" Click="loadAnnButton_Click" Margin="6">Load</Button>
                             <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">Save</Button>                            
                             <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>
                             <ComboBox Margin="6"  Grid.Column="1" Grid.Row="1" Name="annActivation">

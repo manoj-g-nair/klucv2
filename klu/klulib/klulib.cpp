@@ -31,7 +31,11 @@ extern "C" {
     {
         if ( !app.capture )
         {  
+#ifdef WIN32
             app.capture = cvCreateCameraCapture(CV_CAP_VFW);
+#else
+            app.capture = cvCreateCameraCapture(CV_CAP_ANY);
+#endif
         }
 
         return app.capture ? 1 : 0;
@@ -305,6 +309,24 @@ extern "C" {
         CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
         HWND capHandle = cap->capWnd;
         capDlgVideoSource(capHandle);
+#else
+        return 0;
+#endif
+
+        return 1;
+    }
+    //------------------------------------------------------------------------------
+    KLULIB_API int klu_configureCaptureResolutionDialog()
+    {
+        if ( !app.capture )
+        {
+            return 0;
+        }
+
+#ifdef WIN32
+        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
+        HWND capHandle = cap->capWnd;
+        capDlgVideoFormat(capHandle);
 #else
         return 0;
 #endif
