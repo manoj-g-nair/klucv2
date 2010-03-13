@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using ffp.TrainingDataSetTableAdapters;
 using KluSharp;
+using Microsoft.Windows.Controls.Ribbon;
 
 namespace ffp
 {
@@ -46,12 +47,6 @@ namespace ffp
         /// This is the dataset which contains the connected database in memory. 
         /// </summary>
         TrainingDataSet dataSet;
-
-        public TrainingDataSet Pups
-        {
-            get { return dataSet; }
-            set { dataSet = value; }
-        }
 
         /// <summary>
         /// This is a small wrapper around the structure NOT the logic of an ANN.
@@ -312,7 +307,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void processStill_Click(object sender, RoutedEventArgs e)
+        private void PictureStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
@@ -347,7 +342,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void processCamera_Click(object sender, RoutedEventArgs e)
+        private void CameraStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             processPreviousButton.IsEnabled = false;
             processNextButton.IsEnabled = false;
@@ -374,7 +369,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void processStopMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CameraStop_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             stopAllProcessing();
         }
@@ -438,7 +433,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void closeApplication(object sender, RoutedEventArgs e)
+        private void CloseApplication_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             lastChanceSaving();
             Close();
@@ -449,7 +444,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void stopTrainingMenuItem_Click(object sender, RoutedEventArgs e)
+        private void TrainingStop_Executed(object sender, ExecutedRoutedEventArgs e)
         {
 
         }
@@ -459,7 +454,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void startTrainingMenuItem_Click(object sender, RoutedEventArgs e)
+        private void TrainingStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = "."; // Default file extension
@@ -660,58 +655,57 @@ namespace ffp
         }
 
         /// <summary>
-        /// When the "Show export options is toggled from the "View" menu, we hide
-        /// certain tab items that the user might not be interested in.
+        /// Handles all processing options
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void optionsMenuToggled_Click(object sender, RoutedEventArgs e)
+        private void OptionToggle_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
+            RibbonToggleButton s = sender as RibbonToggleButton;
 
-            switch (menuItem.Name)
+            switch (s.Name)
             {
-                case "showExpertOptionsMenuItem":
-                    if (menuItem.IsChecked)
-                    {
-                        annConfigurationTabItem.Visibility = Visibility.Visible;
-                        expressionsTabItem.Visibility = Visibility.Visible;
-                        trainingDatasetsTabItem.Visibility = Visibility.Visible;
-                        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
-                        //exportTabItem.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        annConfigurationTabItem.Visibility = Visibility.Hidden;
-                        expressionsTabItem.Visibility = Visibility.Hidden;
-                        trainingDatasetsTabItem.Visibility = Visibility.Hidden;
-                        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
-                        //exportTabItem.Visibility = Visibility.Hidden;
-                    }
-                    break;
+                //case "showExpertOptionsMenuItem":
+                //    if (menuItem.IsChecked)
+                //    {
+                //        annConfigurationTabItem.Visibility = Visibility.Visible;
+                //        expressionsTabItem.Visibility = Visibility.Visible;
+                //        trainingDatasetsTabItem.Visibility = Visibility.Visible;
+                //        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
+                //        //exportTabItem.Visibility = Visibility.Visible;
+                //    }
+                //    else
+                //    {
+                //        annConfigurationTabItem.Visibility = Visibility.Hidden;
+                //        expressionsTabItem.Visibility = Visibility.Hidden;
+                //        trainingDatasetsTabItem.Visibility = Visibility.Hidden;
+                //        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
+                //        //exportTabItem.Visibility = Visibility.Hidden;
+                //    }
+                //    break;
                 case "drawAnthropometricPointsMenuItem":
-                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(s.IsChecked);
                     break;
                 case "drawSearchRectanglesMenuItem":
-                    processOptions.DrawSearchRectangles = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DrawSearchRectangles = Convert.ToInt32(s.IsChecked);
                     break;
                 case "drawFaceRectangleMenuItem":
-                    processOptions.DrawFaceRectangle = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DrawFaceRectangle = Convert.ToInt32(s.IsChecked);
                     break;
                 case "drawDetectionTimeMenuItem":
-                    processOptions.DrawDetectionTime = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DrawDetectionTime = Convert.ToInt32(s.IsChecked);
                     break;
                 case "drawFeaturePointsMenuItem":
-                    processOptions.DrawFeaturePoints = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DrawFeaturePoints = Convert.ToInt32(s.IsChecked);
                     break;
                 case "doEyeProcessingMenuItem":
-                    processOptions.DoEyeProcessing = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DoEyeProcessing = Convert.ToInt32(s.IsChecked);
                     break;
                 case "doMouthProcessingMenuItem":
-                    processOptions.DoMouthProcessing = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DoMouthProcessing = Convert.ToInt32(s.IsChecked);
                     break;
                 case "doVisualDebugMenuItem":
-                    processOptions.DoVisualDebug = Convert.ToInt32(menuItem.IsChecked);
+                    processOptions.DoVisualDebug = Convert.ToInt32(s.IsChecked);
                     break;
             };
 
@@ -872,7 +866,7 @@ namespace ffp
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void captureParametersMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CameraParameters_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             klu.ConfigureCaptureDialog();
         }
@@ -902,6 +896,11 @@ namespace ffp
         private void stretchUniformButton_Click(object sender, RoutedEventArgs e)
         {
             image1.Stretch = Stretch.Uniform;
+        }
+
+        private void ExpressionsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Start Expressions Dialog here.
         }
     }
 }

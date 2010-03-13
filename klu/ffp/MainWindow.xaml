@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ffp"
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+    xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     Title="Facial Expression Recognition" Height="586" Width="882.5"
     WindowStartupLocation="CenterScreen" Closing="Window_Closing" x:Name="self">
 
@@ -40,12 +41,297 @@
         </Style>                
     </Window.Resources>
 
-    <Grid>
-        <Grid.Background>
-            <SolidColorBrush Color="#FF555555"></SolidColorBrush>
-        </Grid.Background>
+    <Grid Background="#040000ff">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="23"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <r:Ribbon Grid.Row="0">
+            <r:Ribbon.Resources>
 
-        <Menu Height="23" VerticalAlignment="Top">
+                <ResourceDictionary>
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="/RibbonControlsLibrary;component/Themes/Office2007Blue.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+
+                    <r:RibbonCommand x:Key="StartCamera"
+                                            LargeImageSource="/ffp;component/icons/H&amp;D043.ico"
+                                            SmallImageSource="/ffp;component/icons/H&amp;D044.ico"
+                                             LabelTitle="Start Camera"
+                                             ToolTipTitle="Start Camera"
+                                             ToolTipDescription="Process live frames from a camera."
+                                             Executed="CameraStart_Executed"></r:RibbonCommand>
+
+
+                    <r:RibbonCommand x:Key="StopCamera"
+                                            LargeImageSource="/ffp;component/icons/H&amp;D043.ico"
+                                            SmallImageSource="/ffp;component/icons/H&amp;D044.ico"
+                                             LabelTitle="Stop Camera"
+                                             ToolTipTitle="Stop Camera"
+                                             ToolTipDescription="Stops the camera from processing."
+                                             Executed="CameraStop_Executed"></r:RibbonCommand>
+                    <r:RibbonCommand x:Key="CameraParameters"
+                                            LargeImageSource="/ffp;component/icons/H&amp;D043.ico"
+                                            SmallImageSource="/ffp;component/icons/H&amp;D044.ico"
+                                             LabelTitle="Camera Parameters"
+                                             ToolTipTitle="Camera Parameters"
+                                             ToolTipDescription="Set the camera parameters."
+                                             Executed="CameraParameters_Executed"></r:RibbonCommand>
+                </ResourceDictionary>
+            </r:Ribbon.Resources>
+           
+            <r:Ribbon.ApplicationMenu>
+                <r:RibbonApplicationMenu>
+                    <r:RibbonApplicationMenu.Command>
+                        <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net003.ico"                                         
+                                         SmallImageSource="/ffp;component/ApplicationIcon.ico"
+                                        LabelTitle="Application"
+                                         LabelDescription="Close"
+                                         Executed="CloseApplication_Executed"
+                                         />
+                    </r:RibbonApplicationMenu.Command>
+                    <r:RibbonSeparator />
+                    <r:RibbonApplicationMenuItem>
+                        <r:RibbonApplicationMenuItem.Command>
+                            <r:RibbonCommand LabelTitle="Exit" Executed="CloseApplication_Executed"/>
+                        </r:RibbonApplicationMenuItem.Command>
+                    </r:RibbonApplicationMenuItem>
+                </r:RibbonApplicationMenu>
+            </r:Ribbon.ApplicationMenu>
+
+            <!-- Schnellzugriffleiste -->
+            <r:Ribbon.QuickAccessToolBar>
+                <r:RibbonQuickAccessToolBar CanUserCustomize="True">
+                    <r:RibbonButton r:RibbonQuickAccessToolBar.Placement="InToolBar">
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand
+                                Executed="PictureStart_Executed"
+                                LabelTitle="Open"
+                                SmallImageSource="/ffp;component/icons/Folder001.ico"
+                                LargeImageSource="/ffp;component/icons/Folder002.ico" />
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+                </r:RibbonQuickAccessToolBar>
+            </r:Ribbon.QuickAccessToolBar>
+
+            <!-- Menutabs -->
+            <r:RibbonTab Label="Processing">
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Processing"/>
+                    </r:RibbonGroup.Command>
+
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/H&amp;D047.ico"
+                                             LabelTitle="Picture"
+                                             ToolTipTitle="Picture"
+                                             ToolTipDescription="Process a single or multiple pictures."
+                                             Executed="PictureStart_Executed"/>
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+
+                    <r:RibbonSplitButton Name="Camera" Command="{StaticResource StartCamera}">
+                        <r:RibbonSplitButton.Items>
+                            <MenuItem Header="Start Camera" Command="{StaticResource StartCamera}">
+                                <MenuItem.Icon>
+                                    <Image Source="/ffp;component/icons/H&amp;D043.ico"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Stop Camera" Command="{StaticResource StopCamera}">
+                                <MenuItem.Icon>
+                                    <Image Source="/ffp;component/icons/H&amp;D043.ico"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Camera Parameters" Command="{StaticResource CameraParameters}">
+                                <MenuItem.Icon>
+                                    <Image Source="/ffp;component/icons/CP011.ico"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </r:RibbonSplitButton.Items>
+                    </r:RibbonSplitButton>
+                </r:RibbonGroup>
+            
+                
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Processing"/>
+                    </r:RibbonGroup.Command>
+
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Game013.ico"
+                                             LabelTitle="Eyes"
+                                             ToolTipTitle="Eyes Processing"
+                                             ToolTipDescription="Try to find eye feature points."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="doEyeProcessingMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/mouth.ico"
+                                             LabelTitle="Mouth"
+                                             ToolTipTitle="Mouth Processing"
+                                             ToolTipDescription="Try to find mouth feature points."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="doMouthProcessingMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                </r:RibbonGroup>
+
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Debugging"/>
+                    </r:RibbonGroup.Command>
+
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command> 
+                            <r:RibbonCommand LargeImageSource="/ffp;component/img/bug-small.jpg"
+                                             LabelTitle="Visual"
+                                             ToolTipTitle="Visual Debug"
+                                             ToolTipDescription="Opens multiple windows each showing a particular state of the computer vision process."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="doVisualDebugMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                </r:RibbonGroup>
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Expressions" />
+                    </r:RibbonGroup.Command>
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Game014.ico"
+                                             LabelTitle="Expressions"
+                                             ToolTipTitle="Expressions"
+                                             ToolTipDescription="Opens a dialog in which you can configure the facial expressions you want to use for facial expression classification."
+                                            />
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                </r:RibbonGroup>
+            </r:RibbonTab>
+            
+            <r:RibbonTab Label="View">                
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Elements To Draw"/>
+                    </r:RibbonGroup.Command>
+
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/User012.ico"
+                                             LabelTitle="Antropometric Points"
+                                             ToolTipTitle="Draw Antropometric Points"
+                                             ToolTipDescription="Show points statistically calculated and measured according to the eye distance."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="drawAnthropometricPointsMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/CP051.ico"
+                                             LabelTitle="Antropometric Points"
+                                             ToolTipTitle="Draw Antropometric Points"
+                                             ToolTipDescription="Show rectangles in the search for Facial Feature Points is done. The Rectangles are calculated by different cascaded of Haar-classifiers."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="drawSearchRectanglesMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/CP051.ico"
+                                             LabelTitle="Face Rectangle"
+                                             ToolTipTitle="Draw Face Rectangle"
+                                             ToolTipDescription="Show the face rectangle."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="drawFaceRectangleMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/CP051.ico"
+                                             LabelTitle="Detection Time"
+                                             ToolTipTitle="Draw Detection Time"
+                                             ToolTipDescription="Stamps the detection processing time in milliseconds in the lower left corner of the processed image."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="drawDetectionTimeMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                    <r:RibbonToggleButton>
+                        <r:RibbonToggleButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/CP051.ico"
+                                             LabelTitle="Feature Points"
+                                             ToolTipTitle="Draw Feature Points"
+                                             ToolTipDescription="Shows little crosses where the eye feature points are and a snake-like line around the mouth."
+                                             Executed="OptionToggle_Executed"
+                                             x:Name="drawFeaturePointsMenuItem"/>
+                        </r:RibbonToggleButton.Command>
+                    </r:RibbonToggleButton>
+                </r:RibbonGroup>                
+            </r:RibbonTab>
+
+            <r:RibbonTab Label="Training">
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Training"/>
+                    </r:RibbonGroup.Command>
+
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Media001.ico"
+                                             LabelTitle="Start Training"
+                                             ToolTipTitle="Start Training"
+                                             ToolTipDescription="Starts the training of the Artificial Neural Network. You'll be asked to select a nerual network file."
+                                             Executed="TrainingStart_Executed"/>
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Sign006.ico"
+                                             LabelTitle="Stop Training"
+                                             ToolTipTitle="Stop Training"
+                                             ToolTipDescription="Stops the training of the Artificial Neural Network."
+                                             Executed="TrainingStop_Executed"/>
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/C&amp;M020.ico"
+                                             LabelTitle="Datasets"
+                                             ToolTipTitle="Show Training Datasets"
+                                             ToolTipDescription="Opens a dialog that shows all the training datasets you have collected so far. You can manipulate each dataset individually"
+                                             />
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+
+                </r:RibbonGroup>
+                
+                
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Artificial Neural Network"/>
+                    </r:RibbonGroup.Command>
+                    
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net035.ico"
+                                             LabelTitle="Modify ANN"
+                                             ToolTipTitle="Modify Artificial Neural Network (ANN)"
+                                             ToolTipDescription="Shows a dialog that lets you setup the Artifical Neural Network (ANN) which is used to train and classify facial expressions."
+                                             />
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
+                </r:RibbonGroup>
+            </r:RibbonTab>
+        </r:Ribbon>
+
+        <!--<Menu Margin="100" Height="23" VerticalAlignment="Top">
             <MenuItem Header="_File" InputGestureText="Ctrl+F">
                 <MenuItem  Header="_Open" Name="fileOpenMenuItem" Click="processStill_Click" InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
@@ -60,9 +346,7 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Op_tions" InputGestureText="Ctrl+T">
-                <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawAnthropometricPointsMenuItem" Click="optionsMenuToggled_Click"  Header="Draw Anthropometric Points" IsChecked="False" IsCheckable="True" />
-                <MenuItem Name="drawSearchRectanglesMenuItem" Click="optionsMenuToggled_Click" Header="Draw Search Rectangles" IsChecked="False" IsCheckable="True" />
+                <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />                
                 <MenuItem Name="drawFaceRectangleMenuItem" Click="optionsMenuToggled_Click" Header="Draw Face Rectangle" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="drawDetectionTimeMenuItem" Click="optionsMenuToggled_Click" Header="Draw Detection Time" IsChecked="True" IsCheckable="True" />
                 <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points" IsChecked="True" IsCheckable="True" />
@@ -109,23 +393,14 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-        </Menu>
+        </Menu>-->
 
-        <StatusBar Height="23" Name="statusBar1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
-            <StatusBarItem>
-                    <TextBlock HorizontalAlignment="Left" Name="statusText">Ready</TextBlock>                    
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <ProgressBar HorizontalAlignment="Right" Height="15" Visibility="Hidden" IsEnabled="false" Name="statusProgess" IsIndeterminate="True"></ProgressBar>
-            </StatusBarItem>            
-        </StatusBar>
-
-        <TabControl ClipToBounds="False" SnapsToDevicePixels="False" Margin="6,29,6,29">
+        <TabControl Grid.Row="1" ClipToBounds="False" SnapsToDevicePixels="False"> <!--Margin="6,29,6,29">-->
             <TabItem Name="analyseTabItem" Header="Analyze">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="9*"></RowDefinition>
+                        <RowDefinition Height="1*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -391,7 +666,7 @@
 
                             </toolkit:DataGrid>
                             <Label Grid.Column="0" Grid.Row="5">Num Layers:</Label>
-                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="5" Content="{Binding Path=NumLayers, NotifyOnTargetUpdated=True}"></Label>
+                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="5" Content="{Binding ElementName=dgridHiddenLayer, Path=ItemsSource, NotifyOnTargetUpdated=True}"></Label>
                         </Grid>
                     </StackPanel>
                     <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="DimGray" BorderThickness="2">
@@ -402,7 +677,14 @@
             </TabItem>
         </TabControl>
 
-
+        <StatusBar Grid.Row="2" Height="23" Name="statusBar1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+            <StatusBarItem>
+                <TextBlock HorizontalAlignment="Left" Name="statusText">Ready</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <ProgressBar HorizontalAlignment="Right" Width="100" Height="15" Visibility="Hidden" IsEnabled="false" Name="statusProgess" IsIndeterminate="True"></ProgressBar>
+            </StatusBarItem>
+        </StatusBar>
 
     </Grid>
 </Window>
