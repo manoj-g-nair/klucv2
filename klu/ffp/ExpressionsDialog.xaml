@@ -5,7 +5,7 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 
     Title="Expressions"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="375" Width="242" Icon="/ffp;component/img/075.png">
+    Height="375" Width="397" Icon="/ffp;component/img/075.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
@@ -14,7 +14,8 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
             <Image HorizontalAlignment="Left" Source="/ffp;component/img/075.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock TextWrapping="Wrap">Please, feel free edit or add your own Expressions!</TextBlock>                
+                <TextBlock TextWrapping="Wrap">Please, feel free edit or add
+                    your own Expressions!</TextBlock>                
             </Label>
         </StackPanel>
         <toolkit:DataGrid Grid.Row="1"
@@ -26,6 +27,7 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                         CanUserSortColumns="True" 
                         Name="ExpressionsDataGrid"
                         ItemsSource="{Binding}"
+                        RowHeight="50"
                         AutoGenerateColumns="False">
 
             <toolkit:DataGrid.RowValidationRules>
@@ -37,13 +39,25 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 <toolkit:DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" />
                 <toolkit:DataGridTemplateColumn Header="Emoticon">
                     <toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>                            
-                            <Button Name="BrowseImage" Click="BrowseImage_Click">Browse</Button>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Width="48" Height="48" BorderBrush="LightGray" BorderThickness="3" CornerRadius="5">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
+                                    </Border.Background>
+                                </Border>
+                                <Button Name="BrowseImage" Click="BrowseImage_Click" DataContext="{Binding Path=ExpressionOID}">Browse</Button>
+                                <Button Name="RemoveImage" Click="RemoveImage_Click" DataContext="{Binding Path=ExpressionOID}">X</Button>
+                            </StackPanel>
                         </DataTemplate>
                     </toolkit:DataGridTemplateColumn.CellEditingTemplate>
                     <toolkit:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
+                            <Border Width="48" Height="48" BorderBrush="LightGray" BorderThickness="3" CornerRadius="5">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
+                                </Border.Background>
+                            </Border>
                         </DataTemplate>
                     </toolkit:DataGridTemplateColumn.CellTemplate>
                 </toolkit:DataGridTemplateColumn>

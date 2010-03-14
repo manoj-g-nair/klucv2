@@ -25,6 +25,15 @@ namespace ffp
     {
         TrainingDataSet _DataSet;
 
+        /// <summary>
+        /// Used as a dummy for thumbnail creation.
+        /// </summary>
+        /// <returns></returns>
+        public bool ThumbnailCallback()
+        {
+            return false;
+        }
+
         public ExpressionsDialog(ref TrainingDataSet DataSet)
         {
             InitializeComponent();
@@ -35,7 +44,54 @@ namespace ffp
 
         private void BrowseImage_Click(object sender, RoutedEventArgs e)
         {
+            Button button = sender as Button;
 
+            // Configure save file dialog box            
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = "."; // Default file extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Title = "Load image";
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                System.Drawing.Bitmap emoticon = new System.Drawing.Bitmap(dlg.FileName);                
+
+                const int thumbnailWidth = 50;
+                const int thumbnailHeight = 50;
+
+                System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+                System.Drawing.Image thumbnail = emoticon.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                int oid = Convert.ToInt32(button.DataContext);
+
+                TrainingDataSet.ExpressionRow row = _DataSet.Expression.FindByExpressionOID(oid);
+
+                if (row != null)
+                {
+                    row.Thumbnail = ms.ToArray();
+                }
+
+            }  
+        }
+
+        private void RemoveImage_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+
+            int oid = Convert.ToInt32(button.DataContext);
+
+            TrainingDataSet.ExpressionRow row = _DataSet.Expression.FindByExpressionOID(oid);
+
+            if (row != null)
+            {
+                row.Thumbnail = null;
+            }
         }
     }
 }
