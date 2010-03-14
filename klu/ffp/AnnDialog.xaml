@@ -27,7 +27,7 @@
                 </Grid.RowDefinitions>
                 <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="LoadAnnButton" Click="LoadAnnButton_Click" Margin="6">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/ffp;component/img/034.png" Width="24" Height="24"></Image>
+                        <Image Source="/ffp;component/img/035.png" Width="24" Height="24"></Image>
                         <Label>Load</Label>
                     </StackPanel>
                 </Button>

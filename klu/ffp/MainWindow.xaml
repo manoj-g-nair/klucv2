@@ -198,7 +198,8 @@
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu>
                     <r:RibbonApplicationMenu.Command>
-                        <r:RibbonCommand                                      LabelTitle="Exit"
+                        <r:RibbonCommand                                     
+                                     LabelTitle="Exit"
                                      LabelDescription="Exits the application."
                                      Executed="CloseApplication_Executed" />
                     </r:RibbonApplicationMenu.Command>
@@ -214,8 +215,8 @@
             
             <r:Ribbon.QuickAccessToolBar>
                 <r:RibbonQuickAccessToolBar CanUserCustomize="True">
-                    <r:RibbonButton r:RibbonQuickAccessToolBar.Placement="InToolBar" Command="{StaticResource PictureCmd}">
-                    </r:RibbonButton>
+                    <r:RibbonButton r:RibbonQuickAccessToolBar.Placement="InToolBar" Command="{StaticResource PictureCmd}" />
+                    <r:RibbonButton r:RibbonQuickAccessToolBar.Placement="InToolBar" Command="{StaticResource AboutCmd}" />
                 </r:RibbonQuickAccessToolBar>
             </r:Ribbon.QuickAccessToolBar>
 
@@ -327,7 +328,7 @@
             </Grid.ColumnDefinitions>
             <Grid Grid.Row="0">
                 <Border Margin="0" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-                    <Image Name="image1" Width="Auto" Height="Auto" Stretch="None" />
+                    <Image Name="image1" Width="Auto" Height="Auto" Stretch="Uniform" />
                 </Border>
             </Grid>
             <Grid Grid.Row="1" VerticalAlignment="Bottom">

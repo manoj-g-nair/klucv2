@@ -15,6 +15,8 @@ using System.Windows.Threading;
 using ffp.TrainingDataSetTableAdapters;
 using KluSharp;
 using Microsoft.Windows.Controls.Ribbon;
+using AForge.Neuro.Learning;
+using AForge.Neuro;
 
 namespace ffp
 {
@@ -137,9 +139,7 @@ namespace ffp
 
                 // Load data from SQL database and fill our DataSet
                 tam.ExpressionTableAdapter = new ExpressionTableAdapter();
-                tam.EmoticonTableAdapter = new EmoticonTableAdapter();
                 tam.TrainingTableAdapter = new TrainingTableAdapter();
-                tam.ImageTableAdapter = new ImageTableAdapter();
 
                 LoadData();
                 #endregion
@@ -160,9 +160,7 @@ namespace ffp
 
             // Load data from database and fill dataset
             tam.ExpressionTableAdapter.Fill(dataSet.Expression);
-            tam.EmoticonTableAdapter.Fill(dataSet.Emoticon);
             tam.TrainingTableAdapter.Fill(dataSet.Training);
-            tam.ImageTableAdapter.Fill(dataSet.Image);
 
             // Bind data to controls 
             expressionSelectorComboBox.DataContext = dataSet.Expression;
@@ -420,97 +418,165 @@ namespace ffp
         /// <param name="e"></param>
         private void TrainingStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.DefaultExt = "."; // Default file extension
-            dlg.Filter = "Neural network (*.xml)|*.xml|All files (*.*)|*.*"; // Filter files by extension
-            dlg.Title = "Select the neural network you want to train?";
-            dlg.Multiselect = false;
+            statusText.Text = "Now training...";
 
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            // Enable infinite progess indicator
+            statusProgess.IsEnabled = true;
+            statusProgess.Visibility = Visibility.Visible;
 
-            if (result == true)
+            #region Prepare data to be trained. Involves copying.
+
+            int numTrainingSets = dataSet.Training.Rows.Count;
+            const int numInputNeurons = 16;
+            const int numOutputNeurons = 1;
+            double[][] inputs = new double[numTrainingSets][];
+            double[][] outputs = new double[numTrainingSets][];
+
+            for (int i = 0; i < numTrainingSets; i++)
             {
-                bool res = klu.LoadANN(dlg.FileName);
+                inputs[i] = new double[numInputNeurons];
+                inputs[i][0] = dataSet.Training[i].LipCornerLeftX;
+                inputs[i][1] = dataSet.Training[i].LipCornerLeftY;
+                inputs[i][2] = dataSet.Training[i].LipCornerRightX;
+                inputs[i][3] = dataSet.Training[i].LipCornerRightY;
+                inputs[i][4] = dataSet.Training[i].LipUpLeftX;
+                inputs[i][5] = dataSet.Training[i].LipUpLeftY;
+                inputs[i][6] = dataSet.Training[i].LipUpCenterX;
+                inputs[i][7] = dataSet.Training[i].LipUpCenterY;
+                inputs[i][8] = dataSet.Training[i].LipUpRightX;
+                inputs[i][9] = dataSet.Training[i].LipUpRightY;
+                inputs[i][10] = dataSet.Training[i].LipBottomLeftX;
+                inputs[i][11] = dataSet.Training[i].LipBottomLeftY;
+                inputs[i][12] = dataSet.Training[i].LipBottomCenterX;
+                inputs[i][13] = dataSet.Training[i].LipBottomCenterY;
+                inputs[i][14] = dataSet.Training[i].LipBottomRightX;
+                inputs[i][15] = dataSet.Training[i].LipBottomRightY;
 
-                Console.WriteLine("Load ANN success? " + res );
-
-                if ( !res )
-                {
-                    return;
-                }
-
-                statusText.Text = "ANN loaded: " + dlg.FileName;
-
-                TerminationCriteria terminationCriteria = new TerminationCriteria();
-                terminationCriteria.TerminationType = Convert.ToInt32(TrainingTermination.MaxIterationTermination);
-                terminationCriteria.MaxIteration = 2000; // TODO: (Ko) after checking the saved ANN file I think, there is an error with this number
-
-                TrainOptions options = new TrainOptions();
-                options.Algorithm = TrainingAlgorithm.BackpropAlgorithm;
-                options.Termination = terminationCriteria;
-
-                statusText.Text = "Now training...";
-
-                // Enable infinite progess indicator
-                statusProgess.IsEnabled = true;
-                statusProgess.Visibility = Visibility.Visible;
-
-                #region Prepare data to be trained. Involves copying.
-
-                int numTrainingSets = dataSet.Training.Rows.Count;
-                int numInputNeurons = 16;
-                int numOutputNeurons = 1;
-                float[] inputs = new float[numTrainingSets * numInputNeurons];
-                float[] outputs = new float[numTrainingSets * numOutputNeurons];
-
-                for (int i = 0; i < numTrainingSets; i++)
-                {
-                    inputs[i + 0] = dataSet.Training[i].LipCornerLeftX;
-                    inputs[i + 1] = dataSet.Training[i].LipCornerLeftY;
-                    inputs[i + 2] = dataSet.Training[i].LipCornerRightX;
-                    inputs[i + 3] = dataSet.Training[i].LipCornerRightY;
-                    inputs[i + 4] = dataSet.Training[i].LipUpLeftX;
-                    inputs[i + 5] = dataSet.Training[i].LipUpLeftY;
-                    inputs[i + 6] = dataSet.Training[i].LipUpCenterX;
-                    inputs[i + 7] = dataSet.Training[i].LipUpCenterY;
-                    inputs[i + 8] = dataSet.Training[i].LipUpRightX;
-                    inputs[i + 9] = dataSet.Training[i].LipUpRightY;
-                    inputs[i + 10] = dataSet.Training[i].LipBottomLeftX;
-                    inputs[i + 11] = dataSet.Training[i].LipBottomLeftY;
-                    inputs[i + 12] = dataSet.Training[i].LipBottomCenterX;
-                    inputs[i + 13] = dataSet.Training[i].LipBottomCenterY;
-                    inputs[i + 14] = dataSet.Training[i].LipBottomRightX;
-                    inputs[i + 15] = dataSet.Training[i].LipBottomRightY;
-
-                    outputs[i] = dataSet.Training[i].ExpressionOID;
-                }
-                #endregion
-
-                klu.SaveANN(dlg.FileName + ".untrained.xml");
-
-                int iters = -10;
-                res = klu.TrainAnn(options, numTrainingSets, inputs, outputs, ref iters);
-
-                Console.WriteLine("Training success? " + res);
-
-                // Disable infinite progess indicator
-                statusProgess.IsEnabled = false;
-                statusProgess.Visibility = Visibility.Hidden;
-
-                statusText.Text = "Training result: " + res;
-
-                klu.SaveANN(dlg.FileName + ".trained.xml");
-
-                // Let's see if the ANN is trained. (simple for now)
-                // TODO: (Ko) Do 7 out of 10 validation etc.
-
-                // Test the first dataset and compare the predicted output with the expected
-                float[] results = new float[1];
-                klu.PredictANN(inputs, 16, results, 1);
-
-                Console.WriteLine("Expected output: " + dataSet.Training[0].ExpressionOID + " Predicted output: " + results[0]);
+                outputs[i] = new double[numOutputNeurons];
+                outputs[i][0] = dataSet.Training[i].ExpressionOID;
             }
+            #endregion
+
+            ActivationNetwork network = new ActivationNetwork(
+                new SigmoidFunction(1.0),
+                numInputNeurons,
+                6,
+                5,
+                numOutputNeurons
+            );
+
+            BackPropagationLearning teacher = new BackPropagationLearning(network);
+            teacher.LearningRate = 0.1;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                double error = teacher.RunEpoch(inputs, outputs);
+                if (i == 0)
+                {
+                    Console.WriteLine("Error at i=" + i + ": " + error);
+                }
+                if (i == 999)
+                {
+                    Console.WriteLine("Error at i=" + i + ": " + error);
+                }
+            }
+
+            // Disable infinite progess indicator
+            statusProgess.IsEnabled = false;
+            statusProgess.Visibility = Visibility.Hidden;
+
+                
+            //Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            //dlg.DefaultExt = "."; // Default file extension
+            //dlg.Filter = "Neural network (*.xml)|*.xml|All files (*.*)|*.*"; // Filter files by extension
+            //dlg.Title = "Select the neural network you want to train?";
+            //dlg.Multiselect = false;
+
+            //// Show save file dialog box
+            //Nullable<bool> result = dlg.ShowDialog();
+
+            //if (result == true)
+            //{
+            //    bool res = klu.LoadANN(dlg.FileName);
+
+            //    Console.WriteLine("Load ANN success? " + res );
+
+            //    if ( !res )
+            //    {
+            //        return;
+            //    }
+
+            //    statusText.Text = "ANN loaded: " + dlg.FileName;
+
+            //    TerminationCriteria terminationCriteria = new TerminationCriteria();
+            //    terminationCriteria.TerminationType = Convert.ToInt32(TrainingTermination.MaxIterationTermination);
+            //    terminationCriteria.MaxIteration = 2000; // TODO: (Ko) after checking the saved ANN file I think, there is an error with this number
+
+            //    TrainOptions options = new TrainOptions();
+            //    options.Algorithm = TrainingAlgorithm.BackpropAlgorithm;
+            //    options.Termination = terminationCriteria;
+
+            //    statusText.Text = "Now training...";
+
+            //    // Enable infinite progess indicator
+            //    statusProgess.IsEnabled = true;
+            //    statusProgess.Visibility = Visibility.Visible;
+
+            //    #region Prepare data to be trained. Involves copying.
+
+            //    int numTrainingSets = dataSet.Training.Rows.Count;
+            //    int numInputNeurons = 16;
+            //    int numOutputNeurons = 1;
+            //    float[] inputs = new float[numTrainingSets * numInputNeurons];
+            //    float[] outputs = new float[numTrainingSets * numOutputNeurons];
+
+            //    for (int i = 0; i < numTrainingSets; i++)
+            //    {
+            //        inputs[i * numInputNeurons + 0] = dataSet.Training[i].LipCornerLeftX;
+            //        inputs[i * numInputNeurons + 1] = dataSet.Training[i].LipCornerLeftY;
+            //        inputs[i * numInputNeurons + 2] = dataSet.Training[i].LipCornerRightX;
+            //        inputs[i * numInputNeurons + 3] = dataSet.Training[i].LipCornerRightY;
+            //        inputs[i * numInputNeurons + 4] = dataSet.Training[i].LipUpLeftX;
+            //        inputs[i * numInputNeurons + 5] = dataSet.Training[i].LipUpLeftY;
+            //        inputs[i * numInputNeurons + 6] = dataSet.Training[i].LipUpCenterX;
+            //        inputs[i * numInputNeurons + 7] = dataSet.Training[i].LipUpCenterY;
+            //        inputs[i * numInputNeurons + 8] = dataSet.Training[i].LipUpRightX;
+            //        inputs[i * numInputNeurons + 9] = dataSet.Training[i].LipUpRightY;
+            //        inputs[i * numInputNeurons + 10] = dataSet.Training[i].LipBottomLeftX;
+            //        inputs[i * numInputNeurons + 11] = dataSet.Training[i].LipBottomLeftY;
+            //        inputs[i * numInputNeurons + 12] = dataSet.Training[i].LipBottomCenterX;
+            //        inputs[i * numInputNeurons + 13] = dataSet.Training[i].LipBottomCenterY;
+            //        inputs[i * numInputNeurons + 14] = dataSet.Training[i].LipBottomRightX;
+            //        inputs[i * numInputNeurons + 15] = dataSet.Training[i].LipBottomRightY;
+
+            //        outputs[i] = dataSet.Training[i].ExpressionOID;
+            //    }
+            //    #endregion
+
+            //    klu.SaveANN(dlg.FileName + ".untrained.xml");
+
+            //    int iters = -10;
+            //    res = klu.TrainAnn(options, numTrainingSets, inputs, outputs, ref iters);
+
+            //    Console.WriteLine("Training success? " + res);
+
+            //    // Disable infinite progess indicator
+            //    statusProgess.IsEnabled = false;
+            //    statusProgess.Visibility = Visibility.Hidden;
+
+            //    statusText.Text = "Training result: " + res;
+
+            //    klu.SaveANN(dlg.FileName + ".trained.xml");
+
+            //    // Let's see if the ANN is trained. (simple for now)
+            //    // TODO: (Ko) Do 7 out of 10 validation etc.
+
+            //    // Test the first dataset and compare the predicted output with the expected
+            //    float[] results = new float[1];
+            //    klu.PredictANN(inputs, 16, results, 1);
+
+            //    Console.WriteLine("Expected output: " + dataSet.Training[0].ExpressionOID + " Predicted output: " + results[0]);
+            //}
         }
 
         /// <summary>
@@ -521,7 +587,7 @@ namespace ffp
         private void OptionToggle_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             RibbonToggleButton s = sender as RibbonToggleButton;
-
+            
             switch (s.Name)
             {
                 //case "showExpertOptionsMenuItem":
@@ -645,9 +711,20 @@ namespace ffp
             float dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
             float eyeDist = (float) Math.Sqrt(dx * dx + dy * dy);
 
+            // Construct thumbnail
+            const int thumbnailWidth = 50;
+            const int thumbnailHeight = 50;
+
+            System.Drawing.Rectangle faceRect = new System.Drawing.Rectangle(x, y, w, h);
+            System.Drawing.Bitmap faceImg = tmpBitmap.Clone(faceRect, tmpBitmap.PixelFormat);
+
+            System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
+            System.Drawing.Image thumbnail = faceImg.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
             dataSet.Training.AddTrainingRow(
-                dataSet.Expression.FindByExpressionOID(expressionOID),
-                null,
+                dataSet.Expression.FindByExpressionOID(expressionOID),                
                 i2r(ffp.Mouth.LipCornerLeft.X, x, w),   i2r(ffp.Mouth.LipCornerLeft.Y, y, h), 
                 i2r(ffp.Mouth.LipCornerRight.X, x, w),  i2r(ffp.Mouth.LipCornerRight.Y, y, h), 
                 i2r(ffp.Mouth.LipUpLeft.X, x, w),       i2r(ffp.Mouth.LipUpLeft.Y, y, h),
@@ -656,19 +733,9 @@ namespace ffp
                 i2r(ffp.Mouth.LipBottomLeft.X, x, w),   i2r(ffp.Mouth.LipBottomLeft.Y, y, h), 
                 i2r(ffp.Mouth.LipBottomCenter.X, x, w), i2r(ffp.Mouth.LipBottomCenter.Y, y, h),
                 i2r(ffp.Mouth.LipBottomRight.X, x, w),  i2r(ffp.Mouth.LipBottomRight.Y, y, h),
-                eyeDist
+                eyeDist,
+                ms.ToArray()
             );
-
-            // Add a thumbnail to the image table
-            const int thumbnailWidth = 50;
-            const int thumbnailHeight = 50;
-
-            System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
-            System.Drawing.Image thumbnail = tmpBitmap.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-
-            dataSet.Image.AddImageRow(thumbnailWidth, thumbnailHeight, 3, 0, ms.ToArray());
         }
 
         /// <summary>
@@ -693,9 +760,9 @@ namespace ffp
 
         private void About_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("This is KLU a Facial Feature Point (FFP) detector and Facial Expression "
-            +"Analyzation tool. The project is maintained at the South Westphalia University of Applied Science "
-            +" by Konrad Kleine and Jens Lukowski.", "About", MessageBoxButton.OK, MessageBoxImage.Information);
+            AboutDialog dlg = new AboutDialog();
+            dlg.Owner = this;
+            dlg.ShowDialog();
         }
 
         private void StretchNone_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -710,37 +777,22 @@ namespace ffp
 
         private void ExpressionsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // Start Expressions Dialog here.
             ExpressionsDialog dlg = new ExpressionsDialog(ref dataSet);
-
-            // Configure the dialog box
             dlg.Owner = this;
-
-            // Open the dialog box modally 
             dlg.ShowDialog();
         }
 
         private void TrainingDataSetsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // Start Expressions Dialog here.
             TrainingDataSetsDialog dlg = new TrainingDataSetsDialog(ref dataSet);
-
-            // Configure the dialog box
             dlg.Owner = this;
-
-            // Open the dialog box modally 
             dlg.ShowDialog();
         }
 
         private void AnnDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            // Start Expressions Dialog here.
             AnnDialog dlg = new AnnDialog(ref klu);
-
-            // Configure the dialog box
             dlg.Owner = this;
-
-            // Open the dialog box modally 
             dlg.ShowDialog();
         }
     }

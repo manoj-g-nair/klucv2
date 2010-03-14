@@ -1,0 +1,22 @@
+﻿<Window x:Class="ffp.AboutDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="About KLU" Height="253" Width="352">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="117*"></RowDefinition>
+            <RowDefinition Height="152*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="1" HorizontalAlignment="Center">
+            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
+            KLU is an acronym, which represents the creators' lastnames. It is a facial feature point (FFP) detector and facial expression
+            analyzation tool.
+            The project is maintained by Konrad Kleine and Jens Lukowski from the Institute for
+            Computer Science, Vision and Computational Intelligence at the South Westphalia University
+            of Applied Sciences.
+            </TextBlock>
+        </Label>
+        <Image Margin="10" ToolTip="Logo of the South Westphalia University of Applied Sciences" Grid.Row="0" HorizontalAlignment="Right" Source="/ffp;component/img/cvci.png" Stretch="Uniform"></Image>
+        <Image Margin="10" ToolTip="Logo of the Institute for Computer Science, Vision and Computational Intelligence" Grid.Row="0" HorizontalAlignment="Left" Source="/ffp;component/img/fhswf.png" Stretch="Uniform"></Image>
+    </Grid>
+</Window>

@@ -32,5 +32,10 @@ namespace ffp
             _DataSet = DataSet;
             ExpressionsDataGrid.ItemsSource = _DataSet.Expression;
         }
+
+        private void BrowseImage_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

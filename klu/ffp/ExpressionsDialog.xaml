@@ -14,7 +14,7 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
             <Image HorizontalAlignment="Left" Source="/ffp;component/img/075.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock>Please, feel free edit or <LineBreak/>add your own Expressions!</TextBlock>                
+                <TextBlock TextWrapping="Wrap">Please, feel free edit or add your own Expressions!</TextBlock>                
             </Label>
         </StackPanel>
         <toolkit:DataGrid Grid.Row="1"
@@ -35,6 +35,18 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
             <toolkit:DataGrid.Columns>
                 <toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=ExpressionOID}" IsReadOnly="True"/>
                 <toolkit:DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" />
+                <toolkit:DataGridTemplateColumn Header="Emoticon">
+                    <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>                            
+                            <Button Name="BrowseImage" Click="BrowseImage_Click">Browse</Button>
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                    <toolkit:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellTemplate>
+                </toolkit:DataGridTemplateColumn>
             </toolkit:DataGrid.Columns>
         </toolkit:DataGrid>        
     </Grid>

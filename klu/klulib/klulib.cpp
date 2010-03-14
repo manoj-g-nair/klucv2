@@ -161,6 +161,35 @@ extern "C" {
         return 1;
     }
     //------------------------------------------------------------------------------
+
+    void printMatToFile(const CvMat *A, FILE * file)
+    {
+        //if ( !A )
+        //{
+        //    return;
+        //}
+
+        int i, j;
+        for (i = 0; i < A->rows; i++) {
+            fprintf(file, "\n");
+            switch (CV_MAT_DEPTH(A->type)) {
+        case CV_32F:
+        case CV_64F:
+            for (j = 0; j < A->cols; j++)
+                fprintf(file, "%8.3f ", (float) cvGetReal2D(A, i, j));
+            break;
+        case CV_8U:
+        case CV_16U:
+            for (j = 0; j < A->cols; j++)
+                fprintf(file, "%6d", (int) cvGetReal2D(A, i, j));
+            break;
+        default:
+            break;
+            }
+        }
+        printf("\n");
+    }
+
     KLULIB_API int klu_trainAnn(const KluTrainOptions * options,
                                 int numTrainingSets,
                                 float * inputs,
@@ -169,27 +198,54 @@ extern "C" {
                                 int numOutputNeurons,
                                 int * terminatedAfterIter)
     {
-        if ( !options || !inputs || !outputs || terminatedAfterIter )
+        if ( !options || !inputs || !outputs || !terminatedAfterIter )
         {
             return 0;
         }
+
+        FILE * matFile = fopen("C:/Users/Konrad/Desktop/mats.txt", "w");
+
+        if (!matFile) return 0;
 
         cv::Mat inMat(numTrainingSets, numInputNeurons, CV_32FC1, inputs);
         cv::Mat outMat(numTrainingSets, numOutputNeurons, CV_32FC1, outputs);
         cv::Mat weightMat(numTrainingSets, 1, CV_32FC1, cv::Scalar(1.0f));
 
-        CvANN_MLP_TrainParams params(
-                cvTermCriteria(
-                    options->termination.terminationType,
-                    options->termination.maxIteration,
-                    options->termination.epsilon
-                ),
-                options->algorithm,
-                options->algorithm == BackpropAlgorithm ? options->backpropDeltaWeightScale : options->rpropDeltaWeight0,
-                options->algorithm == RpropAlgorithm ? options->backpropMomentumScale : options->rpropDeltaWeightMin
-        );
+        CvMat inMatTmp = inMat;
+        CvMat outMatTmp = outMat;
+        CvMat weightMatTmp = weightMat;
+
+        printMatToFile(&inMatTmp, matFile);
+        printMatToFile(&outMatTmp, matFile);
+        printMatToFile(&weightMatTmp, matFile);
+
+        fclose(matFile);
+
+        //CvANN_MLP_TrainParams params(
+        //        cvTermCriteria(
+        //            options->termination.terminationType,
+        //            options->termination.maxIteration,
+        //            options->termination.epsilon
+        //        ),
+        //        options->algorithm,
+        //        options->algorithm == BackpropAlgorithm ? options->backpropDeltaWeightScale : options->rpropDeltaWeight0,
+        //        options->algorithm == RpropAlgorithm ? options->backpropMomentumScale : options->rpropDeltaWeightMin
+        //);
         
-        *terminatedAfterIter = app.ann.train(inMat, outMat, weightMat, cv::Mat(), params, 0);
+
+
+        *terminatedAfterIter = app.ann.train(&inMatTmp, &outMatTmp, &weightMatTmp, 0, 
+                   CvANN_MLP_TrainParams(
+           cvTermCriteria(
+               CV_TERMCRIT_EPS,
+               100000,
+               0.0001
+               ),
+           CvANN_MLP_TrainParams::BACKPROP,
+           1.0,
+           1.0
+           )
+            , 0);
 
         return 1;
     }

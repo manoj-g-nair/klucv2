@@ -12,7 +12,7 @@
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
             <Image HorizontalAlignment="Left" Source="/ffp;component/img/032.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock>Please, feel free to manually edit or<LineBreak/>review your trainings!</TextBlock>                
+                <TextBlock TextWrapping="Wrap">Please, feel free to manually edit or review your trainings!</TextBlock>                
             </Label>
         </StackPanel>
         <toolkit:DataGrid Grid.Row="1"
@@ -26,6 +26,7 @@
                         Name="TrainingDataGrid"
                         ItemsSource="{Binding}"
                         AutoGenerateColumns="False"
+                        RowHeight="50"
                         >
 
             <toolkit:DataGrid.RowValidationRules>
@@ -33,6 +34,21 @@
             </toolkit:DataGrid.RowValidationRules>
 
             <toolkit:DataGrid.Columns>
+                
+                <toolkit:DataGridTemplateColumn Header="Thumbnail">
+                    <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <!--<ComboBox ItemsSource="{Binding Path=LipCornerLeftX}"></ComboBox>-->
+                            <Label Content="{Binding Path=Expression.OID}"></Label>
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                    <toolkit:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Stretch="Uniform" Source="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>                            
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellTemplate>
+                </toolkit:DataGridTemplateColumn>                
+                
                 <!--<toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=TrainingOID}" IsReadOnly="True"/>-->
                 <toolkit:DataGridTemplateColumn Header="Expression">
                     <toolkit:DataGridTemplateColumn.CellEditingTemplate>
@@ -43,7 +59,7 @@
                     </toolkit:DataGridTemplateColumn.CellEditingTemplate>
                     <toolkit:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=ExpressionOID, Converter={StaticResource ExpressionConverter}}" />
+                            <TextBlock Text="{Binding Path=ExpressionOID, Converter={StaticResource ExpressionIDToTextConverter}}" />
                         </DataTemplate>
                     </toolkit:DataGridTemplateColumn.CellTemplate>
                 </toolkit:DataGridTemplateColumn>

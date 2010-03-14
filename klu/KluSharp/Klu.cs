@@ -354,10 +354,29 @@ namespace KluSharp
         {
             int numInputLayers = inputs.Count() / numTrainingSets;
             int numOutputLayers = 1;
-            Console.WriteLine("Starting Training with theses parameters:" +
-                "Number of Training Datasets: " + numTrainingSets +
-                "Number of Input Layers: " + numInputLayers +
-                "Number of Output Layers: " + numOutputLayers);
+            Console.WriteLine("Starting Training with theses parameters: " +
+                " Number of Training Datasets: " + numTrainingSets +
+                " Number of Input Layers: " + numInputLayers +
+                " Number of Output Layers: " + numOutputLayers);
+
+            Console.WriteLine("Inputs:");
+            for (int i = 0; i < inputs.Count(); i++)
+            {
+                if (i == 16)
+                {
+                    Console.WriteLine();
+                }
+                Console.Write(inputs[i] + " ");
+            }
+            Console.WriteLine("Outputs:");
+            for (int i = 0; i < outputs.Count(); i++)
+            {
+                if (i == 1)
+                {
+                    Console.WriteLine();
+                }
+                Console.Write(outputs[i] + " ");
+            }
 
             int res = klu_trainAnn(options, numTrainingSets, inputs, numInputLayers, outputs, numOutputLayers, out terminatedAfterIter);
 
