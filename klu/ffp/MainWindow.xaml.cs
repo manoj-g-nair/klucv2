@@ -77,6 +77,8 @@ namespace ffp
         {
             InitializeComponent();
 
+            Console.WriteLine("Loc: " + System.Reflection.Assembly.GetExecutingAssembly().Location);
+
             try
             {
                 fileProcessIdx = 0;
@@ -696,12 +698,12 @@ namespace ffp
             +" by Konrad Kleine and Jens Lukowski.", "About", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void stretchNoneButton_Click(object sender, RoutedEventArgs e)
+        private void StretchNone_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             image1.Stretch = Stretch.None;
         }
 
-        private void stretchUniformButton_Click(object sender, RoutedEventArgs e)
+        private void StretchUniform_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             image1.Stretch = Stretch.Uniform;
         }

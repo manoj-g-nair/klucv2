@@ -4,7 +4,7 @@
     Title="Artificial Neural Network"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
                 xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
-    Height="431" Width="637" Icon="/ffp;component/icons/Game014.ico">
+    Height="431" Width="637" Icon="/ffp;component/img/107.png">
     <Grid Name="AnnGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
@@ -27,13 +27,13 @@
                 </Grid.RowDefinitions>
                 <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="LoadAnnButton" Click="LoadAnnButton_Click" Margin="6">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/ffp;component/icons/Folder001.ico" Width="24" Height="24"></Image>
+                        <Image Source="/ffp;component/img/034.png" Width="24" Height="24"></Image>
                         <Label>Load</Label>
                     </StackPanel>
                 </Button>
                 <Button Grid.Column="1" Grid.Row="0" Name="SaveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="SaveAnnButton_Click" Margin="6">
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/ffp;component/icons/Disc001.ico" Width="24" Height="24"></Image>
+                        <Image Source="/ffp;component/img/Disc001.png" Width="24" Height="24"></Image>
                         <Label>Save</Label>
                     </StackPanel>
                 </Button>

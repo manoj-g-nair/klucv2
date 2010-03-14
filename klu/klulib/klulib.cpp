@@ -299,40 +299,40 @@ extern "C" {
         return result ? 1 : 0;
     }
     //------------------------------------------------------------------------------
-    KLULIB_API int klu_configureCaptureDialog()
+    KLULIB_API int klu_configureCaptureDialog(void)
     {
         if ( !app.capture )
         {
             return 0;
         }
 
-#ifdef WIN32
-        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
-        HWND capHandle = cap->capWnd;
-        capDlgVideoSource(capHandle);
-#else
-        return 0;
-#endif
+//#ifdef WIN32
+//        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
+//        HWND capHandle = cap->capWnd;
+//        capDlgVideoSource(capHandle);
+//#else
+//        return 0;
+//#endif
 
         return 1;
     }
     //------------------------------------------------------------------------------
-    KLULIB_API int klu_configureCaptureResolutionDialog()
+    KLULIB_API int klu_configureCaptureResolutionDialog(void)
     {
         if ( !app.capture )
         {
             return 0;
         }
 
-#ifdef WIN32
-        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
-        HWND capHandle = cap->capWnd;
-        capDlgVideoFormat(capHandle);
-        /*CAPDRIVERCAPS caps = {0};  
-        capDriverGetCaps(m_hCaptureWindow, &caps, sizeof(caps));*/
-#else
-        return 0;
-#endif
+//#ifdef WIN32
+//        CvCaptureCAM_VFW * cap = (CvCaptureCAM_VFW*) app.capture;
+//        HWND capHandle = cap->capWnd;
+//        capDlgVideoFormat(capHandle);
+//        /*CAPDRIVERCAPS caps = {0};  
+//        capDriverGetCaps(m_hCaptureWindow, &caps, sizeof(caps));*/
+//#else
+//        return 0;
+//#endif
 
         return 1;
     }

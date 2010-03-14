@@ -3,14 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Training Datasets"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="301" Width="762" Icon="/ffp;component/icons/Game014.ico">
+    Height="301" Width="762" Icon="/ffp;component/img/032.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="8*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
-            <Image HorizontalAlignment="Left" Source="/ffp;component/icons/C&amp;M020.ico" Stretch="None"></Image>
+            <Image HorizontalAlignment="Left" Source="/ffp;component/img/032.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
                 <TextBlock>Please, feel free to manually edit or<LineBreak/>review your trainings!</TextBlock>                
             </Label>

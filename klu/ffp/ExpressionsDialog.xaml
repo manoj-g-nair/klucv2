@@ -5,14 +5,14 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 
     Title="Expressions"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="375" Width="242" Icon="/ffp;component/icons/Game014.ico">
+    Height="375" Width="242" Icon="/ffp;component/img/075.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
             <RowDefinition Height="8*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
-            <Image HorizontalAlignment="Left" Source="/ffp;component/icons/Game014.ico" Stretch="None"></Image>
+            <Image HorizontalAlignment="Left" Source="/ffp;component/img/075.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
                 <TextBlock>Please, feel free edit or <LineBreak/>add your own Expressions!</TextBlock>                
             </Label>

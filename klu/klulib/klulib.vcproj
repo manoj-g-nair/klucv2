@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="cv200d.lib cxcore200d.lib cvaux200d.lib ml200d.lib highgui200d.lib"
+				AdditionalDependencies="cv200.lib cxcore200.lib cvaux200.lib ml200.lib highgui200.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"

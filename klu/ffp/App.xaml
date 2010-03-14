@@ -16,7 +16,7 @@
             <!--Custom Datagrid style-->
 
             <!-- Header related brushes -->
-            <SolidColorBrush x:Key="HeaderBorderBrush" Color="#88B0E4"/>
+            <!--<SolidColorBrush x:Key="HeaderBorderBrush" Color="#88B0E4"/>
             <SolidColorBrush x:Key="HeaderInnerBorderBrush" Color="#FFFFFF" />
             <LinearGradientBrush x:Key="HeaderBackgroundBrush"
                      StartPoint="0.5,0.0" EndPoint="0.5,1.0">
@@ -32,10 +32,10 @@
                      StartPoint="0,0" EndPoint="0,1">
                 <GradientStop Color="#FFA3CBF7" Offset="1"/>
                 <GradientStop Color="#FFD9E6F9" Offset="0"/>
-            </LinearGradientBrush>
+            </LinearGradientBrush>-->
 
             <!-- DataGridRowHeader Gripper -->
-            <Style x:Key="RowHeaderGripperStyle" TargetType="{x:Type Thumb}">
+            <!--<Style x:Key="RowHeaderGripperStyle" TargetType="{x:Type Thumb}">
                 <Setter Property="Height" Value="8"/>
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Cursor" Value="SizeNS"/>
@@ -47,10 +47,10 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
+            </Style>-->
 
             <!-- DataGridColumnHeader Style -->
-            <Style x:Key="ColumnHeaderStyle" TargetType="{x:Type toolkit:DataGridColumnHeader}">
+            <!--<Style x:Key="ColumnHeaderStyle" TargetType="{x:Type toolkit:DataGridColumnHeader}">
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
                 <Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrush}" />
@@ -105,7 +105,7 @@
                     </Setter.Value>
                 </Setter>
 
-            </Style>
+            </Style>-->
 
             <Style x:Key="MyDataGridStyle" TargetType="{x:Type toolkit:DataGrid}">
                 <Setter Property="AlternatingRowBackground">
@@ -130,8 +130,8 @@
                 <Setter Property="HeadersVisibility" Value="All" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />            
 
-                <Setter Property="ColumnHeaderStyle" Value="{StaticResource ColumnHeaderStyle}">
-                </Setter>
+                <!--<Setter Property="ColumnHeaderStyle" Value="{StaticResource ColumnHeaderStyle}">
+                </Setter>-->
             </Style>
             
             <!-- For DataGrid Validation. -->
@@ -141,7 +141,7 @@
                     <Setter.Value>
                         <ControlTemplate>
                             <Grid>
-                                <Image Source="/ffp;component/icons/Alert007.ico" Width="12" Height="12" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"></Image>
+                                <Image Source="/ffp;component/img/Alert007.png" Width="12" Height="12" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"></Image>
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
