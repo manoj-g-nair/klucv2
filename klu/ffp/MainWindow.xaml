@@ -1,53 +1,19 @@
-﻿<Window x:Class="ffp.MainWindow"
+﻿<r:RibbonWindow x:Class="ffp.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ffp"
-    xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+    xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit" 
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     Title="Facial Expression Recognition" Height="586" Width="882.5"
+                Background="AliceBlue"
     WindowStartupLocation="CenterScreen" Closing="Window_Closing" x:Name="self">
-
-    <Window.Resources>
-        <Style TargetType="{x:Type ListViewItem}">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        </Style>
-
-        <!-- For DataGrid Validation. -->
-        <Style x:Key="RowStyle" TargetType="{x:Type toolkit:DataGridRow}">
-            <Setter Property="ValidationErrorTemplate">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Grid>
-                            <Image Source="/ffp;component/img/16x16/software-update-urgent.png" Width="12" Height="12" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"></Image>
-                            <!--<Ellipse Width="12" Height="12" Fill="Red" Stroke="Black" StrokeThickness="0.5"/>
-                            <TextBlock FontWeight="Bold" Padding="4,0,0,0" Margin="0" VerticalAlignment="Top" Foreground="White" Text="!" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>-->
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="true">
-                    <Setter Property="BorderThickness" Value="2"/>
-                    <Setter Property="BorderBrush" Value="Red"/>
-                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style x:Key="ImageButton" TargetType="{x:Type Button}">
-            <Setter Property="Padding" Value="6,0,6,0"></Setter>
-            <!--<Setter Property="BorderThickness" Value="0"></Setter>-->
-            <!--<Setter Property="Background" Value="Transparent"></Setter>-->
-        </Style>                
-    </Window.Resources>
-
     <Grid Background="#040000ff">
         <Grid.RowDefinitions>
             <RowDefinition Height="140"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="23"></RowDefinition>
         </Grid.RowDefinitions>
-        
+
         <r:Ribbon Grid.Row="0">
             <r:Ribbon.Resources>
 
@@ -81,18 +47,23 @@
                                              Executed="CameraParameters_Executed"></r:RibbonCommand>
                 </ResourceDictionary>
             </r:Ribbon.Resources>
-           
+
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu>
                     <r:RibbonApplicationMenu.Command>
-                        <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net003.ico"                                         
-                                         SmallImageSource="/ffp;component/ApplicationIcon.ico"
-                                        LabelTitle="Application"
+                        <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net034.ico"                                         
+                                         SmallImageSource="/ffp;component/icons/Net003.ico"
+                                         LabelTitle="Application"
                                          LabelDescription="Close"
                                          Executed="CloseApplication_Executed"
                                          />
                     </r:RibbonApplicationMenu.Command>
-                    <r:RibbonSeparator />
+                    <r:RibbonSeparator/>
+                    <r:RibbonApplicationMenuItem>
+                        <r:RibbonApplicationMenuItem.Command>
+                            <r:RibbonCommand LabelTitle="About" Executed="About_Executed"/>
+                        </r:RibbonApplicationMenuItem.Command>
+                    </r:RibbonApplicationMenuItem>
                     <r:RibbonApplicationMenuItem>
                         <r:RibbonApplicationMenuItem.Command>
                             <r:RibbonCommand LabelTitle="Exit" Executed="CloseApplication_Executed"/>
@@ -153,8 +124,8 @@
                         </r:RibbonSplitButton.Items>
                     </r:RibbonSplitButton>
                 </r:RibbonGroup>
-            
-                
+
+
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Processing"/>
@@ -189,7 +160,7 @@
                     </r:RibbonGroup.Command>
 
                     <r:RibbonToggleButton>
-                        <r:RibbonToggleButton.Command> 
+                        <r:RibbonToggleButton.Command>
                             <r:RibbonCommand LargeImageSource="/ffp;component/img/bug-small.jpg"
                                              LabelTitle="Visual"
                                              ToolTipTitle="Visual Debug"
@@ -203,19 +174,21 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Expressions" />
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton>
-                        <r:RibbonToggleButton.Command>
+                    <r:RibbonButton>
+                        <r:RibbonButton.Command>
                             <r:RibbonCommand LargeImageSource="/ffp;component/icons/Game014.ico"
                                              LabelTitle="Expressions"
                                              ToolTipTitle="Expressions"
                                              ToolTipDescription="Opens a dialog in which you can configure the facial expressions you want to use for facial expression classification."
+                                             Executed="ExpressionsDialog_Executed"
                                             />
-                        </r:RibbonToggleButton.Command>
-                    </r:RibbonToggleButton>
+                        </r:RibbonButton.Command>
+                    </r:RibbonButton>
                 </r:RibbonGroup>
+
             </r:RibbonTab>
-            
-            <r:RibbonTab Label="View">                
+
+            <r:RibbonTab Label="View">
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Elements To Draw"/>
@@ -271,10 +244,10 @@
                                              x:Name="drawFeaturePointsMenuItem"/>
                         </r:RibbonToggleButton.Command>
                     </r:RibbonToggleButton>
-                </r:RibbonGroup>                
+                </r:RibbonGroup>
             </r:RibbonTab>
 
-            <r:RibbonTab Label="Training">
+            <r:RibbonTab Label="Training &amp; Prediction">
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Training"/>
@@ -290,7 +263,7 @@
                         </r:RibbonButton.Command>
                     </r:RibbonButton>
 
-                    <r:RibbonButton>
+                    <r:RibbonButton IsEnabled="False">
                         <r:RibbonButton.Command>
                             <r:RibbonCommand LargeImageSource="/ffp;component/icons/Sign006.ico"
                                              LabelTitle="Stop Training"
@@ -306,24 +279,27 @@
                                              LabelTitle="Datasets"
                                              ToolTipTitle="Show Training Datasets"
                                              ToolTipDescription="Opens a dialog that shows all the training datasets you have collected so far. You can manipulate each dataset individually"
+                                             Executed="TrainingDataSetsDialog_Executed"
                                              />
                         </r:RibbonButton.Command>
                     </r:RibbonButton>
 
                 </r:RibbonGroup>
-                
-                
-                <r:RibbonGroup>
+
+
+               <r:RibbonGroup HorizontalAlignment="Center" HorizontalContentAlignment="Center">
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Artificial Neural Network"/>
                     </r:RibbonGroup.Command>
-                    
+
                     <r:RibbonButton>
                         <r:RibbonButton.Command>
-                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net035.ico"
-                                             LabelTitle="Modify ANN"
-                                             ToolTipTitle="Modify Artificial Neural Network (ANN)"
+                            <r:RibbonCommand LargeImageSource="/ffp;component/icons/Net034.ico"
+                                             LabelTitle="Create ANN"
+                                             ToolTipTitle="Create an Artificial Neural Network (ANN)"
                                              ToolTipDescription="Shows a dialog that lets you setup the Artifical Neural Network (ANN) which is used to train and classify facial expressions."
+                                             Executed="AnnDialog_Executed"
+                                             
                                              />
                         </r:RibbonButton.Command>
                     </r:RibbonButton>
@@ -331,250 +307,43 @@
             </r:RibbonTab>
         </r:Ribbon>
 
-        <!--<Menu Margin="100" Height="23" VerticalAlignment="Top">
-            <MenuItem Header="_File" InputGestureText="Ctrl+F">
-                <MenuItem  Header="_Open" Name="fileOpenMenuItem" Click="processStill_Click" InputGestureText="Ctrl+O">
-                    <MenuItem.Icon>
-                        <Image Source="/ffp;component/img/16x16/document-open.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="E_xit" InputGestureText="Ctrl+X" Click="closeApplication">
-                    <MenuItem.Icon>
-                        <Image Source="/ffp;component/img/16x16/system-log-out.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Op_tions" InputGestureText="Ctrl+T">
-                <MenuItem Name="showExpertOptionsMenuItem" Click="optionsMenuToggled_Click" Header="Show Expert Options" IsChecked="True" IsCheckable="True" />                
-                <MenuItem Name="drawFaceRectangleMenuItem" Click="optionsMenuToggled_Click" Header="Draw Face Rectangle" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawDetectionTimeMenuItem" Click="optionsMenuToggled_Click" Header="Draw Detection Time" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="drawFeaturePointsMenuItem" Click="optionsMenuToggled_Click" Header="Draw Feature Points" IsChecked="True" IsCheckable="True" />
-                <Separator></Separator>
-                <MenuItem Name="doEyeProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Eye Processing" IsChecked="False" IsCheckable="True" />
-                <MenuItem Name="doMouthProcessingMenuItem" Click="optionsMenuToggled_Click" Header="Do Mouth Processing" IsChecked="True" IsCheckable="True" />
-                <MenuItem Name="doVisualDebugMenuItem" Click="optionsMenuToggled_Click" Header="Do Visual Debug" IsChecked="False" IsCheckable="True" />
-                <Separator></Separator>
-                <MenuItem Name="captureParametersMenuItem" Click="captureParametersMenuItem_Click" Header="Capture Parameters"></MenuItem>
-                <MenuItem Name="captureResolutionMenuItem" Click="captureResolutionMenuItem_Click" Header="Capture Resolution"></MenuItem>
-            </MenuItem>
-            <MenuItem Header="Process" Name="processMenu">
-                <MenuItem Header="Video" Name="processVideoMenuItem" IsEnabled="False" Click="processVideo_Click"/>
-                <MenuItem Header="Still Image(s)" Name="processStillMenuItem" Click="processStill_Click">                    <MenuItem.Icon>
-                    <Image Source="/ffp;component/img/16x16/camera-photo.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Camera" Name="processCameraMenuItem" Click="processCamera_Click">
-                    <MenuItem.Icon>
-                        <Image Source="/ffp;component/img/16x16/camera-video.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <Separator></Separator>
-                <MenuItem Header="Process interval">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Name="processInterval">50</TextBox>
-                        <Label>ms</Label>
-                    </StackPanel>
-                </MenuItem>
-                <MenuItem Header="Stop processing" ToolTip="This will only affect video or camera processing" Name="processStopMenuItem" Click="processStopMenuItem_Click">
-                    <MenuItem.Icon>
-                        <Image Source="/ffp;component/img/16x16/process-stop.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-            <MenuItem Header="Training" Name="trainMenu">
-                <MenuItem Header="Start Training" Name="startTrainingMenuItem" Click="startTrainingMenuItem_Click"/>
-                <MenuItem Header="Stop Training" IsEnabled="False" Name="stopTrainingMenuItem" Click="stopTrainingMenuItem_Click"/>
-            </MenuItem>
-            <MenuItem Header="_Info" InputGestureText="Ctrl+I">
-                <MenuItem Header="_About" Name="aboutMenuItem" InputGestureText="Ctrl+A" Click="aboutMenuItem_Click">
-                    <MenuItem.Icon>
-                        <Image Source="/ffp;component/img/16x16/help-browser.png" Stretch="None"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-        </Menu>-->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0">
+                <Border Background="#FF333333" Margin="0" BorderBrush="Black" BorderThickness="2">
+                    <Image Name="image1" Width="Auto" Height="Auto" Stretch="None" />
+                </Border>
+            </Grid>
+            <Grid Margin="3" Grid.Row="1" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Image Source="/ffp;component/icons/Sign026.ico" Name="processPreviousButton" MouseLeftButtonDown="processPreviousButton_Click"></Image>
+                    <Image Source="/ffp;component/icons/Media012.ico" Name="processPlayPauseButton" MouseLeftButtonDown="processPlayPauseButton_Click" ToolTip="Only for moving images"></Image>
+                    <Image Source="/ffp;component/icons/Sign027.ico" Name="processNextButton" MouseLeftButtonDown="processNextButton_Click"></Image>
 
-        <TabControl Grid.Row="1" ClipToBounds="False" SnapsToDevicePixels="False"> <!--Margin="6,29,6,29">-->
-            <TabItem Name="analyseTabItem" Header="Analyze">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="9*"></RowDefinition>
-                        <RowDefinition Height="1*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
-                        <Border Background="#FF333333" Margin="6" BorderBrush="DimGray" BorderThickness="2">
-                            <Image Name="image1" Width="Auto" Height="Auto" Stretch="None" />
-                        </Border>    
-                    </Grid>
-                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="left">
-                        <Label Margin="3">Navigation:</Label>
-                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processFirstButton" Click="processFirstButton_Click">
-                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-first.png"></Image>
-                        </Button>
-                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processPreviousButton" Click="processPreviousButton_Click">
-                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-previous.png"></Image>
-                        </Button>
-                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processPlayPauseButton" Click="processPlayPauseButton_Click" ToolTip="Only for moving images">
-                            <Image Width="Auto" Source="/ffp;component/img/16x16/media-playback-start.png"></Image>
-                        </Button>
-                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processNextButton" Click="processNextButton_Click">
-                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-next.png"></Image>
-                        </Button>
-                        <Button Style="{StaticResource ImageButton}" Margin="3" Name="processLastButton" Click="processLastButton_Click">
-                            <Image Width="Auto" Source="/ffp;component/img/16x16/go-last.png"></Image>
-                        </Button>
-                    </StackPanel>
-                    <StackPanel Margin="3" Grid.Row="1" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                        <Label Margin="3">Expression:</Label>
-                        <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
-                        </ComboBox>
-                        <Button Margin="0" Width="Auto" Click="Button_Click">
+                    <Label Margin="3">Expression:</Label>
+                    <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
+                    </ComboBox>
+                    <Image MouseLeftButtonDown="Button_Click" Source="/ffp;component/icons/CP086.ico"></Image>
+                    <!--<Button Margin="0" Width="Auto" Click="Button_Click">
                             <StackPanel Orientation="Horizontal">
-                                <Image Width="Auto" Source="/ffp;component/img/16x16/media-floppy.png"></Image>
+                                <Image Source="/ffp;component/icons/CP086.ico"></Image>
                                 <Label>Classify</Label>
                             </StackPanel>
-                        </Button>
-                    </StackPanel>
-                    <StackPanel Margin="0" Grid.Row="1" Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="right">
-                        <Label Margin="3">Image stretching:</Label>
-                        <Button Margin="3" Name="stretchNoneButton" Click="stretchNoneButton_Click" ToolTip="Displays the image as is with no stretching applied. The image might be cropped though.">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="Auto" Source="/ffp;component/img/16x16/list-remove.png"></Image>
-                                <Label>None</Label>
-                            </StackPanel>
-                        </Button>
-                        <Button Margin="3" Name="stretchUniformButton" Click="stretchUniformButton_Click" ToolTip="Stretches the displayed image to the maximum without cropping.">
-                            <StackPanel Orientation="Horizontal">
-                                <Image Width="Auto" Source="/ffp;component/img/16x16/list-add.png"></Image>
-                                <Label>Uniform</Label>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-            <TabItem Name="expressionsTabItem" Header="Expressions" VerticalAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>         
-                    <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
-                        <Image HorizontalAlignment="Left" Source="/ffp;component/img/16x16/face-smile.png" Stretch="None"></Image>
-                        <Label>Please, feel free edit or add your own Expressions!</Label>
-                    </StackPanel>                    
-                    <toolkit:DataGrid Grid.Row="1"
-                        RowStyle="{StaticResource RowStyle}"
-                        Margin="6"
-                        VerticalAlignment="Stretch"
-                        AlternatingRowBackground="AntiqueWhite" 
-                        CanUserAddRows="True" 
-                        CanUserDeleteRows="True" 
-                        CanUserSortColumns="True" 
-                        Name="dgridExpressions"
-                        ItemsSource="{Binding}"
-                        AutoGenerateColumns="False"
-                        HorizontalGridLinesBrush="AntiqueWhite"
-                        VerticalGridLinesBrush="AntiqueWhite" 
-                        GridLinesVisibility="All"
-                        HeadersVisibility="All">
+                        </Button>-->
+                    <Label Margin="3">Image stretching:</Label>
+                    <Image Source="/ffp;component/icons/Sign005.ico" Stretch="None" Name="stretchNoneButton" MouseLeftButtonDown="stretchNoneButton_Click"></Image>
+                    <Image Source="/ffp;component/icons/Sign004.ico" Stretch="None" Name="stretchUniformButton" MouseLeftButtonDown="stretchUniformButton_Click" ToolTip="Stretches the displayed image to the maximum without cropping."></Image>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
-                        <toolkit:DataGrid.RowValidationRules>
-                            <local:DataRowValidation ValidationStep="UpdatedValue" />
-                        </toolkit:DataGrid.RowValidationRules>
 
-                        <toolkit:DataGrid.Columns>
-                            <!--<toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=ExpressionOID}" IsReadOnly="True"/>-->
-                            <toolkit:DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" />
-                            <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
-                        </toolkit:DataGrid.Columns>
-                    </toolkit:DataGrid>
-                </Grid>
-            </TabItem>
-            <TabItem Name="trainingDatasetsTabItem" Header="Training Datasets">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
-                        <Image HorizontalAlignment="Left" Source="/ffp;component/img/16x16/x-office-spreadsheet.png" Stretch="None"></Image>
-                        <Label>Please, feel free to manually edit or review your trainings!</Label>
-                    </StackPanel>
-                    <toolkit:DataGrid Grid.Row="1"
-                        RowStyle="{StaticResource RowStyle}"
-                        Margin="6"
-                        VerticalAlignment="Stretch"
-                        AlternatingRowBackground="AntiqueWhite" 
-                        CanUserAddRows="True" 
-                        CanUserDeleteRows="True" 
-                        CanUserSortColumns="True" 
-                        Name="dgridTraining"
-                        ItemsSource="{Binding}"
-                        AutoGenerateColumns="False"
-                        HorizontalGridLinesBrush="AntiqueWhite"
-                        VerticalGridLinesBrush="AntiqueWhite" 
-                        GridLinesVisibility="All"
-                        HeadersVisibility="All"
-                        >
-
-                        <toolkit:DataGrid.RowValidationRules>
-                            <local:DataRowValidation ValidationStep="UpdatedValue" />
-                        </toolkit:DataGrid.RowValidationRules>
-
-                        <toolkit:DataGrid.Columns>
-                            <!--<toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=TrainingOID}" IsReadOnly="True"/>-->
-                            <toolkit:DataGridTemplateColumn Header="Expression">
-                                <toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <!--<ComboBox ItemsSource="{Binding Path=LipCornerLeftX}"></ComboBox>-->
-                                        <Label Content="{Binding Path=Expression.OID}"></Label>
-                                    </DataTemplate>
-                                </toolkit:DataGridTemplateColumn.CellEditingTemplate>
-                                <toolkit:DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=ExpressionOID, Converter={StaticResource ExpressionConverter}}" />
-                                    </DataTemplate>
-                                </toolkit:DataGridTemplateColumn.CellTemplate>
-                            </toolkit:DataGridTemplateColumn>
-                            <!--<toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />-->
-                            <toolkit:DataGridTemplateColumn Header="Coordinates" IsReadOnly="True">
-                                <toolkit:DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Label Content="{Binding Path=LipCornerLeftX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipCornerLeftY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipCornerRightX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipCornerRightY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpLeftX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpLeftY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpCenterX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpCenterY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpRightX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipUpRightY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomLeftX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomLeftY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomCenterX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomCenterY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomRightX, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=LipBottomRightY, StringFormat=F3}" />
-                                            <Label Content="{Binding Path=EyeDistance, StringFormat=F3}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </toolkit:DataGridTemplateColumn.CellTemplate>
-                            </toolkit:DataGridTemplateColumn>
-                            <!-- Use Text="{Binding Date, StringFormat=f}" for float vars -->
-                            <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
-                        </toolkit:DataGrid.Columns>
-                    </toolkit:DataGrid>
-                </Grid>
-            </TabItem>
-            <!--<TabItem Name="exportTabItem" Header="Export" Visibility="Hidden">
+        <!--<TabItem Name="exportTabItem" Header="Export" Visibility="Hidden">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <GroupBox Header="Export Training Dataset to" Margin="6">
                         <StackPanel Orientation="Vertical">
@@ -592,90 +361,6 @@
                     </GroupBox>
                 </StackPanel>
             </TabItem>-->
-            <TabItem Name="annConfigurationTabItem" Header="Artifical Neural Network" VerticalAlignment="Stretch">
-                <Grid Name="annGrid">                    
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Center">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition Height="Auto"></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <Button IsEnabled="False" ToolTip="The functionality behind this button is currently not implemented" Grid.Column="0" Grid.Row="0" Name="loadAnnButton" Click="loadAnnButton_Click" Margin="6">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="/ffp;component/img/16x16/document-open.png" Stretch="None"></Image>
-                                    <Label>Load</Label>
-                                </StackPanel>
-                            </Button>
-                            <Button Grid.Column="1" Grid.Row="0" Name="saveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points." Click="saveAnnButton_Click" Margin="6">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="/ffp;component/img/16x16/document-save-as.png" Stretch="None"></Image>
-                                    <Label>Save</Label>
-                                </StackPanel>
-                            </Button>                            
-                            <Label Margin="6" Grid.Column="0" Grid.Row="1">Activation Function:</Label>
-                            <ComboBox Margin="6"  Grid.Column="1" Grid.Row="1" Name="annActivation">
-                                <ComboBoxItem Name="identity">Identity</ComboBoxItem>
-                                <ComboBoxItem Name="sigmoid" IsSelected="True">Sigmoid</ComboBoxItem>
-                                <ComboBoxItem Name="gaussian">Gaussian</ComboBoxItem>
-                            </ComboBox>
-                            
-                            <Label Margin="6" Grid.Column="0" Grid.Row="2">
-                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks" TargetName="_blank">Alpha:</Hyperlink>
-                            </Label>
-                            <TextBox Margin="6" Name="annAlpha" Grid.Column="1" Grid.Row="2">1.0</TextBox>
-                            <Label Margin="6" Grid.Column="0" Grid.Row="3">
-                                <Hyperlink NavigateUri="http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">Beta:</Hyperlink>
-                            </Label>
-                            <TextBox Margin="6" Name="annBeta" Grid.Column="1" Grid.Row="3" ToolTip="See http://opencv.willowgarage.com/documentation/cpp/neural_networks.html#neural-networks">1.0</TextBox>
-                            <Button Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Name="applyAnnSettings" Margin="6" Click="applyAnnSettings_Click">Apply hidden layers</Button>
-                            <toolkit:DataGrid  Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2"                            
-                            RowStyle="{StaticResource RowStyle}"
-                            Margin="6"
-                            VerticalAlignment="Stretch"
-                            HorizontalAlignment="Stretch"
-                            MinHeight="200"
-                            AlternatingRowBackground="AntiqueWhite" 
-                            CanUserAddRows="True" 
-                            CanUserDeleteRows="True" 
-                            CanUserSortColumns="False" 
-                            Name="dgridHiddenLayer"
-                            ItemsSource="{Binding}"
-                            HorizontalGridLinesBrush="AntiqueWhite"
-                            VerticalGridLinesBrush="AntiqueWhite" 
-                            GridLinesVisibility="All"
-                            HeadersVisibility="All"
-                            SelectionMode="Single"
-                            AutoGenerateColumns="False">
-
-                                <toolkit:DataGrid.Columns>
-                                    <toolkit:DataGridTextColumn Header="Neurons on hidden layer" Binding="{Binding Path=Neurons}" />
-                                </toolkit:DataGrid.Columns>
-
-                            </toolkit:DataGrid>
-                            <Label Grid.Column="0" Grid.Row="5">Num Layers:</Label>
-                            <Label Name="annNumLayers" Grid.Column="2" Grid.Row="5" Content="{Binding ElementName=dgridHiddenLayer, Path=ItemsSource, NotifyOnTargetUpdated=True}"></Label>
-                        </Grid>
-                    </StackPanel>
-                    <Border Name="annBorder" Grid.Column="1" Background="DimGray" Margin="6" BorderBrush="DimGray" BorderThickness="2">
-                    <!--<Border Name="annBorder" Grid.Column="1" Margin="6" BorderBrush="DimGray" BorderThickness="5" Background="DimGray" CornerRadius="5">-->
-                        <Canvas Name="annCanvas" Background="#FF333333" SizeChanged="annCanvas_SizeChanged"></Canvas>
-                    </Border>
-                </Grid>
-            </TabItem>
-        </TabControl>
 
         <StatusBar Grid.Row="2" Height="23" Name="statusBar1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
             <StatusBarItem>
@@ -687,4 +372,4 @@
         </StatusBar>
 
     </Grid>
-</Window>
+</r:RibbonWindow>

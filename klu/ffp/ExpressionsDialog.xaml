@@ -1,0 +1,41 @@
+﻿<Window x:Class="ffp.ExpressionsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+                
+    Title="Expressions"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+    xmlns:local="clr-namespace:ffp"
+    Height="375" Width="242" Icon="/ffp;component/icons/Game014.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
+            <Image HorizontalAlignment="Left" Source="/ffp;component/icons/Game014.ico" Stretch="None"></Image>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock>Please, feel free edit or <LineBreak/>add your own Expressions!</TextBlock>                
+            </Label>
+        </StackPanel>
+        <toolkit:DataGrid Grid.Row="1"
+                        RowStyle="{StaticResource RowStyle}"
+                        Style="{StaticResource MyDataGridStyle}"
+                        Margin="6"
+                        CanUserAddRows="True" 
+                        CanUserDeleteRows="True" 
+                        CanUserSortColumns="True" 
+                        Name="ExpressionsDataGrid"
+                        ItemsSource="{Binding}"
+                        AutoGenerateColumns="False">
+
+            <toolkit:DataGrid.RowValidationRules>
+                <local:DataRowValidation ValidationStep="UpdatedValue" />
+            </toolkit:DataGrid.RowValidationRules>
+
+            <toolkit:DataGrid.Columns>
+                <toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=ExpressionOID}" IsReadOnly="True"/>
+                <toolkit:DataGridTextColumn Header="Expression" Binding="{Binding Path=Expression}" />
+            </toolkit:DataGrid.Columns>
+        </toolkit:DataGrid>        
+    </Grid>
+</Window>

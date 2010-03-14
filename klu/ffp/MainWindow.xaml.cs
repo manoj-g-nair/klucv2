@@ -21,7 +21,7 @@ namespace ffp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : RibbonWindow
     {
         /// <summary>
         /// This member is a wrapper object provides access to the klu C DLL.
@@ -47,18 +47,6 @@ namespace ffp
         /// This is the dataset which contains the connected database in memory. 
         /// </summary>
         TrainingDataSet dataSet;
-
-        /// <summary>
-        /// This is a small wrapper around the structure NOT the logic of an ANN.
-        /// </summary>
-        ANN ann;
-
-        /// <summary>
-        /// This contains all the information about the hidden layers of the ANN.
-        /// We use a DataSet for this purpose because it can be easily sychronized with
-        /// a DataGrid.
-        /// </summary>
-        DataSet dataSetAnn;
 
         /// <summary>
         /// Feature points from the last processed image
@@ -105,26 +93,7 @@ namespace ffp
                 processOptions.DrawFeaturePoints = 1;
                 processOptions.DoVisualDebug = 0;
 
-                #region Initialize ANN stuff          
 
-                ann = new ANN();
-                ann.NumLayers = 3;
-                ann.SetNumNeurons(0, 16);
-                ann.SetNumNeurons(1, 6);
-                ann.SetNumNeurons(2, 1);                
-
-                // Bind certain labels to ANN stuff
-                annNumLayers.DataContext = ann;
-
-                // Bind DataGrid to ANN-DataSet now
-                dataSetAnn = new DataSet("HiddenLayer");
-                dataSetAnn.Tables.Add("HiddenLayerTable");
-                uint tmp = 0;
-                dataSetAnn.Tables[0].Columns.Add("Neurons", tmp.GetType());
-                tmp = 6;
-                dataSetAnn.Tables[0].Rows.Add(tmp);
-                dgridHiddenLayer.DataContext = dataSetAnn.Tables[0];
-                #endregion
 
                 #region Intialize encapsulated OpenCV subsystem
                 klu = new Klu();
@@ -194,13 +163,6 @@ namespace ffp
             tam.ImageTableAdapter.Fill(dataSet.Image);
 
             // Bind data to controls 
-            dgridExpressions.ItemsSource = dataSet.Expression;
-            //dgridExpressions.DataContext = dataSet.Expression;
-            dgridTraining.ItemsSource = dataSet.Training;
-
-            //TrainingDataSet.TrainingRow row = dataSet.Training.FindByTrainingOID(0);
-            //row.ExpressionRow.Expression
-            //trainingGrid.DataContext = dataSet;
             expressionSelectorComboBox.DataContext = dataSet.Expression;
         }
 
@@ -391,7 +353,7 @@ namespace ffp
         /// asks if the user wants to save those changes.
         /// NOTE: Currently this function simple saves all the updates made!
         /// </summary>
-        private void lastChanceSaving()
+        private void LastChanceSaving()
         {            
             if (dataSet.HasChanges())
             {
@@ -425,7 +387,7 @@ namespace ffp
         /// <param name="e"></param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            lastChanceSaving();
+            LastChanceSaving();
         }
 
         /// <summary>
@@ -435,7 +397,7 @@ namespace ffp
         /// <param name="e"></param>
         private void CloseApplication_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            lastChanceSaving();
+            LastChanceSaving();
             Close();
         }
 
@@ -550,111 +512,6 @@ namespace ffp
         }
 
         /// <summary>
-        /// Draws the ANN on the appropriate Canvas.
-        /// </summary>
-        private void drawANN()
-        {
-            // Clear Canvas
-            annCanvas.Children.Clear();
-
-            // Save positions of neurons in this array
-            Point[] neuronPos = new Point[ann.GetTotalNumberOfNeurons()];
-
-            double neuronDiameter = 20.0;
-            double layerDist = (double)annCanvas.ActualWidth / (double)(ann.NumLayers-1) - neuronDiameter;
-
-            RadialGradientBrush neuronBrush = new RadialGradientBrush();
-            neuronBrush.RadiusX = 1.0;
-            neuronBrush.RadiusY = 1.0;
-            neuronBrush.GradientOrigin = new Point(0.7, 0.3);
-            neuronBrush.GradientStops.Add(new GradientStop(Colors.White, 0.0));
-            neuronBrush.GradientStops.Add(new GradientStop(Colors.Black, 1.0));
-
-            #region Iterate over every layer
-            for (int l = 0; l < ann.NumLayers; l++)
-            {
-
-                double neuronDist;
-
-                if (ann.GetNumNeurons(l) > 1)
-                {
-                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l));
-                }
-                else
-                {
-                    neuronDist = (double)annBorder.ActualHeight / ((double)ann.GetNumNeurons(l));
-                }
-
-                #region Iterare over every neuron on the current layer
-                for (int n = 0; n < ann.GetNumNeurons(l); n++)
-                {
-                    Ellipse e = new Ellipse();
-                    e.Stroke = Brushes.White;
-                    e.Width = neuronDiameter;
-                    e.Height = neuronDiameter;
-                    e.StrokeThickness = 2.0;
-                    e.Fill = Brushes.White;
-
-                    Canvas.SetLeft(e, layerDist * l);
-                    Canvas.SetTop(e, neuronDist * n);
-
-                    annCanvas.Children.Add(e);
-
-                    // Safe the point of the current neuron for line drawing
-                    neuronPos[ann.GetNumberOfNeuronsBefore(l) + n] = new Point(layerDist * l, neuronDist * n);
-
-                    #region Draw all connections from previous layer to current neuron.
-                    for (int i = 0; l > 0 && i < ann.GetNumNeurons(l - 1); i++)
-                    {
-                        Line line = new Line();
-                        line.X1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].X + neuronDiameter / 2.0;
-                        line.Y1 = neuronPos[ann.GetNumberOfNeuronsBefore(l - 1) + i].Y + neuronDiameter / 2.0;
-                        line.X2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].X + neuronDiameter / 2.0;
-                        line.Y2 = neuronPos[ann.GetNumberOfNeuronsBefore(l) + n].Y + neuronDiameter / 2.0;
-                        line.Stroke = Brushes.White;
-                        line.StrokeThickness = 1;
-                        line.Opacity = 0.5;
-
-                        annCanvas.Children.Add(line);
-                    }
-                    #endregion
-                }
-                #endregion
-            }
-            #endregion
-        }
-
-        /// <summary>
-        /// Calback which redraws the ANN onto the canvas.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void annCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            drawANN();
-        }
-
-        /// <summary>
-        /// Callback which takes the ANN DataSet for hidden layers and draws the ANN
-        /// using the using the new hidden layers.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void applyAnnSettings_Click(object sender, RoutedEventArgs e)
-        {
-            ann.NumLayers = 2 + dataSetAnn.Tables[0].Rows.Count;
-            ann.SetNumNeurons(0, 16);
-            ann.SetNumNeurons(dataSetAnn.Tables[0].Rows.Count + 1, 1);
-
-            for (int i = 0; i < dataSetAnn.Tables[0].Rows.Count; i++)
-            {
-                ann.SetNumNeurons(i + 1, Convert.ToInt32(dataSetAnn.Tables[0].Rows[i].ItemArray[0]));
-            }
-
-            drawANN();
-        }
-
-        /// <summary>
         /// Handles all processing options
         /// </summary>
         /// <param name="sender"></param>
@@ -716,51 +573,7 @@ namespace ffp
             }
         }
 
-        /// <summary>
-        /// Saves the current ANN settings to an OpenCV ANN file which can be loaded
-        /// later for initialization, training and use later.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void saveAnnButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Configure save file dialog box
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "NeuralNetwork"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "XML documents (.xml)|*.xml"; // Filter files by extension
-            dlg.Title = "Where to save your new Neural Network?";
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filepath = dlg.FileName;
-
-                Console.WriteLine("Saving neural network to " + filepath);
-                
-                Hashtable hashtable = new Hashtable();
-                hashtable.Add("identity", ANN.ActivationFunction.Identity);
-                hashtable.Add("sigmoid", ANN.ActivationFunction.Sigmoid);
-                hashtable.Add("gaussian", ANN.ActivationFunction.Gaussian);
-                hashtable.Add("Identity", ANN.ActivationFunction.Identity);
-                hashtable.Add("Sigmoid", ANN.ActivationFunction.Sigmoid);
-                hashtable.Add("Gaussian", ANN.ActivationFunction.Gaussian);
-                
-                ANN.ActivationFunction actFunc = ANN.ActivationFunction.Sigmoid;
-                if (hashtable.ContainsKey(annActivation.Text))
-                {
-                    // TODO: (Ko) Use combobox key and not it's values (important for translation)
-                    Console.WriteLine("Using activation function: " + hashtable[annActivation.Text]);
-                    actFunc = (ANN.ActivationFunction)hashtable[annActivation.Text];
-                }
-
-                klu.CreateAndSaveAnn(ann.NumNeuronsPerLayer, actFunc, Convert.ToDouble(annAlpha.Text), Convert.ToDouble(annBeta.Text), filepath);
-            }            
-        }
+        
 
         private void processNextButton_Click(object sender, RoutedEventArgs e)
         {
@@ -782,11 +595,6 @@ namespace ffp
             {
                 captureTimer.Start();
             }
-        }
-
-        private void loadAnnButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void expressionSelectorComboBox_KeyDown(object sender, KeyEventArgs e)
@@ -881,7 +689,7 @@ namespace ffp
             klu.ConfigureCaptureResolutionDialog();
         }
 
-        private void aboutMenuItem_Click(object sender, RoutedEventArgs e)
+        private void About_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             MessageBox.Show("This is KLU a Facial Feature Point (FFP) detector and Facial Expression "
             +"Analyzation tool. The project is maintained at the South Westphalia University of Applied Science "
@@ -901,6 +709,37 @@ namespace ffp
         private void ExpressionsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             // Start Expressions Dialog here.
+            ExpressionsDialog dlg = new ExpressionsDialog(ref dataSet);
+
+            // Configure the dialog box
+            dlg.Owner = this;
+
+            // Open the dialog box modally 
+            dlg.ShowDialog();
+        }
+
+        private void TrainingDataSetsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Start Expressions Dialog here.
+            TrainingDataSetsDialog dlg = new TrainingDataSetsDialog(ref dataSet);
+
+            // Configure the dialog box
+            dlg.Owner = this;
+
+            // Open the dialog box modally 
+            dlg.ShowDialog();
+        }
+
+        private void AnnDialog_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Start Expressions Dialog here.
+            AnnDialog dlg = new AnnDialog(ref klu);
+
+            // Configure the dialog box
+            dlg.Owner = this;
+
+            // Open the dialog box modally 
+            dlg.ShowDialog();
         }
     }
 }

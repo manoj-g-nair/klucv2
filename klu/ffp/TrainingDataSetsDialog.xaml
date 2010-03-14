@@ -1,0 +1,81 @@
+﻿<Window x:Class="ffp.TrainingDataSetsDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Training Datasets"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
+    xmlns:local="clr-namespace:ffp"
+    Height="301" Width="762" Icon="/ffp;component/icons/Game014.ico">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
+            <Image HorizontalAlignment="Left" Source="/ffp;component/icons/C&amp;M020.ico" Stretch="None"></Image>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Center">
+                <TextBlock>Please, feel free to manually edit or<LineBreak/>review your trainings!</TextBlock>                
+            </Label>
+        </StackPanel>
+        <toolkit:DataGrid Grid.Row="1"
+                        RowStyle="{StaticResource RowStyle}"
+                        Style="{StaticResource MyDataGridStyle}"
+                        Margin="6"
+                        VerticalAlignment="Stretch"
+                        CanUserAddRows="True" 
+                        CanUserDeleteRows="True" 
+                        CanUserSortColumns="True" 
+                        Name="TrainingDataGrid"
+                        ItemsSource="{Binding}"
+                        AutoGenerateColumns="False"
+                        >
+
+            <toolkit:DataGrid.RowValidationRules>
+                <local:DataRowValidation ValidationStep="UpdatedValue" />
+            </toolkit:DataGrid.RowValidationRules>
+
+            <toolkit:DataGrid.Columns>
+                <!--<toolkit:DataGridTextColumn Header="ID" Binding="{Binding Path=TrainingOID}" IsReadOnly="True"/>-->
+                <toolkit:DataGridTemplateColumn Header="Expression">
+                    <toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <!--<ComboBox ItemsSource="{Binding Path=LipCornerLeftX}"></ComboBox>-->
+                            <Label Content="{Binding Path=Expression.OID}"></Label>
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellEditingTemplate>
+                    <toolkit:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=ExpressionOID, Converter={StaticResource ExpressionConverter}}" />
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellTemplate>
+                </toolkit:DataGridTemplateColumn>
+                <!--<toolkit:DataGridTextColumn Header="Image" Binding="{Binding Path=ImageOID}" />-->
+                <toolkit:DataGridTemplateColumn Header="Coordinates" IsReadOnly="True">
+                    <toolkit:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding Path=LipCornerLeftX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipCornerLeftY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipCornerRightX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipCornerRightY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpLeftX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpLeftY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpCenterX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpCenterY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpRightX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipUpRightY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomLeftX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomLeftY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomCenterX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomCenterY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomRightX, StringFormat=F3}" />
+                                <Label Content="{Binding Path=LipBottomRightY, StringFormat=F3}" />
+                                <Label Content="{Binding Path=EyeDistance, StringFormat=F3}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkit:DataGridTemplateColumn.CellTemplate>
+                </toolkit:DataGridTemplateColumn>
+                <!-- Use Text="{Binding Date, StringFormat=f}" for float vars -->
+                <!--<toolkit:DataGridTextColumn Header="EmoticonID" Binding="{Binding Path=EmoticonOID}" />-->
+            </toolkit:DataGrid.Columns>
+        </toolkit:DataGrid>
+    </Grid>
+</Window>
