@@ -260,7 +260,7 @@ namespace ffp
             // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
             dlg.DefaultExt = "."; // Default file extension
-            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga"; // Filter files by extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga, *.pgm)|*.bmp;*.jpg;*.png;*.tif;*.tga;*.pgm"; // Filter files by extension
             dlg.Title = "Load images";
             dlg.Multiselect = true;
 
