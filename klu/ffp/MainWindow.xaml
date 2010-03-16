@@ -5,16 +5,13 @@
     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit" 
     xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
     Title="Facial Expression Recognition" Height="586" Width="882.5"
-                Background="AliceBlue"
+    ResizeMode="CanResizeWithGrip"
+    Background="AliceBlue"                
     WindowStartupLocation="CenterScreen" Closing="Window_Closing" x:Name="self">
-    <Grid Background="#040000ff">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="140"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="23"></RowDefinition>
-        </Grid.RowDefinitions>
+    
+    <DockPanel  LastChildFill="True">
 
-        <r:Ribbon Grid.Row="0">
+        <r:Ribbon DockPanel.Dock="Top">
             <r:Ribbon.Resources>
 
                 <ResourceDictionary>
@@ -47,14 +44,14 @@
                                      Executed="CameraParameters_Executed" />
                     
                     <r:RibbonCommand x:Key="StretchNoneCmd"
-                                     LabelTitle="Stretch None"
-                                     ToolTipTitle="Stretch None"
+                                     LabelTitle="No Stretching"
+                                     ToolTipTitle="No Stretching"
                                      ToolTipDescription="Displays the image as is. It might be cropped if it's to large."
                                      Executed="StretchNone_Executed" />
                     
                     <r:RibbonCommand x:Key="StretchUniformCmd"
-                                     LabelTitle="Stretch Uniform"
-                                     ToolTipTitle="Stretch Uniform"
+                                     LabelTitle="Uniform Stretching"
+                                     ToolTipTitle="Uniform Stretching"
                                      ToolTipDescription="Stretches the displayed image to the maximum space without cropping."
                                      Executed="StretchUniform_Executed" />
                     
@@ -85,8 +82,7 @@
                                      LabelTitle="Eyes"
                                      ToolTipTitle="Eyes Processing"
                                      ToolTipDescription="Try to find eye feature points."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="doEyeProcessingMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
                     
                     <r:RibbonCommand x:Key="ProcessMouthCmd"
                                      LargeImageSource="/ffp;component/img/mouth.ico"
@@ -94,17 +90,15 @@
                                      LabelTitle="Mouth"
                                      ToolTipTitle="Mouth Processing"
                                      ToolTipDescription="Try to find mouth feature points."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="doMouthProcessingMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
                     
                     <r:RibbonCommand x:Key="VisualDebugCmd"
-                                     LargeImageSource="/ffp;component/img/bug-small.jpg"
-                                     SmallImageSource="/ffp;component/img/bug-small.jpg"
-                                     LabelTitle="Visual"
+                                     LargeImageSource="/ffp;component/img/bug.png"
+                                     SmallImageSource="/ffp;component/img/bug.png"
+                                     LabelTitle="Visual Debug"
                                      ToolTipTitle="Visual Debug"
                                      ToolTipDescription="Opens multiple windows each showing a particular state of the computer vision process."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="doVisualDebugMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
                     
                     <r:RibbonCommand x:Key="ExpressionsDialogCmd"  
                                      LargeImageSource="/ffp;component/img/075.png"
@@ -120,8 +114,7 @@
                                      LabelTitle="Antropometric Points"
                                      ToolTipTitle="Draw Antropometric Points"
                                      ToolTipDescription="Show points statistically calculated and measured according to the eye distance."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="drawAnthropometricPointsMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
 
                     <r:RibbonCommand x:Key="DrawRectanglesCmd"
                                      LargeImageSource="/ffp;component/img/252.png"
@@ -129,8 +122,7 @@
                                      LabelTitle="Draw Rectangles"
                                      ToolTipTitle="Draw Rectangles"
                                      ToolTipDescription="Show rectangles in the search for Facial Feature Points is done. The Rectangles are calculated by different cascaded of Haar-classifiers."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="drawSearchRectanglesMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
 
                     <r:RibbonCommand x:Key="DrawFaceRectangleCmd"
                                      LargeImageSource="/ffp;component/img/252.png"
@@ -138,8 +130,7 @@
                                      LabelTitle="Face Rectangle"
                                      ToolTipTitle="Draw Face Rectangle"
                                      ToolTipDescription="Show the face rectangle."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="drawFaceRectangleMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
 
                     <r:RibbonCommand x:Key="DrawDetectionTimeCmd" 
                                      LargeImageSource="/ffp;component/img/252.png"                                             
@@ -147,8 +138,7 @@
                                      LabelTitle="Detection Time"
                                      ToolTipTitle="Draw Detection Time"
                                      ToolTipDescription="Stamps the detection processing time in milliseconds in the lower left corner of the processed image."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="drawDetectionTimeMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
 
                     <r:RibbonCommand x:Key="DrawFacialFeaturePointsCmd" 
                                      LargeImageSource="/ffp;component/img/252.png"
@@ -156,8 +146,7 @@
                                      LabelTitle="Feature Points"
                                      ToolTipTitle="Draw Feature Points"
                                      ToolTipDescription="Shows little crosses where the eye feature points are and a snake-like line around the mouth."
-                                     Executed="OptionToggle_Executed"
-                                     x:Name="drawFeaturePointsMenuItem"/>
+                                     Executed="OptionToggle_Executed"/>
                     
                     <r:RibbonCommand x:Key="StartTrainingCmd" 
                                      LargeImageSource="/ffp;component/img/260.png"
@@ -190,6 +179,30 @@
                                      ToolTipTitle="Create an Artificial Neural Network (ANN)"
                                      ToolTipDescription="Shows a dialog that lets you setup the Artifical Neural Network (ANN) which is used to train and classify facial expressions."
                                      Executed="AnnDialog_Executed"/>
+
+                    <r:RibbonCommand x:Key="ExportToExcelCmd"
+                                     LargeImageSource="/ffp;component/img/Disc001.png"
+                                     SmallImageSource="/ffp;component/img/Disc001.png"
+                                     LabelTitle="Export to Excel"
+                                     ToolTipTitle="Export to Excel"
+                                     ToolTipDescription="Exports all the training data to an Excel compatible file."
+                                     Executed="ExportToExcel_Executed"/>
+
+                    <r:RibbonCommand x:Key="ExportToCSVCmd"
+                                     LargeImageSource="/ffp;component/img/Disc001.png"
+                                     SmallImageSource="/ffp;component/img/Disc001.png"
+                                     LabelTitle="Export to CSV"
+                                     ToolTipTitle="Export to CSV"
+                                     ToolTipDescription="Exports all the training data to a comma-separated file."
+                                     Executed="ExportToCSV_Executed"/>
+
+                    <r:RibbonCommand x:Key="ExportToXMLCmd"
+                                     LargeImageSource="/ffp;component/img/Disc001.png"
+                                     SmallImageSource="/ffp;component/img/Disc001.png"
+                                     LabelTitle="Export to XML"
+                                     ToolTipTitle="Export to XML"
+                                     ToolTipDescription="Exports all the training data to a XMLfile."
+                                     Executed="ExportToXML_Executed"/>
                 </ResourceDictionary>
             </r:Ribbon.Resources>
 
@@ -202,12 +215,12 @@
                                      LabelTitle="Exit"
                                      LabelDescription="Exits the application."
                                      Executed="CloseApplication_Executed" />
-                    </r:RibbonApplicationMenu.Command>
+                    </r:RibbonApplicationMenu.Command>                    
+                    <r:RibbonApplicationMenuItem Command="{StaticResource PictureCmd}" />
+                    <r:RibbonApplicationMenuItem Command="{StaticResource StartCameraCmd}" />
+                    <r:RibbonApplicationMenuItem Command="{StaticResource AboutCmd}" />
                     <r:RibbonSeparator/>
-                    <r:RibbonApplicationMenuItem Command="{StaticResource AboutCmd}">
-                    </r:RibbonApplicationMenuItem>
-                    <r:RibbonApplicationMenuItem Command="{StaticResource CloseApplicationCmd}">
-                    </r:RibbonApplicationMenuItem>
+                    <r:RibbonApplicationMenuItem Command="{StaticResource CloseApplicationCmd}" />
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
 
@@ -232,17 +245,17 @@
                         <r:RibbonSplitButton.Items>
                             <MenuItem Header="Start Camera" Command="{StaticResource StartCameraCmd}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ffp;component/img/119.png"></Image>
+                                    <Image Source="/ffp;component/img/119.png" Width="24" Height="24"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Stop Camera" Command="{StaticResource StopCameraCmd}">
+                            <MenuItem Name="StopCameraMenuItem" IsEnabled="False" Header="Stop Camera" Command="{StaticResource StopCameraCmd}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ffp;component/img/119.png"></Image>
+                                    <Image Source="/ffp;component/img/119.png" Width="24" Height="24"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Header="Camera Parameters" Command="{StaticResource CameraParametersCmd}">
+                            <MenuItem Name="CameraParametersMenuItem" IsEnabled="False" Header="Camera Parameters" Command="{StaticResource CameraParametersCmd}">
                                 <MenuItem.Icon>
-                                    <Image Source="/ffp;component/img/353.png"></Image>
+                                    <Image Source="/ffp;component/img/353.png" Width="24" Height="24"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </r:RibbonSplitButton.Items>
@@ -252,14 +265,14 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Processing"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton Command="{StaticResource ProcessEyesCmd}" />
-                    <r:RibbonToggleButton Command="{StaticResource ProcessMouthCmd}" /> 
+                    <r:RibbonToggleButton Name="doEyeProcessingMenuItem" Command="{StaticResource ProcessEyesCmd}" />
+                    <r:RibbonToggleButton IsChecked="True" Name="doMouthProcessingMenuItem" Command="{StaticResource ProcessMouthCmd}" /> 
                 </r:RibbonGroup>
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Debugging"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton Command="{StaticResource VisualDebugCmd}" />
+                    <r:RibbonToggleButton Name="doVisualDebugMenuItem" Command="{StaticResource VisualDebugCmd}" />
                 </r:RibbonGroup>
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
@@ -267,9 +280,7 @@
                     </r:RibbonGroup.Command>
                     <r:RibbonButton Command="{StaticResource ExpressionsDialogCmd}" />
                 </r:RibbonGroup>
-            </r:RibbonTab>
 
-            <r:RibbonTab Label="View">
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Image Stretching"/>
@@ -293,11 +304,11 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Elements To Draw"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton Command="{StaticResource DrawAnthropometricPointsCmd}" />
-                    <r:RibbonToggleButton Command="{StaticResource DrawRectanglesCmd}" />
-                    <r:RibbonToggleButton Command="{StaticResource DrawFaceRectangleCmd}" />
-                    <r:RibbonToggleButton Command="{StaticResource DrawDetectionTimeCmd}" />
-                    <r:RibbonToggleButton Command="{StaticResource DrawFacialFeaturePointsCmd}" />
+                    <r:RibbonToggleButton Name="drawAnthropometricPointsMenuItem" Command="{StaticResource DrawAnthropometricPointsCmd}" />
+                    <r:RibbonToggleButton Name="drawSearchRectanglesMenuItem" Command="{StaticResource DrawRectanglesCmd}" />
+                    <r:RibbonToggleButton IsChecked="True" Name="drawFaceRectangleMenuItem"  Command="{StaticResource DrawFaceRectangleCmd}" />
+                    <r:RibbonToggleButton IsChecked="True" Name="drawDetectionTimeMenuItem" Command="{StaticResource DrawDetectionTimeCmd}" />
+                    <r:RibbonToggleButton IsChecked="True" Name="drawFeaturePointsMenuItem" Command="{StaticResource DrawFacialFeaturePointsCmd}" />
                 </r:RibbonGroup>
             </r:RibbonTab>          
             
@@ -316,69 +327,20 @@
                     </r:RibbonGroup.Command>
                     <r:RibbonButton  Command="{StaticResource CreateANNCmd}" />
                 </r:RibbonGroup>
+
+                <r:RibbonGroup>
+                    <r:RibbonGroup.Command>
+                        <r:RibbonCommand LabelTitle="Export Training Datasets"/>
+                    </r:RibbonGroup.Command>
+                    <r:RibbonButton IsEnabled="False" Command="{StaticResource ExportToExcelCmd}" />
+                    <r:RibbonButton IsEnabled="False" Command="{StaticResource ExportToCSVCmd}" />
+                    <r:RibbonButton Command="{StaticResource ExportToXMLCmd}" />
+                </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
 
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="30"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0">
-                <Border Margin="0" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-                    <Image Name="image1" Width="Auto" Height="Auto" Stretch="Uniform" />
-                </Border>
-            </Grid>
-            <Grid Grid.Row="1" VerticalAlignment="Bottom">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Name="processFirstButton" Click="processFirstButton_Click">
-                        <![CDATA[|<<]]>
-                    </Button>
-                    <Button Name="processPreviousButton" Click="processPreviousButton_Click">
-                        <![CDATA[<<]]>
-                    </Button>
-                    <Button Name="processPlayPauseButton" Click="processPlayPauseButton_Click">
-                        <![CDATA[||]]>
-                    </Button>
-                    <Button Name="processNextButton" Click="processNextButton_Click">
-                        <![CDATA[>>]]>
-                    </Button>
-                    <Button Name="processLastButton" Click="processLastButton_Click">
-                        <![CDATA[>>|]]>
-                    </Button>
-
-                    <Label Margin="3">Expression:</Label>
-                    <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
-                    </ComboBox>
-                    <Button Click="Button_Click">Train</Button>                  
-                </StackPanel>
-            </Grid>
-        </Grid>
-
-
-        <!--<TabItem Name="exportTabItem" Header="Export" Visibility="Hidden">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <GroupBox Header="Export Training Dataset to" Margin="6">
-                        <StackPanel Orientation="Vertical">
-                            <Button Margin="6">Excel</Button>
-                            <Button Margin="6">CSV</Button>
-                            <Button Margin="6">XML</Button>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="Export Expressions to" Margin="6">
-                        <StackPanel Orientation="Vertical">
-                            <Button Margin="6">Excel</Button>
-                            <Button Margin="6">CSV</Button>
-                            <Button Margin="6">XML</Button>
-                        </StackPanel>
-                    </GroupBox>
-                </StackPanel>
-            </TabItem>-->
-
-        <StatusBar Grid.Row="2" Height="23" Name="statusBar1" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
-            <StatusBarItem>
+        <StatusBar DockPanel.Dock="Bottom" Height="23" Name="statusBar1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+            <StatusBarItem >
                 <TextBlock HorizontalAlignment="Left" Name="statusText">Ready</TextBlock>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
@@ -386,5 +348,54 @@
             </StatusBarItem>
         </StatusBar>
 
-    </Grid>
+        <!--<Expander DockPanel.Dock="Right" Width="100" ExpandDirection="Left" Header="Images" IsExpanded="True">
+            <Expander.Background>
+                <LinearGradientBrush
+                     StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="Black" Offset="1"/>
+                    <GradientStop Color="White" Offset="0"/>
+                </LinearGradientBrush>
+            </Expander.Background>
+            <Image Stretch="Uniform" Name="SidebarImage" Opacity="0.8"></Image>
+        </Expander>-->
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0">
+                <Border Margin="20" BorderBrush="Transparent" BorderThickness="0" Effect="{StaticResource DropShadowEffect}">
+                    <Image Name="image1" Width="Auto" Height="Auto" Stretch="Uniform" />
+                </Border>
+            </Grid>            
+            <Grid Grid.Row="2" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="processFirstButton" IsEnabled="False" Click="processFirstButton_Click">
+                        <![CDATA[|<<]]>
+                    </Button>
+                    <Button Name="processPreviousButton" IsEnabled="False" Click="processPreviousButton_Click">
+                        <![CDATA[<<]]>
+                    </Button>
+                    <Button Name="processPlayPauseButton" IsEnabled="False"  Click="processPlayPauseButton_Click">
+                        <![CDATA[||]]>
+                    </Button>
+                    <Button Name="processNextButton" IsEnabled="False" Click="processNextButton_Click">
+                        <![CDATA[>>]]>
+                    </Button>
+                    <Button Name="processLastButton" IsEnabled="False" Click="processLastButton_Click">
+                        <![CDATA[>>|]]>
+                    </Button>
+
+                    <Label Margin="3">Expression:</Label>
+                    <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEnabled="False" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
+                    </ComboBox>
+                    <Button Name="ClassifyResultButton" IsEnabled="False" Click="Button_Click">Train</Button>                  
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+    </DockPanel>
 </r:RibbonWindow>

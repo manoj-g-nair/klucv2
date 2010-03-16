@@ -49,7 +49,7 @@ namespace ffp
             // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             dlg.DefaultExt = "."; // Default file extension
-            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga"; // Filter files by extension
             dlg.Title = "Load image";
 
             // Show save file dialog box
@@ -65,14 +65,17 @@ namespace ffp
 
                 System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
                 System.Drawing.Image thumbnail = emoticon.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
-                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();                
                 thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+
+                Console.WriteLine("Length: " + ms.ToArray().Length);
 
                 int oid = Convert.ToInt32(button.DataContext);
 
                 TrainingDataSet.ExpressionRow row = _DataSet.Expression.FindByExpressionOID(oid);
 
-                if (row != null)
+                if (row != null && !DBNull.Value.Equals(row))
                 {
                     row.Thumbnail = ms.ToArray();
                 }

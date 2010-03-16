@@ -166,20 +166,6 @@ namespace ffp
             expressionSelectorComboBox.DataContext = dataSet.Expression;
         }
 
-        ///// <summary>
-        ///// Callback which sets the capture time interval in ms.
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void captureTimeTextBox_TextInput(object sender, TextCompositionEventArgs e)
-        //{
-        //    int value = Math.Min(1, Convert.ToInt32(captureTimeTextBox.Text));
-        //    captureTimeTextBox.Text = Convert.ToString(value);
-
-        //    // Also adjust the timer.
-        //    captureTimer.Interval = TimeSpan.FromMilliseconds(value);            
-        //}
-
         /// <summary>
         /// Starts the processing of video images.
         /// </summary>
@@ -274,7 +260,7 @@ namespace ffp
             // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
             dlg.DefaultExt = "."; // Default file extension
-            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga)|*.bmp;*.jpg;*.png;*.tif;*.tga"; // Filter files by extension
             dlg.Title = "Load images";
             dlg.Multiselect = true;
 
@@ -283,12 +269,20 @@ namespace ffp
 
             // Process save file dialog box results
             if (result == true)
-            {
+            {                
+                //SidebarImage.Source = BitmapFrame.Create(new Uri(dlg.FileNames[0]));                
+
                 stopAllProcessing();
 
+                processFirstButton.IsEnabled = true;
+                processLastButton.IsEnabled = true;
                 processPreviousButton.IsEnabled = true;
                 processNextButton.IsEnabled = true;
                 processPlayPauseButton.IsEnabled = false;
+                ClassifyResultButton.IsEnabled = true;
+                expressionSelectorComboBox.IsEnabled= true;
+                StopCameraMenuItem.IsEnabled = false;
+                CameraParametersMenuItem.IsEnabled = false;
 
                 filesToProcess.Clear();
 
@@ -306,9 +300,15 @@ namespace ffp
         /// <param name="e"></param>
         private void CameraStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
+            processFirstButton.IsEnabled = false;
+            processLastButton.IsEnabled = false;
             processPreviousButton.IsEnabled = false;
             processNextButton.IsEnabled = false;
             processPlayPauseButton.IsEnabled = true;
+            ClassifyResultButton.IsEnabled = false;
+            expressionSelectorComboBox.IsEnabled = false;
+            StopCameraMenuItem.IsEnabled = true;
+            CameraParametersMenuItem.IsEnabled = true;
 
             filesToProcess.Clear();
 
@@ -318,7 +318,7 @@ namespace ffp
             }
 
             // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
-            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(50));//captureTimeTextBox.Text));
+            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(30));//captureTimeTextBox.Text));
 
             // Start the timer
             captureTimer.Start();
@@ -341,6 +341,16 @@ namespace ffp
             // Stops the internal timer which is responsible for updating the (live) image
             // and doing the processing.
             captureTimer.Stop();
+
+            processFirstButton.IsEnabled = false;
+            processLastButton.IsEnabled = false;
+            processPreviousButton.IsEnabled = false;
+            processNextButton.IsEnabled = false;
+            processPlayPauseButton.IsEnabled = false;
+            ClassifyResultButton.IsEnabled = false;
+            expressionSelectorComboBox.IsEnabled = false;
+            StopCameraMenuItem.IsEnabled = false;
+            CameraParametersMenuItem.IsEnabled = false;
 
             klu.FreeCapture();
 
@@ -586,51 +596,47 @@ namespace ffp
         /// <param name="e"></param>
         private void OptionToggle_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            RibbonToggleButton s = sender as RibbonToggleButton;
-            
-            switch (s.Name)
+            System.Windows.RoutedEventArgs e1 = e as System.Windows.RoutedEventArgs;
+
+            if (e1 == null)
             {
-                //case "showExpertOptionsMenuItem":
-                //    if (menuItem.IsChecked)
-                //    {
-                //        annConfigurationTabItem.Visibility = Visibility.Visible;
-                //        expressionsTabItem.Visibility = Visibility.Visible;
-                //        trainingDatasetsTabItem.Visibility = Visibility.Visible;
-                //        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
-                //        //exportTabItem.Visibility = Visibility.Visible;
-                //    }
-                //    else
-                //    {
-                //        annConfigurationTabItem.Visibility = Visibility.Hidden;
-                //        expressionsTabItem.Visibility = Visibility.Hidden;
-                //        trainingDatasetsTabItem.Visibility = Visibility.Hidden;
-                //        // TODO: (Ko) Re-enable the export TabItem when functionality is implemented
-                //        //exportTabItem.Visibility = Visibility.Hidden;
-                //    }
-                //    break;
+                return;
+            }
+
+            // TODO: (Ko) Be aware that the RibbonCommand is not always invoked by a RibbonButton!
+
+            RibbonToggleButton b = (RibbonToggleButton)e1.OriginalSource;
+
+            if (b == null)
+            {
+                return;
+            }
+
+            switch (b.Name)
+            {
                 case "drawAnthropometricPointsMenuItem":
-                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(s.IsChecked);
+                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawSearchRectanglesMenuItem":
-                    processOptions.DrawSearchRectangles = Convert.ToInt32(s.IsChecked);
+                    processOptions.DrawSearchRectangles = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawFaceRectangleMenuItem":
-                    processOptions.DrawFaceRectangle = Convert.ToInt32(s.IsChecked);
+                    processOptions.DrawFaceRectangle = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawDetectionTimeMenuItem":
-                    processOptions.DrawDetectionTime = Convert.ToInt32(s.IsChecked);
+                    processOptions.DrawDetectionTime = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawFeaturePointsMenuItem":
-                    processOptions.DrawFeaturePoints = Convert.ToInt32(s.IsChecked);
+                    processOptions.DrawFeaturePoints = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doEyeProcessingMenuItem":
-                    processOptions.DoEyeProcessing = Convert.ToInt32(s.IsChecked);
+                    processOptions.DoEyeProcessing = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doMouthProcessingMenuItem":
-                    processOptions.DoMouthProcessing = Convert.ToInt32(s.IsChecked);
+                    processOptions.DoMouthProcessing = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doVisualDebugMenuItem":
-                    processOptions.DoVisualDebug = Convert.ToInt32(s.IsChecked);
+                    processOptions.DoVisualDebug = Convert.ToInt32(b.IsChecked);
                     break;
             };
 
@@ -658,10 +664,14 @@ namespace ffp
             if (captureTimer.IsEnabled)
             {
                 captureTimer.Stop();
+                ClassifyResultButton.IsEnabled = true;
+                expressionSelectorComboBox.IsEnabled = true;
             }
             else
             {
                 captureTimer.Start();
+                ClassifyResultButton.IsEnabled = false;
+                expressionSelectorComboBox.IsEnabled = false;
             }
         }
 
@@ -794,6 +804,32 @@ namespace ffp
             AnnDialog dlg = new AnnDialog(ref klu);
             dlg.Owner = this;
             dlg.ShowDialog();
+        }
+
+        private void ExportToExcel_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportToCSV_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+
+        private void ExportToXML_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.DefaultExt = "."; // Default file extension
+            dlg.Filter = "Training (*.xml)|*.xml|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Title = "Where to save your training data?";
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                dataSet.Training.WriteXml(dlg.FileName);
+            }
         }
     }
 }

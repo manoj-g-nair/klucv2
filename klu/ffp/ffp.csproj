@@ -135,6 +135,8 @@
     <Compile Include="AnnDialog.xaml.cs">
       <DependentUpon>AnnDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExpressionIDToImageConverter.cs" />
+    <Compile Include="ExpressionComboBoxConverter.cs" />
     <Compile Include="ImageToBinaryConverter.cs" />
     <Compile Include="TrainingDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -231,7 +233,6 @@
   <ItemGroup>
     <Resource Include="ApplicationIcon.ico" />
     <Resource Include="img\mouth.ico" />
-    <Resource Include="img\bug-small.jpg" />
     <Resource Include="img\Eyes.png" />
     <Resource Include="img\006.png" />
     <Resource Include="img\016.png" />
@@ -298,6 +299,7 @@
     <Resource Include="img\Alert007.png" />
     <Resource Include="img\cvci.png" />
     <Resource Include="img\fhswf.png" />
+    <Resource Include="img\bug.png" />
     <Content Include="Training.sdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

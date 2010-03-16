@@ -43,7 +43,7 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                             <StackPanel Orientation="Horizontal">
                                 <Border Width="48" Height="48" BorderBrush="LightGray" BorderThickness="3" CornerRadius="5">
                                     <Border.Background>
-                                        <ImageBrush ImageSource="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
+                                        <ImageBrush Stretch="None" ImageSource="{Binding Path=Thumbnail, Converter={StaticResource ImageToBinaryConverter}}"/>
                                     </Border.Background>
                                 </Border>
                                 <Button Name="BrowseImage" Click="BrowseImage_Click" DataContext="{Binding Path=ExpressionOID}">Browse</Button>

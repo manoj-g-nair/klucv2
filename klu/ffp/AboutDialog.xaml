@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ffp.AboutDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="About KLU" Height="253" Width="352">
+    Title="About KLU" Height="251" Width="425">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="117*"></RowDefinition>

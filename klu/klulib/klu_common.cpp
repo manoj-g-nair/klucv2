@@ -29,8 +29,6 @@ namespace klu
         app.memStorage = cvCreateMemStorage(0); 
         app.kernel1 = cvCreateStructuringElementEx(3, 3, 1, 1, CV_SHAPE_CROSS, NULL);
 
-        cout << app.kernel1 << app.cascadeFace << app.cascadeLeftEye << app.cascadeRightEye << app.cascadeMouth << app.memStorage << endl;
-
         if ( app.kernel1 && app.cascadeFace && app.cascadeLeftEye && app.cascadeRightEye && app.cascadeMouth && app.memStorage )
         {        
             return true;
@@ -765,14 +763,15 @@ namespace klu
             cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW);
             cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW);       
         }
-        
-        // Draw eye centers, no matter what
-        drawCross(image, ffp.leftEye.center, COL_YELLOW);
-        drawCross(image, ffp.rightEye.center, COL_YELLOW);
 
-        // Lids
+        
         if (app.processOptions.doEyeProcessing)
         {
+            // Draw eye centers
+            drawCross(image, ffp.leftEye.center, COL_YELLOW);
+            drawCross(image, ffp.rightEye.center, COL_YELLOW);
+
+            // Lids
             drawCross(image, ffp.rightEye.cornerLeft, COL_YELLOW);
             drawCross(image, ffp.rightEye.cornerRight, COL_YELLOW);
             drawCross(image, ffp.rightEye.upperLid, COL_YELLOW);
@@ -788,6 +787,7 @@ namespace klu
         KluFaceFeaturePoints * ffp)
     {
         static char buf[255];
+        static double processingTime = 0.0;
 
         if ( !image || !ffp )
         {
@@ -913,52 +913,59 @@ namespace klu
                     cvResetImageROI(image);
                 }
             }
-        }
-        double processingTime = toc();
+        
+            processingTime = toc();
 
-        /**
-        * Draw object/face rects
-        */        
-        for (vector<CvRect>::size_type i=0; app.processOptions.drawFaceRectangle && i<faceRects.size(); i++)
-        {
-            drawRect(image, faceRects[i], COL_RED);
-        }
+            /**
+            * Draw object/face rects
+            */        
+            for (vector<CvRect>::size_type i=0; app.processOptions.drawFaceRectangle && i<faceRects.size(); i++)
+            {
+                drawRect(image, faceRects[i], COL_RED);
+            }
 
-        double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
+            double eyeDist = getDist(ffp->leftEye.center, ffp->rightEye.center);
 
-        if (app.processOptions.drawSearchRectangles)
-        {
-            drawRect(image, rightEyeSearchWindow, COL_GREEN);
-            drawRect(image, leftEyeSearchWindow, COL_BLUE);
-            drawRect(image, rightEyeRect, COL_GREEN);
-            drawRect(image, leftEyeRect, COL_BLUE);
+            if (app.processOptions.drawSearchRectangles)
+            {
+                if (app.processOptions.doEyeProcessing)
+                {
+                    drawRect(image, rightEyeSearchWindow, COL_GREEN);
+                    drawRect(image, leftEyeSearchWindow, COL_BLUE);
+                    drawRect(image, rightEyeRect, COL_GREEN);
+                    drawRect(image, leftEyeRect, COL_BLUE);
+                }
 
-            // Mouth rect
-            drawRect(image, mouthSearchWindow, COL_BLUE);
-            drawRect(image, mouthRect, COL_LIME_GREEN);
-        }
+                if (app.processOptions.doMouthProcessing)
+                {
+                    // Mouth rect
+                    drawRect(image, mouthSearchWindow, COL_BLUE);
+                    drawRect(image, mouthRect, COL_LIME_GREEN);
+                }
+            }
 
-        if (app.processOptions.drawAnthropometricPoints)
-        {
-            // Draw eye-midpoint connection line
-            cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE);
+            if (app.processOptions.drawAnthropometricPoints)
+            {
+                // Draw eye-midpoint connection line
+                cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE);
 
-            // Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)		    
-            cvLine(image, ffp->rightEye.center, cvPoint((int) ffp->rightEye.center.x, (int) ffp->rightEye.center.y - eyeDist * 0.33), COL_RED, 1);
-            cvLine(image, ffp->leftEye.center, cvPoint((int) ffp->leftEye.center.x, (int) ffp->leftEye.center.y - eyeDist * 0.33), COL_RED, 1);
+                // Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)		    
+                cvLine(image, ffp->rightEye.center, cvPoint((int) ffp->rightEye.center.x, (int) ffp->rightEye.center.y - eyeDist * 0.33), COL_RED, 1);
+                cvLine(image, ffp->leftEye.center, cvPoint((int) ffp->leftEye.center.x, (int) ffp->leftEye.center.y - eyeDist * 0.33), COL_RED, 1);
 
-            // Draw nose tip
-            CvPoint noseTip = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 0.6);
-            drawCross(image, noseTip);
+                // Draw nose tip
+                CvPoint noseTip = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 0.6);
+                drawCross(image, noseTip);
 
-            // Draw estimated mouth center
-            CvPoint mouthCenter = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 1.1);
-            drawCross(image, mouthCenter);
-        }
+                // Draw estimated mouth center
+                CvPoint mouthCenter = cvPoint((int) ffp->rightEye.center.x + eyeDist * 0.5, (int) ffp->rightEye.center.y + eyeDist * 1.1);
+                drawCross(image, mouthCenter);
+            }
 
-        if (app.processOptions.drawFeaturePoints)
-        {
-            drawFfps(image, *ffp);
+            if (app.processOptions.drawFeaturePoints)
+            {
+                drawFfps(image, *ffp);
+            }
         }
 
         if (app.processOptions.drawDetectionTime)

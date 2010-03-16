@@ -9,104 +9,22 @@
         <ResourceDictionary>
             <local:ExpressionIDToTextConverter x:Key="ExpressionIDToTextConverter" />
             <local:ImageToBinaryConverter x:Key="ImageToBinaryConverter" />
+            <local:ExpressionComboBoxConverter x:Key="ExpressionComboBoxConverter" />
+            <local:ExpressionIDToImageConverter x:Key="ExpressionIDToImageConverter" />
 
             <Style TargetType="{x:Type ListViewItem}">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             </Style>
 
-            <!--Custom Datagrid style-->
-
-            <!-- Header related brushes -->
-            <!--<SolidColorBrush x:Key="HeaderBorderBrush" Color="#88B0E4"/>
-            <SolidColorBrush x:Key="HeaderInnerBorderBrush" Color="#FFFFFF" />
-            <LinearGradientBrush x:Key="HeaderBackgroundBrush"
-                     StartPoint="0.5,0.0" EndPoint="0.5,1.0">
-                <GradientStop Color="#FF98BFEB" Offset="0"/>
-                <GradientStop Color="#FFB8D4F2" Offset="1"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="HeaderHighlightedBackgoundBrush"
-                     StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFA3CBF7" Offset="0"/>
-                <GradientStop Color="#FFD9E6F9" Offset="1"/>
-            </LinearGradientBrush>
-            <LinearGradientBrush x:Key="HeaderPressedBackgroundBrush"
-                     StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="#FFA3CBF7" Offset="1"/>
-                <GradientStop Color="#FFD9E6F9" Offset="0"/>
-            </LinearGradientBrush>-->
-
-            <!-- DataGridRowHeader Gripper -->
-            <!--<Style x:Key="RowHeaderGripperStyle" TargetType="{x:Type Thumb}">
-                <Setter Property="Height" Value="8"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Cursor" Value="SizeNS"/>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Thumb}">
-                            <Border Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>-->
-
-            <!-- DataGridColumnHeader Style -->
-            <!--<Style x:Key="ColumnHeaderStyle" TargetType="{x:Type toolkit:DataGridColumnHeader}">
-                <Setter Property="VerticalContentAlignment" Value="Center" />
-                <Setter Property="Background" Value="{StaticResource HeaderBackgroundBrush}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource HeaderBorderBrush}" />
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="BorderThickness" Value="0,1,0,1" />
-
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type toolkit:DataGridColumnHeader}">
-                            <Grid>
-                                <toolkit:DataGridHeaderBorder
-                        x:Name="headerBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="1,0,1,1"
-                        Padding ="{TemplateBinding Padding}"
-                        Orientation="Horizontal"
-                        SeparatorVisibility="{TemplateBinding SeparatorVisibility}"
-                        SeparatorBrush="{TemplateBinding SeparatorBrush}">
-                                    <Border BorderBrush="{StaticResource HeaderInnerBorderBrush}"
-                                BorderThickness="0,1,0,0">
-                                        <StackPanel Orientation="Horizontal">
-                                            <ContentPresenter
-                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                    VerticalAlignment="Center"/>
-                                            <Control
-                                    SnapsToDevicePixels="false"
-                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type toolkit:DataGridRow}}, Path=(Validation.HasError)}"
-                                    Template="{Binding RelativeSource={RelativeSource AncestorType={x:Type toolkit:DataGridRow}}, Path=ValidationErrorTemplate}" />
-                                        </StackPanel>
-                                    </Border>
-                                </toolkit:DataGridHeaderBorder>
-
-                                <Thumb x:Name="PART_TopHeaderGripper"
-                           VerticalAlignment="Top"
-                           Style="{StaticResource RowHeaderGripperStyle}"/>
-                                <Thumb x:Name="PART_BottomHeaderGripper"
-                           VerticalAlignment="Bottom"
-                           Style="{StaticResource RowHeaderGripperStyle}"/>
-                            </Grid>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="headerBorder" Property="Background"
-                                Value="{StaticResource HeaderHighlightedBackgoundBrush}" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="headerBorder" Property="Background"
-                                Value="{StaticResource HeaderPressedBackgroundBrush}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-
-            </Style>-->
+            <DropShadowEffect x:Key="DropShadowEffect"
+                Opacity="1"
+                ShadowDepth="1"
+                Color="Black"
+                BlurRadius="20"/>
+            
+            <Style x:Key="MyDataGridCellStyle" TargetType="{x:Type toolkit:DataGridCell}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
 
             <Style x:Key="MyDataGridStyle" TargetType="{x:Type toolkit:DataGrid}">
                 <Setter Property="AlternatingRowBackground">
@@ -127,17 +45,19 @@
                 </Setter>
                 <Setter Property="HorizontalGridLinesBrush" Value="LightGray" />
                 <Setter Property="VerticalGridLinesBrush" Value="LightGray" />
-                <Setter Property="GridLinesVisibility" Value="All" />
+                <Setter Property="GridLinesVisibility" Value="Horizontal" />
                 <Setter Property="HeadersVisibility" Value="All" />
                 <Setter Property="VerticalAlignment" Value="Stretch" />            
 
+                <Setter Property="CellStyle" Value="{StaticResource MyDataGridCellStyle}"/>
+                
                 <!--<Setter Property="ColumnHeaderStyle" Value="{StaticResource ColumnHeaderStyle}">
                 </Setter>-->
             </Style>
             
             <!-- For DataGrid Validation. -->
             
-            <Style x:Key="RowStyle" TargetType="{x:Type toolkit:DataGridRow}">                
+            <Style x:Key="RowStyle" TargetType="{x:Type toolkit:DataGridRow}">                    
                 <Setter Property="ValidationErrorTemplate">
                     <Setter.Value>
                         <ControlTemplate>
