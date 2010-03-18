@@ -31,17 +31,17 @@ namespace ffp
 
                 return _DataSet.Expression;
                 
-                //TableAdapterManager tam = new TableAdapterManager();
-                //TrainingDataSet dataSet = new TrainingDataSet();
-                //tam.ExpressionTableAdapter = new ExpressionTableAdapter();
+                //TableAdapterManager _TAM = new TableAdapterManager();
+                //TrainingDataSet _DataSet = new TrainingDataSet();
+                //_TAM.ExpressionTableAdapter = new ExpressionTableAdapter();
 
-                //tam.ExpressionTableAdapter.Fill(dataSet.Expression);               
+                //_TAM.ExpressionTableAdapter.Fill(_DataSet.Expression);               
 
                 //ArrayList expressions = new ArrayList();
 
-                //for (int i=0; i<dataSet.Expression.Count; i++)
+                //for (int i=0; i<_DataSet.Expression.Count; i++)
                 //{
-                //    expressions.Add(dataSet.Expression[i].Expression);
+                //    expressions.Add(_DataSet.Expression[i].Expression);
                 //}
 
                 //return expressions;

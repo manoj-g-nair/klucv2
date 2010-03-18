@@ -70,32 +70,43 @@
                     </toolkit:DataGridTemplateColumn.CellTemplate>
                 </toolkit:DataGridTemplateColumn>-->
 
-                <toolkit:DataGridTemplateColumn Header="Coordinates" IsReadOnly="True">
-                    <toolkit:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding Path=LipCornerLeftX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipCornerLeftY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipCornerRightX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipCornerRightY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpLeftX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpLeftY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpCenterX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpCenterY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpRightX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipUpRightY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomLeftX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomLeftY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomCenterX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomCenterY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomRightX, StringFormat=F3}" />
-                                <Label Content="{Binding Path=LipBottomRightY, StringFormat=F3}" />
-                                <Label Content="{Binding Path=EyeDistance, StringFormat=F3}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </toolkit:DataGridTemplateColumn.CellTemplate>                
-                </toolkit:DataGridTemplateColumn>
-                
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerLeftX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerLeftY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerRightX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerRightY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpLeftX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpLeftY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpCenterX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpCenterY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpRightX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpRightY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomLeftX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomLeftY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomCenterX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomCenterY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomRightX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomRightY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=EyeDistance}" />                         
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftEyeCenterX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftEyeCenterY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidBottomX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidBottomY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerLeftX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerLeftY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerRightX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerRightY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidUpX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidUpY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightEyeCenterX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightEyeCenterY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidBottomX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidBottomY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerLeftX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerLeftY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerRightX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerRightY}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidUpX}" />
+                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidUpY}" />                
             </toolkit:DataGrid.Columns>
         </toolkit:DataGrid>
     </Grid>

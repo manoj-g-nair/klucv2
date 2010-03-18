@@ -1,8 +1,6 @@
 /**
-* Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
-*
-* $Id$
-*/
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
 
 #include "stdafx.h"
 #include "klu_common.hpp"
@@ -41,11 +39,30 @@ namespace klu
     //------------------------------------------------------------------------------
     bool deinitializeLibrary(void)
     {
-        cvReleaseHaarClassifierCascade(&app.cascadeFace);
-        cvReleaseHaarClassifierCascade(&app.cascadeMouth);
-        cvReleaseHaarClassifierCascade(&app.cascadeLeftEye);
-        cvReleaseHaarClassifierCascade(&app.cascadeRightEye);
-        cvReleaseMemStorage(&app.memStorage);
+        if ( app.cascadeFace )
+        {
+            cvReleaseHaarClassifierCascade(&app.cascadeFace);
+        }
+
+        if ( app.cascadeMouth )
+        {
+            cvReleaseHaarClassifierCascade(&app.cascadeMouth);
+        }
+
+        if ( app.cascadeLeftEye )
+        {
+            cvReleaseHaarClassifierCascade(&app.cascadeLeftEye);
+        }
+
+        if ( app.cascadeRightEye )
+        {
+            cvReleaseHaarClassifierCascade(&app.cascadeRightEye);
+        }
+
+        if ( app.memStorage )
+        {
+            cvReleaseMemStorage(&app.memStorage);
+        }
 
         if ( app.capture )
         {
@@ -794,6 +811,9 @@ namespace klu
             return false;
         }
 
+        // Set all FFPs to zero
+        memset(ffp, '\0', sizeof(ffp));
+
         cvCvtColor(image, app.grayscale, CV_RGB2GRAY);
 
         //==========================
@@ -801,7 +821,16 @@ namespace klu
         //==========================
 
         tic();
+
+        // Set the minimal rectangle size a face must fit in.
+        // The smaller the rectangle the longer the processing time.
+        // Therefore set the rectangle small only if the image is small.
+        // The same goes for the eyes and the mouth.
         CvSize minFaceSize = cvSize(200, 200);
+        if (image->height < 500)
+        {
+            minFaceSize = cvSize(100, 100);
+        }
         vector<CvRect> faceRects = detectObjects(image, app.cascadeFace, app.memStorage, minFaceSize);
         
         // TODO: (Ko) Maby return here, to speed up things a little bit
@@ -825,7 +854,11 @@ namespace klu
             {
                 ffp->faceRegion = faceRect;
 
-                CvSize eyeSize = cvSize(40, 30);
+                CvSize eyeMinSize = cvSize(40, 30);
+                if (image->height < 500)
+                {
+                    eyeMinSize = cvSize(8, 6);
+                }
 
                 /**
                 * Find right eye
@@ -835,7 +868,7 @@ namespace klu
                 rightEyeSearchWindow.y += rightEyeSearchWindow.height;
                 rightEyeSearchWindow.width /= 2;
                 cvSetImageROI(image, rightEyeSearchWindow);
-                vector<CvRect> eyeRects = detectObjects(image, app.cascadeRightEye, app.memStorage, eyeSize);
+                vector<CvRect> eyeRects = detectObjects(image, app.cascadeRightEye, app.memStorage, eyeMinSize);
                 if (eyeRects.size() > 0)
                 {
                     rightEyeRect = eyeRects[0];
@@ -865,7 +898,7 @@ namespace klu
                 leftEyeSearchWindow.width /= 2;
                 leftEyeSearchWindow.x += leftEyeSearchWindow.width;
                 cvSetImageROI(image, leftEyeSearchWindow);
-                eyeRects = detectObjects(image, app.cascadeLeftEye, app.memStorage, eyeSize);
+                eyeRects = detectObjects(image, app.cascadeLeftEye, app.memStorage, eyeMinSize);
                 if (eyeRects.size() > 0)
                 {
                     leftEyeRect = eyeRects[0];
@@ -898,8 +931,14 @@ namespace klu
                     mouthSearchWindow.height /= 2;
                     mouthSearchWindow.y += mouthSearchWindow.height;
 
+                    CvSize mouthMinSize = cvSize(120, 90);
+                    if (image->height < 500)
+                    {
+                        mouthMinSize = cvSize(24, 18);
+                    }
+
                     cvSetImageROI(image, mouthSearchWindow);
-                    mouthRects = detectObjects(image, app.cascadeMouth, app.memStorage, cvSize(120, 60));
+                    mouthRects = detectObjects(image, app.cascadeMouth, app.memStorage, mouthMinSize);
                     if (mouthRects.size() > 0)
                     {
                         mouthRect = mouthRects[0];

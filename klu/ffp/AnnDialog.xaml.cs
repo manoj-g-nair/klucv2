@@ -36,7 +36,7 @@ namespace ffp
         ANN _ANN;
 
         /// <summary>
-        /// This member is a wrapper object provides access to the klu C DLL.
+        /// This member is a wrapper object provides access to the _KLU C DLL.
         /// </summary>
         Klu _Klu;
 

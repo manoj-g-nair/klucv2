@@ -1,3 +1,7 @@
+/**
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
+
 // klulib.cpp : Defines the exported functions for the DLL application.
 //
 

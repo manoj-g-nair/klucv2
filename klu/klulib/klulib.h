@@ -1,3 +1,8 @@
+/**
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
+
+
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the KLULIB_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project

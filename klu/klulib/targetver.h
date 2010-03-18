@@ -1,3 +1,7 @@
+/**
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
+
 #pragma once
 
 // The following macros define the minimum required platform.  The minimum required platform

@@ -1,8 +1,6 @@
 /**
-* Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
-*
-* $Id$
-*/
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
 
 #ifndef KLU_COMMON_H_
 #define KLU_COMMON_H_

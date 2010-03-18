@@ -1,3 +1,7 @@
+/**
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
+
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
 

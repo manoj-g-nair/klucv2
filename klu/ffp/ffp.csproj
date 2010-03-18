@@ -107,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="BatchClassification.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="TrainingDataSetsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +138,9 @@
     </Compile>
     <Compile Include="AnnDialog.xaml.cs">
       <DependentUpon>AnnDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="BatchClassification.xaml.cs">
+      <DependentUpon>BatchClassification.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExpressionIDToImageConverter.cs" />
     <Compile Include="ExpressionComboBoxConverter.cs" />

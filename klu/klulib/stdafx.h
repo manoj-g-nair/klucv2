@@ -1,7 +1,5 @@
 /**
  * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
- *
- * $Id$
  */
 
 // stdafx.h : include file for standard system include files,

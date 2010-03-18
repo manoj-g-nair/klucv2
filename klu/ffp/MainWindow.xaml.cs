@@ -26,48 +26,48 @@ namespace ffp
     public partial class MainWindow : RibbonWindow
     {
         /// <summary>
-        /// This member is a wrapper object provides access to the klu C DLL.
+        /// This member is a wrapper object provides access to the _KLU C DLL.
         /// </summary>
-        Klu klu;
+        Klu _KLU;
 
         /// <summary>
         /// This is the timer used to query camera images.
         /// </summary>
-        DispatcherTimer captureTimer;
+        DispatcherTimer _CaptureTimer;
 
         /// <summary>
         /// This is a temporary bitmap which acts as a container for camera images.
         /// </summary>
-        System.Drawing.Bitmap tmpBitmap;
+        System.Drawing.Bitmap _TempBitmap;
 
         /// <summary>
         /// This stores all table adapters.
         /// </summary>
-        TableAdapterManager tam;
+        TableAdapterManager _TAM;
 
         /// <summary>
         /// This is the dataset which contains the connected database in memory. 
         /// </summary>
-        TrainingDataSet dataSet;
+        TrainingDataSet _DataSet;
 
         /// <summary>
         /// Feature points from the last processed image
         /// </summary>
-        FaceFeaturePoints ffp;
+        FaceFeaturePoints _FFP;
 
         /// <summary>
         /// Define how to process images (either still or moving images)
         /// </summary>
-        ProcessOptions processOptions;
+        ProcessOptions _ProcessOptions;
 
-        System.Collections.ArrayList filesToProcess;
-        int fileProcessIdx;
+        ArrayList _ImagePathArray;
+        int _CurrentImagePathIndex;
 
         /// <summary>
         /// Used as a dummy for thumbnail creation.
         /// </summary>
         /// <returns></returns>
-        public bool ThumbnailCallback()
+        public static bool ThumbnailCallback()
         {
             return false;
         }
@@ -83,63 +83,61 @@ namespace ffp
 
             try
             {
-                fileProcessIdx = 0;
-                filesToProcess = new ArrayList();
-                processOptions = new ProcessOptions();
-                ffp = new FaceFeaturePoints();
+                _CurrentImagePathIndex = 0;
+                _ImagePathArray = new ArrayList();
+                _ProcessOptions = new ProcessOptions();
+                _FFP = new FaceFeaturePoints();
 
-                processOptions.DoEyeProcessing = 0;
-                processOptions.DoMouthProcessing = 1;
-                processOptions.DrawAnthropometricPoints = 0;
-                processOptions.DrawSearchRectangles = 0;
-                processOptions.DrawFaceRectangle = 1;
-                processOptions.DrawDetectionTime = 1;
-                processOptions.DrawFeaturePoints = 1;
-                processOptions.DoVisualDebug = 0;
-
-
+                _ProcessOptions.DoEyeProcessing = 0;
+                _ProcessOptions.DoMouthProcessing = 1;
+                _ProcessOptions.DrawAnthropometricPoints = 0;
+                _ProcessOptions.DrawSearchRectangles = 0;
+                _ProcessOptions.DrawFaceRectangle = 1;
+                _ProcessOptions.DrawDetectionTime = 1;
+                _ProcessOptions.DrawFeaturePoints = 1;
+                _ProcessOptions.DoVisualDebug = 0;
 
                 #region Intialize encapsulated OpenCV subsystem
-                klu = new Klu();
-                tmpBitmap = new System.Drawing.Bitmap(10, 10);
+                _KLU = new Klu();
+                _TempBitmap = new System.Drawing.Bitmap(10, 10);
 
                 // Create a Timer with a Normal Priority
-                captureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
+                _CaptureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
 
                 // Set the callback to just show the time ticking away
                 // NOTE: We are using a control so this has to run on 
                 // the UI thread
-                captureTimer.Tick += new EventHandler(
+                _CaptureTimer.Tick += new EventHandler(
                     delegate(object s, EventArgs a)
                     {
-                        klu.ProcessCaptureImage(ref processOptions, ref ffp);
+                        _KLU.ProcessCaptureImage(ref _ProcessOptions, ref _FFP);
 
                         // Ensure the image (bitmap) we are writing to has the correct dimensions
                         int width = 0, height = 0;
-                        klu.GetLastProcessedImageDims(ref width, ref height);
+                        _KLU.GetLastProcessedImageDims(ref width, ref height);
 
-                        if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                        if (_TempBitmap.Width != width || _TempBitmap.Height != height)
                         {
-                            Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
-                            tmpBitmap.Dispose();
+                            Console.WriteLine("Need to resize the _TempBitmap to " + width + "x" + height);
+                            _TempBitmap.Dispose();
                             GC.Collect();
-                            tmpBitmap = new System.Drawing.Bitmap(width, height);
+                            _TempBitmap = new System.Drawing.Bitmap(width, height);
                         }
 
-                        klu.GetLastProcessedImage(ref tmpBitmap);
-                        klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
-                        //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
+                        _KLU.GetLastProcessedImage(ref _TempBitmap);
+                        _KLU.SetWpfImageFromBitmap(ref image1, ref _TempBitmap);
+                        //_KLU.SetImageBrushFromBitmap(ref imageBrush, ref _TempBitmap);
                     }
                 );
                 #endregion
 
                 #region "Connect" to database
-                tam = new TableAdapterManager();  
-                dataSet = new TrainingDataSet();
+                _TAM = new TableAdapterManager();  
+                _DataSet = new TrainingDataSet();
 
                 // Load data from SQL database and fill our DataSet
-                tam.ExpressionTableAdapter = new ExpressionTableAdapter();
-                tam.TrainingTableAdapter = new TrainingTableAdapter();
+                _TAM.ExpressionTableAdapter = new ExpressionTableAdapter();
+                _TAM.TrainingTableAdapter = new TrainingTableAdapter();
 
                 LoadData();
                 #endregion
@@ -156,14 +154,14 @@ namespace ffp
         private void LoadData()
         {
             // Clear the complete dataset
-            dataSet.Clear();
+            _DataSet.Clear();
 
             // Load data from database and fill dataset
-            tam.ExpressionTableAdapter.Fill(dataSet.Expression);
-            tam.TrainingTableAdapter.Fill(dataSet.Training);
+            _TAM.ExpressionTableAdapter.Fill(_DataSet.Expression);
+            _TAM.TrainingTableAdapter.Fill(_DataSet.Training);
 
             // Bind data to controls 
-            expressionSelectorComboBox.DataContext = dataSet.Expression;
+            expressionSelectorComboBox.DataContext = _DataSet.Expression;
         }
 
         /// <summary>
@@ -178,75 +176,76 @@ namespace ffp
 
         private void processNextFile()
         {
-            fileProcessIdx++;
+            _CurrentImagePathIndex++;
 
             // Start infront if we reach the end
-            if (fileProcessIdx >= filesToProcess.Count)
+            if (_CurrentImagePathIndex >= _ImagePathArray.Count)
             {
-                fileProcessIdx = 0;
+                _CurrentImagePathIndex = 0;
             }            
 
-            if (fileProcessIdx < filesToProcess.Count)
+            if (_CurrentImagePathIndex < _ImagePathArray.Count)
             {
-                klu.ProcessStillImage((string)filesToProcess[fileProcessIdx], ref processOptions, ref ffp);
+                
+                _KLU.ProcessStillImage((string)_ImagePathArray[_CurrentImagePathIndex], ref _ProcessOptions, ref _FFP);
 
                 int width = 0, height = 0;
-                klu.GetLastProcessedImageDims(ref width, ref height);
+                _KLU.GetLastProcessedImageDims(ref width, ref height);
 
-                if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                if (_TempBitmap.Width != width || _TempBitmap.Height != height)
                 {
                     Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
-                    tmpBitmap.Dispose();
+                    _TempBitmap.Dispose();
                     GC.Collect();
-                    tmpBitmap = new System.Drawing.Bitmap(width, height);
+                    _TempBitmap = new System.Drawing.Bitmap(width, height);
                 }
 
-                klu.GetLastProcessedImage(ref tmpBitmap);
-                //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
-                klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                _KLU.GetLastProcessedImage(ref _TempBitmap);
+                //_KLU.SetImageBrushFromBitmap(ref imageBrush, ref _TempBitmap);
+                _KLU.SetWpfImageFromBitmap(ref image1, ref _TempBitmap);
             }
         }
 
         private void processPreviousFile()
         {
-            fileProcessIdx--;
+            _CurrentImagePathIndex--;
 
             // Start infront if we reach the end
-            if (fileProcessIdx < 0)
+            if (_CurrentImagePathIndex < 0)
             {
-                fileProcessIdx = filesToProcess.Count - 1;
+                _CurrentImagePathIndex = _ImagePathArray.Count - 1;
             }
 
-            if (fileProcessIdx >= 0 && fileProcessIdx < filesToProcess.Count)
+            if (_CurrentImagePathIndex >= 0 && _CurrentImagePathIndex < _ImagePathArray.Count)
             {
-                klu.ProcessStillImage((string)filesToProcess[fileProcessIdx], ref processOptions, ref ffp);
+                _KLU.ProcessStillImage((string)_ImagePathArray[_CurrentImagePathIndex], ref _ProcessOptions, ref _FFP);
 
                 int width = 0, height = 0;
-                klu.GetLastProcessedImageDims(ref width, ref height);
+                _KLU.GetLastProcessedImageDims(ref width, ref height);
 
-                if (tmpBitmap.Width != width || tmpBitmap.Height != height)
+                if (_TempBitmap.Width != width || _TempBitmap.Height != height)
                 {
                     Console.WriteLine("Need to resize the tmpBitmap to " + width + "x" + height);
-                    tmpBitmap.Dispose();
+                    _TempBitmap.Dispose();
                     GC.Collect();
-                    tmpBitmap = new System.Drawing.Bitmap(width, height);
+                    _TempBitmap = new System.Drawing.Bitmap(width, height);
                 }                
                 
-                klu.GetLastProcessedImage(ref tmpBitmap);
-                //klu.SetImageBrushFromBitmap(ref imageBrush, ref tmpBitmap);
-                klu.SetWpfImageFromBitmap(ref image1, ref tmpBitmap);
+                _KLU.GetLastProcessedImage(ref _TempBitmap);
+                //_KLU.SetImageBrushFromBitmap(ref imageBrush, ref _TempBitmap);
+                _KLU.SetWpfImageFromBitmap(ref image1, ref _TempBitmap);
             }
         }
 
         private void processFirstButton_Click(object sender, RoutedEventArgs e)
         {
-            fileProcessIdx = -1;
+            _CurrentImagePathIndex = -1;
             processNextFile();
         }
 
         private void processLastButton_Click(object sender, RoutedEventArgs e)
         {
-            fileProcessIdx = filesToProcess.Count - 1;
+            _CurrentImagePathIndex = _ImagePathArray.Count;
             processPreviousFile();
         }
 
@@ -260,7 +259,7 @@ namespace ffp
             // Configure save file dialog box            
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();            
             dlg.DefaultExt = "."; // Default file extension
-            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tga, *.pgm)|*.bmp;*.jpg;*.png;*.tif;*.tga;*.pgm"; // Filter files by extension
+            dlg.Filter = "Imagefiles (*.bmp, *.jpg, *.png, *.tif, *.tiff, *.tga, *.pgm)|*.bmp;*.jpg;*.png;*.tif;*.tiff;*.tga;*.pgm"; // Filter files by extension
             dlg.Title = "Load images";
             dlg.Multiselect = true;
 
@@ -284,11 +283,11 @@ namespace ffp
                 StopCameraMenuItem.IsEnabled = false;
                 CameraParametersMenuItem.IsEnabled = false;
 
-                filesToProcess.Clear();
+                _ImagePathArray.Clear();
 
-                filesToProcess.AddRange(dlg.FileNames);
+                _ImagePathArray.AddRange(dlg.FileNames);
 
-                fileProcessIdx = -1;
+                _CurrentImagePathIndex = -1;
                 processNextFile();
             }    
         }
@@ -310,18 +309,18 @@ namespace ffp
             StopCameraMenuItem.IsEnabled = true;
             CameraParametersMenuItem.IsEnabled = true;
 
-            filesToProcess.Clear();
+            _ImagePathArray.Clear();
 
-            if (!klu.CreateCapture())
+            if (!_KLU.CreateCapture())
             {
                 return;
             }
 
             // Set the Interval to what is typed into the corresponding text box, but don't allow values below 100ms.
-            captureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(30));//captureTimeTextBox.Text));
+            _CaptureTimer.Interval = TimeSpan.FromMilliseconds(Convert.ToInt32(30));//captureTimeTextBox.Text));
 
             // Start the timer
-            captureTimer.Start();
+            _CaptureTimer.Start();
 
             statusText.Text = "Started camera processing";
         }
@@ -340,7 +339,7 @@ namespace ffp
         {
             // Stops the internal timer which is responsible for updating the (live) image
             // and doing the processing.
-            captureTimer.Stop();
+            _CaptureTimer.Stop();
 
             processFirstButton.IsEnabled = false;
             processLastButton.IsEnabled = false;
@@ -352,7 +351,7 @@ namespace ffp
             StopCameraMenuItem.IsEnabled = false;
             CameraParametersMenuItem.IsEnabled = false;
 
-            klu.FreeCapture();
+            _KLU.FreeCapture();
 
             statusText.Text = "All processing stopped";
         }
@@ -365,7 +364,7 @@ namespace ffp
         /// </summary>
         private void LastChanceSaving()
         {            
-            if (dataSet.HasChanges())
+            if (_DataSet.HasChanges())
             {
                 MessageBoxResult res;
                 //res = MessageBox.Show("You've made some changes that are not yet saved! Do you wish to save them?",
@@ -379,8 +378,8 @@ namespace ffp
                 //{
                     try
                     {
-                        tam.UpdateAll(dataSet);
-                        dataSet.AcceptChanges();
+                        _TAM.UpdateAll(_DataSet);
+                        _DataSet.AcceptChanges();
                     }
                     catch (Exception e)
                     {
@@ -436,7 +435,7 @@ namespace ffp
 
             #region Prepare data to be trained. Involves copying.
 
-            int numTrainingSets = dataSet.Training.Rows.Count;
+            int numTrainingSets = _DataSet.Training.Rows.Count;
             const int numInputNeurons = 16;
             const int numOutputNeurons = 1;
             double[][] inputs = new double[numTrainingSets][];
@@ -445,25 +444,25 @@ namespace ffp
             for (int i = 0; i < numTrainingSets; i++)
             {
                 inputs[i] = new double[numInputNeurons];
-                inputs[i][0] = dataSet.Training[i].LipCornerLeftX;
-                inputs[i][1] = dataSet.Training[i].LipCornerLeftY;
-                inputs[i][2] = dataSet.Training[i].LipCornerRightX;
-                inputs[i][3] = dataSet.Training[i].LipCornerRightY;
-                inputs[i][4] = dataSet.Training[i].LipUpLeftX;
-                inputs[i][5] = dataSet.Training[i].LipUpLeftY;
-                inputs[i][6] = dataSet.Training[i].LipUpCenterX;
-                inputs[i][7] = dataSet.Training[i].LipUpCenterY;
-                inputs[i][8] = dataSet.Training[i].LipUpRightX;
-                inputs[i][9] = dataSet.Training[i].LipUpRightY;
-                inputs[i][10] = dataSet.Training[i].LipBottomLeftX;
-                inputs[i][11] = dataSet.Training[i].LipBottomLeftY;
-                inputs[i][12] = dataSet.Training[i].LipBottomCenterX;
-                inputs[i][13] = dataSet.Training[i].LipBottomCenterY;
-                inputs[i][14] = dataSet.Training[i].LipBottomRightX;
-                inputs[i][15] = dataSet.Training[i].LipBottomRightY;
+                inputs[i][0] = _DataSet.Training[i].LipCornerLeftX;
+                inputs[i][1] = _DataSet.Training[i].LipCornerLeftY;
+                inputs[i][2] = _DataSet.Training[i].LipCornerRightX;
+                inputs[i][3] = _DataSet.Training[i].LipCornerRightY;
+                inputs[i][4] = _DataSet.Training[i].LipUpLeftX;
+                inputs[i][5] = _DataSet.Training[i].LipUpLeftY;
+                inputs[i][6] = _DataSet.Training[i].LipUpCenterX;
+                inputs[i][7] = _DataSet.Training[i].LipUpCenterY;
+                inputs[i][8] = _DataSet.Training[i].LipUpRightX;
+                inputs[i][9] = _DataSet.Training[i].LipUpRightY;
+                inputs[i][10] = _DataSet.Training[i].LipBottomLeftX;
+                inputs[i][11] = _DataSet.Training[i].LipBottomLeftY;
+                inputs[i][12] = _DataSet.Training[i].LipBottomCenterX;
+                inputs[i][13] = _DataSet.Training[i].LipBottomCenterY;
+                inputs[i][14] = _DataSet.Training[i].LipBottomRightX;
+                inputs[i][15] = _DataSet.Training[i].LipBottomRightY;
 
                 outputs[i] = new double[numOutputNeurons];
-                outputs[i][0] = dataSet.Training[i].ExpressionOID;
+                outputs[i][0] = _DataSet.Training[i].ExpressionOID;
             }
             #endregion
 
@@ -507,7 +506,7 @@ namespace ffp
 
             //if (result == true)
             //{
-            //    bool res = klu.LoadANN(dlg.FileName);
+            //    bool res = _KLU.LoadANN(dlg.FileName);
 
             //    Console.WriteLine("Load ANN success? " + res );
 
@@ -534,7 +533,7 @@ namespace ffp
 
             //    #region Prepare data to be trained. Involves copying.
 
-            //    int numTrainingSets = dataSet.Training.Rows.Count;
+            //    int numTrainingSets = _DataSet.Training.Rows.Count;
             //    int numInputNeurons = 16;
             //    int numOutputNeurons = 1;
             //    float[] inputs = new float[numTrainingSets * numInputNeurons];
@@ -542,31 +541,31 @@ namespace ffp
 
             //    for (int i = 0; i < numTrainingSets; i++)
             //    {
-            //        inputs[i * numInputNeurons + 0] = dataSet.Training[i].LipCornerLeftX;
-            //        inputs[i * numInputNeurons + 1] = dataSet.Training[i].LipCornerLeftY;
-            //        inputs[i * numInputNeurons + 2] = dataSet.Training[i].LipCornerRightX;
-            //        inputs[i * numInputNeurons + 3] = dataSet.Training[i].LipCornerRightY;
-            //        inputs[i * numInputNeurons + 4] = dataSet.Training[i].LipUpLeftX;
-            //        inputs[i * numInputNeurons + 5] = dataSet.Training[i].LipUpLeftY;
-            //        inputs[i * numInputNeurons + 6] = dataSet.Training[i].LipUpCenterX;
-            //        inputs[i * numInputNeurons + 7] = dataSet.Training[i].LipUpCenterY;
-            //        inputs[i * numInputNeurons + 8] = dataSet.Training[i].LipUpRightX;
-            //        inputs[i * numInputNeurons + 9] = dataSet.Training[i].LipUpRightY;
-            //        inputs[i * numInputNeurons + 10] = dataSet.Training[i].LipBottomLeftX;
-            //        inputs[i * numInputNeurons + 11] = dataSet.Training[i].LipBottomLeftY;
-            //        inputs[i * numInputNeurons + 12] = dataSet.Training[i].LipBottomCenterX;
-            //        inputs[i * numInputNeurons + 13] = dataSet.Training[i].LipBottomCenterY;
-            //        inputs[i * numInputNeurons + 14] = dataSet.Training[i].LipBottomRightX;
-            //        inputs[i * numInputNeurons + 15] = dataSet.Training[i].LipBottomRightY;
+            //        inputs[i * numInputNeurons + 0] = _DataSet.Training[i].LipCornerLeftX;
+            //        inputs[i * numInputNeurons + 1] = _DataSet.Training[i].LipCornerLeftY;
+            //        inputs[i * numInputNeurons + 2] = _DataSet.Training[i].LipCornerRightX;
+            //        inputs[i * numInputNeurons + 3] = _DataSet.Training[i].LipCornerRightY;
+            //        inputs[i * numInputNeurons + 4] = _DataSet.Training[i].LipUpLeftX;
+            //        inputs[i * numInputNeurons + 5] = _DataSet.Training[i].LipUpLeftY;
+            //        inputs[i * numInputNeurons + 6] = _DataSet.Training[i].LipUpCenterX;
+            //        inputs[i * numInputNeurons + 7] = _DataSet.Training[i].LipUpCenterY;
+            //        inputs[i * numInputNeurons + 8] = _DataSet.Training[i].LipUpRightX;
+            //        inputs[i * numInputNeurons + 9] = _DataSet.Training[i].LipUpRightY;
+            //        inputs[i * numInputNeurons + 10] = _DataSet.Training[i].LipBottomLeftX;
+            //        inputs[i * numInputNeurons + 11] = _DataSet.Training[i].LipBottomLeftY;
+            //        inputs[i * numInputNeurons + 12] = _DataSet.Training[i].LipBottomCenterX;
+            //        inputs[i * numInputNeurons + 13] = _DataSet.Training[i].LipBottomCenterY;
+            //        inputs[i * numInputNeurons + 14] = _DataSet.Training[i].LipBottomRightX;
+            //        inputs[i * numInputNeurons + 15] = _DataSet.Training[i].LipBottomRightY;
 
-            //        outputs[i] = dataSet.Training[i].ExpressionOID;
+            //        outputs[i] = _DataSet.Training[i].ExpressionOID;
             //    }
             //    #endregion
 
-            //    klu.SaveANN(dlg.FileName + ".untrained.xml");
+            //    _KLU.SaveANN(dlg.FileName + ".untrained.xml");
 
             //    int iters = -10;
-            //    res = klu.TrainAnn(options, numTrainingSets, inputs, outputs, ref iters);
+            //    res = _KLU.TrainAnn(options, numTrainingSets, inputs, outputs, ref iters);
 
             //    Console.WriteLine("Training success? " + res);
 
@@ -576,16 +575,16 @@ namespace ffp
 
             //    statusText.Text = "Training result: " + res;
 
-            //    klu.SaveANN(dlg.FileName + ".trained.xml");
+            //    _KLU.SaveANN(dlg.FileName + ".trained.xml");
 
             //    // Let's see if the ANN is trained. (simple for now)
             //    // TODO: (Ko) Do 7 out of 10 validation etc.
 
             //    // Test the first dataset and compare the predicted output with the expected
             //    float[] results = new float[1];
-            //    klu.PredictANN(inputs, 16, results, 1);
+            //    _KLU.PredictANN(inputs, 16, results, 1);
 
-            //    Console.WriteLine("Expected output: " + dataSet.Training[0].ExpressionOID + " Predicted output: " + results[0]);
+            //    Console.WriteLine("Expected output: " + _DataSet.Training[0].ExpressionOID + " Predicted output: " + results[0]);
             //}
         }
 
@@ -615,34 +614,34 @@ namespace ffp
             switch (b.Name)
             {
                 case "drawAnthropometricPointsMenuItem":
-                    processOptions.DrawAnthropometricPoints = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DrawAnthropometricPoints = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawSearchRectanglesMenuItem":
-                    processOptions.DrawSearchRectangles = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DrawSearchRectangles = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawFaceRectangleMenuItem":
-                    processOptions.DrawFaceRectangle = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DrawFaceRectangle = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawDetectionTimeMenuItem":
-                    processOptions.DrawDetectionTime = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DrawDetectionTime = Convert.ToInt32(b.IsChecked);
                     break;
                 case "drawFeaturePointsMenuItem":
-                    processOptions.DrawFeaturePoints = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DrawFeaturePoints = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doEyeProcessingMenuItem":
-                    processOptions.DoEyeProcessing = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DoEyeProcessing = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doMouthProcessingMenuItem":
-                    processOptions.DoMouthProcessing = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DoMouthProcessing = Convert.ToInt32(b.IsChecked);
                     break;
                 case "doVisualDebugMenuItem":
-                    processOptions.DoVisualDebug = Convert.ToInt32(b.IsChecked);
+                    _ProcessOptions.DoVisualDebug = Convert.ToInt32(b.IsChecked);
                     break;
             };
 
-            if (filesToProcess.Count > 0)
+            if (_ImagePathArray.Count > 0)
             {
-                fileProcessIdx--;
+                _CurrentImagePathIndex--;
                 processNextFile();
             }
         }
@@ -661,15 +660,15 @@ namespace ffp
 
         private void processPlayPauseButton_Click(object sender, RoutedEventArgs e)
         {
-            if (captureTimer.IsEnabled)
+            if (_CaptureTimer.IsEnabled)
             {
-                captureTimer.Stop();
+                _CaptureTimer.Stop();
                 ClassifyResultButton.IsEnabled = true;
                 expressionSelectorComboBox.IsEnabled = true;
             }
             else
             {
-                captureTimer.Start();
+                _CaptureTimer.Start();
                 ClassifyResultButton.IsEnabled = false;
                 expressionSelectorComboBox.IsEnabled = false;
             }
@@ -682,7 +681,7 @@ namespace ffp
             {
                 try
                 {
-                    dataSet.Expression.AddExpressionRow(cbox.Text, null);
+                    _DataSet.Expression.AddExpressionRow(cbox.Text, null);
                 }
                 catch (Exception ex)
                 {
@@ -700,52 +699,88 @@ namespace ffp
         /// <param name="begin"></param>
         /// <param name="dim"></param>
         /// <returns>(double) (coord - begin) / (double) dim</returns>
-        private float i2r(int coord, int begin, int dim)
+        private static float i2r(int coord, int begin, int dim)
         {
             return (float)(coord - begin) / (float)dim;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public static void AddTrainingData(ref TrainingDataSet dataSet, ref FaceFeaturePoints ffp, int expressionOID, ref System.Drawing.Bitmap picture)
         {
-            int expressionOID = Convert.ToInt32(expressionSelectorComboBox.SelectedValue);
-
-            // Convert facial coordinates (for mouth only atm.) to relative face coordinates.
+            // Convert facial coordinates to relative face rectangle coordinates.
+            // We do this because we are not interested in absolute coordinates but in quality of the face.
 
             int x = ffp.FaceRectangle.X;
             int y = ffp.FaceRectangle.Y;
             int w = ffp.FaceRectangle.Width;
             int h = ffp.FaceRectangle.Height;
-            
+
             // Calculate the eye distance
             float dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
             float dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
-            float eyeDist = (float) Math.Sqrt(dx * dx + dy * dy);
+            float eyeDist = (float)Math.Sqrt(dx * dx + dy * dy);
 
             // Construct thumbnail
             const int thumbnailWidth = 50;
             const int thumbnailHeight = 50;
 
             System.Drawing.Rectangle faceRect = new System.Drawing.Rectangle(x, y, w, h);
-            System.Drawing.Bitmap faceImg = tmpBitmap.Clone(faceRect, tmpBitmap.PixelFormat);
+            System.Drawing.Bitmap faceImg = picture.Clone(faceRect, picture.PixelFormat);
 
             System.Drawing.Image.GetThumbnailImageAbort tc = new System.Drawing.Image.GetThumbnailImageAbort(ThumbnailCallback);
             System.Drawing.Image thumbnail = faceImg.GetThumbnailImage(thumbnailWidth, thumbnailHeight, tc, IntPtr.Zero);
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
             thumbnail.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 
-            dataSet.Training.AddTrainingRow(
-                dataSet.Expression.FindByExpressionOID(expressionOID),                
-                i2r(ffp.Mouth.LipCornerLeft.X, x, w),   i2r(ffp.Mouth.LipCornerLeft.Y, y, h), 
-                i2r(ffp.Mouth.LipCornerRight.X, x, w),  i2r(ffp.Mouth.LipCornerRight.Y, y, h), 
-                i2r(ffp.Mouth.LipUpLeft.X, x, w),       i2r(ffp.Mouth.LipUpLeft.Y, y, h),
-                i2r(ffp.Mouth.LipUpCenter.X, x, w),     i2r(ffp.Mouth.LipUpCenter.Y, y, h), 
-                i2r(ffp.Mouth.LipUpRight.X, x, w),      i2r(ffp.Mouth.LipUpRight.Y, y, h), 
-                i2r(ffp.Mouth.LipBottomLeft.X, x, w),   i2r(ffp.Mouth.LipBottomLeft.Y, y, h), 
-                i2r(ffp.Mouth.LipBottomCenter.X, x, w), i2r(ffp.Mouth.LipBottomCenter.Y, y, h),
-                i2r(ffp.Mouth.LipBottomRight.X, x, w),  i2r(ffp.Mouth.LipBottomRight.Y, y, h),
-                eyeDist,
-                ms.ToArray()
-            );
+            TrainingDataSet.TrainingRow row = dataSet.Training.NewTrainingRow();
+
+            row.ExpressionOID = expressionOID;
+            row.LipCornerLeftX = i2r(ffp.Mouth.LipCornerLeft.X, x, w);
+            row.LipCornerLeftY = i2r(ffp.Mouth.LipCornerLeft.Y, y, h);
+            row.LipCornerRightX = i2r(ffp.Mouth.LipCornerRight.X, x, w);
+            row.LipCornerRightY = i2r(ffp.Mouth.LipCornerRight.Y, y, h);
+            row.LipUpLeftX = i2r(ffp.Mouth.LipUpLeft.X, x, w);
+            row.LipUpLeftY = i2r(ffp.Mouth.LipUpLeft.Y, y, h);
+            row.LipUpCenterX = i2r(ffp.Mouth.LipUpCenter.X, x, w);
+            row.LipUpCenterY = i2r(ffp.Mouth.LipUpCenter.Y, y, h);
+            row.LipUpRightX = i2r(ffp.Mouth.LipUpRight.X, x, w);
+            row.LipUpRightY = i2r(ffp.Mouth.LipUpRight.Y, y, h);
+            row.LipUpRightX = i2r(ffp.Mouth.LipBottomLeft.X, x, w);
+            row.LipUpRightY = i2r(ffp.Mouth.LipBottomLeft.Y, y, h);
+            row.LipBottomCenterX = i2r(ffp.Mouth.LipBottomCenter.X, x, w);
+            row.LipBottomCenterY = i2r(ffp.Mouth.LipBottomCenter.Y, y, h);
+            row.LipBottomRightX = i2r(ffp.Mouth.LipBottomRight.X, x, w);
+            row.LipBottomRightY = i2r(ffp.Mouth.LipBottomRight.Y, y, h);
+            row.EyeDistance = eyeDist;
+            row.LeftEyeCenterX = i2r(ffp.LeftEye.EyeCenter.X, x, w);
+            row.LeftEyeCenterY = i2r(ffp.LeftEye.EyeCenter.Y, y, h);
+            row.LeftLidBottomX = i2r(ffp.LeftEye.LidBottomCenter.X, x, w);
+            row.LeftLidBottomY = i2r(ffp.LeftEye.LidBottomCenter.Y, y, h);
+            row.LeftLidCornerLeftX = i2r(ffp.LeftEye.LidCornerLeft.X, x, w);
+            row.LeftLidCornerLeftY = i2r(ffp.LeftEye.LidCornerLeft.Y, y, h);
+            row.LeftLidCornerRightX = i2r(ffp.LeftEye.LidCornerRight.X, x, w);
+            row.LeftLidCornerRightY = i2r(ffp.LeftEye.LidCornerRight.Y, y, h);
+            row.LeftLidUpX = i2r(ffp.LeftEye.LidUpCenter.X, x, w);
+            row.LeftLidUpY = i2r(ffp.LeftEye.LidUpCenter.Y, y, h);
+            row.RightEyeCenterX = i2r(ffp.RightEye.EyeCenter.X, x, w);
+            row.RightEyeCenterY = i2r(ffp.RightEye.EyeCenter.Y, y, h);
+            row.RightLidBottomX = i2r(ffp.RightEye.LidBottomCenter.X, x, w);
+            row.RightLidBottomY = i2r(ffp.RightEye.LidBottomCenter.Y, y, h);
+            row.RightLidCornerLeftX = i2r(ffp.RightEye.LidCornerLeft.X, x, w);
+            row.RightLidCornerLeftY = i2r(ffp.RightEye.LidCornerLeft.Y, y, h);
+            row.RightLidCornerRightX = i2r(ffp.RightEye.LidCornerRight.X, x, w);
+            row.RightLidCornerRightY = i2r(ffp.RightEye.LidCornerRight.Y, y, h);
+            row.RightLidUpX = i2r(ffp.RightEye.LidUpCenter.X, x, w);
+            row.RightLidUpY = i2r(ffp.RightEye.LidUpCenter.Y, y, h);
+            row.Thumbnail = ms.ToArray();
+
+            dataSet.Training.AddTrainingRow(row);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int expressionOID = Convert.ToInt32(expressionSelectorComboBox.SelectedValue);
+
+            AddTrainingData(ref _DataSet, ref _FFP, expressionOID, ref _TempBitmap);           
         }
 
         /// <summary>
@@ -755,7 +790,7 @@ namespace ffp
         /// <param name="e"></param>
         private void CameraParameters_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            klu.ConfigureCaptureDialog();
+            _KLU.ConfigureCaptureDialog();
         }
 
         /// <summary>
@@ -765,7 +800,7 @@ namespace ffp
         /// <param name="e"></param>
         private void captureResolutionMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            klu.ConfigureCaptureResolutionDialog();
+            _KLU.ConfigureCaptureResolutionDialog();
         }
 
         private void About_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -787,21 +822,21 @@ namespace ffp
 
         private void ExpressionsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            ExpressionsDialog dlg = new ExpressionsDialog(ref dataSet);
+            ExpressionsDialog dlg = new ExpressionsDialog(ref _DataSet);
             dlg.Owner = this;
             dlg.ShowDialog();
         }
 
         private void TrainingDataSetsDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            TrainingDataSetsDialog dlg = new TrainingDataSetsDialog(ref dataSet);
+            TrainingDataSetsDialog dlg = new TrainingDataSetsDialog(ref _DataSet);
             dlg.Owner = this;
             dlg.ShowDialog();
         }
 
         private void AnnDialog_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            AnnDialog dlg = new AnnDialog(ref klu);
+            AnnDialog dlg = new AnnDialog(ref _KLU);
             dlg.Owner = this;
             dlg.ShowDialog();
         }
@@ -828,8 +863,32 @@ namespace ffp
 
             if (result == true)
             {
-                dataSet.Training.WriteXml(dlg.FileName);
+                _DataSet.Training.WriteXml(dlg.FileName);
             }
+        }
+
+        private void ImportFromXML_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = "."; // Default file extension
+            dlg.Filter = "Training (*.xml)|*.xml|All files (*.*)|*.*"; // Filter files by extension
+            dlg.Title = "Pick a XML file from which to import datasets!";
+            dlg.Multiselect = false;
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                _DataSet.Training.ReadXml(dlg.FileName);
+            }
+        }
+
+        private void BatchClassification_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            BatchClassification dlg = new BatchClassification(ref _KLU, ref _DataSet, _ProcessOptions);
+            dlg.Owner = this;
+            dlg.ShowDialog();
         }
     }
 }

@@ -62,7 +62,15 @@
                                      ToolTipTitle="Picture"
                                      ToolTipDescription="Process a single or multiple pictures."
                                      Executed="PictureStart_Executed"/>
-                    
+
+                    <r:RibbonCommand x:Key="BatchClassificationCmd"
+                                     LargeImageSource="/ffp;component/img/030.png"
+                                     SmallImageSource="/ffp;component/img/030.png"
+                                     LabelTitle="Batch Classification"
+                                     ToolTipTitle="Batch Classification"
+                                     ToolTipDescription="Classifies multiple images at once without user interaction."
+                                     Executed="BatchClassification_Executed"/>
+
                     <r:RibbonCommand x:Key="AboutCmd"
                                      LargeImageSource="/ffp;component/img/152.png"
                                      SmallImageSource="/ffp;component/img/152.png"
@@ -201,13 +209,21 @@
                                      SmallImageSource="/ffp;component/img/Disc001.png"
                                      LabelTitle="Export to XML"
                                      ToolTipTitle="Export to XML"
-                                     ToolTipDescription="Exports all the training data to a XMLfile."
+                                     ToolTipDescription="Exports all the training data to a XML file."
                                      Executed="ExportToXML_Executed"/>
+
+                    <r:RibbonCommand x:Key="ImportFromXMLCmd"
+                                     LargeImageSource="/ffp;component/img/Disc001.png"
+                                     SmallImageSource="/ffp;component/img/Disc001.png"
+                                     LabelTitle="Import from XML"
+                                     ToolTipTitle="Import from XML"
+                                     ToolTipDescription="Imports a the training data from a XML file."
+                                     Executed="ImportFromXML_Executed"/>
                 </ResourceDictionary>
             </r:Ribbon.Resources>
 
             <!-- Main Menu -->
-            
+
             <r:Ribbon.ApplicationMenu>
                 <r:RibbonApplicationMenu>
                     <r:RibbonApplicationMenu.Command>
@@ -215,11 +231,25 @@
                                      LabelTitle="Exit"
                                      LabelDescription="Exits the application."
                                      Executed="CloseApplication_Executed" />
-                    </r:RibbonApplicationMenu.Command>                    
-                    <r:RibbonApplicationMenuItem Command="{StaticResource PictureCmd}" />
+                    </r:RibbonApplicationMenu.Command>
+
+                    <r:RibbonApplicationSplitMenuItem Command="{StaticResource PictureCmd}" >
+                        <r:RibbonApplicationMenuItem Command="{StaticResource PictureCmd}" />
+                        <r:RibbonApplicationMenuItem Command="{StaticResource BatchClassificationCmd}" />
+                    </r:RibbonApplicationSplitMenuItem>
                     <r:RibbonApplicationMenuItem Command="{StaticResource StartCameraCmd}" />
-                    <r:RibbonApplicationMenuItem Command="{StaticResource AboutCmd}" />
+                    
                     <r:RibbonSeparator/>
+                    
+                    <r:RibbonApplicationSplitMenuItem Command="{StaticResource ShowTrainingDatasetsDialog}" >
+                        <r:RibbonApplicationMenuItem Command="{StaticResource ShowTrainingDatasetsDialog}" />
+                        <r:RibbonApplicationMenuItem Command="{StaticResource ExportToXMLCmd}" />
+                        <r:RibbonApplicationMenuItem Command="{StaticResource ImportFromXMLCmd}" />
+                    </r:RibbonApplicationSplitMenuItem>
+                    
+                    <r:RibbonSeparator/>
+                    
+                    <r:RibbonApplicationMenuItem Command="{StaticResource AboutCmd}" />
                     <r:RibbonApplicationMenuItem Command="{StaticResource CloseApplicationCmd}" />
                 </r:RibbonApplicationMenu>
             </r:Ribbon.ApplicationMenu>
@@ -240,7 +270,20 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Processing"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonButton Command="{StaticResource PictureCmd}" />
+                    <r:RibbonSplitButton Name="Picture" Command="{StaticResource PictureCmd}">
+                        <r:RibbonSplitButton.Items>
+                            <MenuItem Header="Picture" Command="{StaticResource PictureCmd}">
+                                <MenuItem.Icon>
+                                    <Image Source="/ffp;component/img/130.png" Width="24" Height="24"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Batch Classification" Command="{StaticResource BatchClassificationCmd}">
+                                <MenuItem.Icon>
+                                    <Image Source="/ffp;component/img/030.png" Width="24" Height="24"></Image>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </r:RibbonSplitButton.Items>
+                    </r:RibbonSplitButton>
                     <r:RibbonSplitButton Name="Camera" Command="{StaticResource StartCameraCmd}">
                         <r:RibbonSplitButton.Items>
                             <MenuItem Header="Start Camera" Command="{StaticResource StartCameraCmd}">
@@ -318,8 +361,7 @@
                         <r:RibbonCommand LabelTitle="Training"/>
                     </r:RibbonGroup.Command>
                     <r:RibbonButton Command="{StaticResource StartTrainingCmd}" />
-                    <r:RibbonButton IsEnabled="False" Command="{StaticResource StopTrainingCmd}" />
-                    <r:RibbonButton Command="{StaticResource ShowTrainingDatasetsDialog}" />
+                    <r:RibbonButton IsEnabled="False" Command="{StaticResource StopTrainingCmd}" />                    
                 </r:RibbonGroup>
                <r:RibbonGroup HorizontalAlignment="Center" HorizontalContentAlignment="Center">
                     <r:RibbonGroup.Command>
@@ -330,11 +372,13 @@
 
                 <r:RibbonGroup>
                     <r:RibbonGroup.Command>
-                        <r:RibbonCommand LabelTitle="Export Training Datasets"/>
+                        <r:RibbonCommand LabelTitle="Training Datasets"/>
                     </r:RibbonGroup.Command>
+                    <r:RibbonButton Command="{StaticResource ShowTrainingDatasetsDialog}" />
                     <r:RibbonButton IsEnabled="False" Command="{StaticResource ExportToExcelCmd}" />
                     <r:RibbonButton IsEnabled="False" Command="{StaticResource ExportToCSVCmd}" />
                     <r:RibbonButton Command="{StaticResource ExportToXMLCmd}" />
+                    <r:RibbonButton Command="{StaticResource ImportFromXMLCmd}" />
                 </r:RibbonGroup>
             </r:RibbonTab>
         </r:Ribbon>
@@ -390,9 +434,9 @@
                     </Button>
 
                     <Label Margin="3">Expression:</Label>
-                    <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEnabled="False" IsEditable="True" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
+                    <ComboBox Margin="3" MinWidth="100" HorizontalAlignment="Stretch" IsEnabled="False" IsEditable="False" KeyDown="expressionSelectorComboBox_KeyDown" SelectedIndex="0" Name="expressionSelectorComboBox" ItemsSource="{Binding}" DisplayMemberPath="Expression" SelectedValuePath="ExpressionOID">
                     </ComboBox>
-                    <Button Name="ClassifyResultButton" IsEnabled="False" Click="Button_Click">Train</Button>                  
+                    <Button Name="ClassifyResultButton" IsEnabled="False" Click="Button_Click">Classify</Button>                  
                 </StackPanel>
             </Grid>
         </Grid>

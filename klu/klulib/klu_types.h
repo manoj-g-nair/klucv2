@@ -1,3 +1,7 @@
+/**
+ * Copyright (C) 2010, Konrad Kleine and Jens Lukowski, all rights reserved.
+ */
+
 #ifndef KLU_TYPES_H_
 #define KLU_TYPES_H_
 

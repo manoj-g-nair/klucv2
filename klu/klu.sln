@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ffp", "ffp\ffp.csproj", "{6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KluSharp", "KluSharp\KluSharp.csproj", "{42DF18C1-6C7F-48E0-B19C-DFF5332CF739}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "native", "native\native.vcproj", "{247C611C-DDF9-4A06-BAA9-A9904DBD8533}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{42DF18C1-6C7F-48E0-B19C-DFF5332CF739}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{42DF18C1-6C7F-48E0-B19C-DFF5332CF739}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{42DF18C1-6C7F-48E0-B19C-DFF5332CF739}.Release|Win32.ActiveCfg = Release|Any CPU
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Debug|Win32.ActiveCfg = Debug|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Debug|Win32.Build.0 = Debug|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Any CPU.ActiveCfg = Release|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Win32.ActiveCfg = Release|Win32
+		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
