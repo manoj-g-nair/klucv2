@@ -88,7 +88,7 @@ namespace ffp
                 _ProcessOptions = new ProcessOptions();
                 _FFP = new FaceFeaturePoints();
 
-                _ProcessOptions.DoEyeProcessing = 0;
+                _ProcessOptions.DoEyeProcessing = 1;
                 _ProcessOptions.DoMouthProcessing = 1;
                 _ProcessOptions.DrawAnthropometricPoints = 0;
                 _ProcessOptions.DrawSearchRectangles = 0;
@@ -103,7 +103,7 @@ namespace ffp
 
                 // Create a Timer with a Normal Priority
                 _CaptureTimer = new DispatcherTimer(DispatcherPriority.ApplicationIdle, this.Dispatcher);
-
+                
                 // Set the callback to just show the time ticking away
                 // NOTE: We are using a control so this has to run on 
                 // the UI thread
@@ -701,7 +701,10 @@ namespace ffp
         /// <returns>(double) (coord - begin) / (double) dim</returns>
         private static float i2r(int coord, int begin, int dim)
         {
-            return (float)(coord - begin) / (float)dim;
+            float res = (float)(coord - begin) / (float)dim;
+
+            // This is a quick hack to set invalid FFPs to 0
+            return (res < 0 || res > 1) ? 0 : res;
         }
 
         public static void AddTrainingData(ref TrainingDataSet dataSet, ref FaceFeaturePoints ffp, int expressionOID, ref System.Drawing.Bitmap picture)
@@ -714,9 +717,11 @@ namespace ffp
             int w = ffp.FaceRectangle.Width;
             int h = ffp.FaceRectangle.Height;
 
-            // Calculate the eye distance
-            float dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
-            float dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
+            // Calculate the eye distance (in relative coordinates
+            float dx = i2r(ffp.RightEye.EyeCenter.X, x, w) - i2r(ffp.LeftEye.EyeCenter.X, x, w);
+            float dy = i2r(ffp.RightEye.EyeCenter.Y, y, h) - i2r(ffp.LeftEye.EyeCenter.Y, y, h);
+            //float dx = i2r(ffp.RightEye.EyeCenter.X - ffp.LeftEye.EyeCenter.X, x, w);
+            //float dy = i2r(ffp.RightEye.EyeCenter.Y - ffp.LeftEye.EyeCenter.Y, y, h);
             float eyeDist = (float)Math.Sqrt(dx * dx + dy * dy);
 
             // Construct thumbnail
@@ -750,6 +755,8 @@ namespace ffp
             row.LipBottomCenterY = i2r(ffp.Mouth.LipBottomCenter.Y, y, h);
             row.LipBottomRightX = i2r(ffp.Mouth.LipBottomRight.X, x, w);
             row.LipBottomRightY = i2r(ffp.Mouth.LipBottomRight.Y, y, h);
+            row.LipBottomLeftX = i2r(ffp.Mouth.LipBottomLeft.X, x, w);
+            row.LipBottomLeftY = i2r(ffp.Mouth.LipBottomLeft.Y, y, h);
             row.EyeDistance = eyeDist;
             row.LeftEyeCenterX = i2r(ffp.LeftEye.EyeCenter.X, x, w);
             row.LeftEyeCenterY = i2r(ffp.LeftEye.EyeCenter.Y, y, h);
@@ -880,13 +887,22 @@ namespace ffp
 
             if (result == true)
             {
-                _DataSet.Training.ReadXml(dlg.FileName);
+                try
+                {
+                    _DataSet.Training.ReadXml(dlg.FileName);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show("There was an error while importing your data. This can have multiple reasons."
+                        + " The most comment reason ist that the imported datasets are already loaded. If that is the case you can simply ignore this error."
+                        + " Here are the exception details: \n\n\"" + exception.Message + "\"", "Import Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
         private void BatchClassification_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            BatchClassification dlg = new BatchClassification(ref _KLU, ref _DataSet, _ProcessOptions);
+            BatchClassificationDialog dlg = new BatchClassificationDialog(ref _KLU, ref _DataSet, _ProcessOptions);
             dlg.Owner = this;
             dlg.ShowDialog();
         }

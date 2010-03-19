@@ -11,12 +11,17 @@ namespace ffp
         {
             try
             {
+                if (DBNull.Value.Equals(value))
+                {
+                    return null;
+                }
+
                 TableAdapterManager tam = new TableAdapterManager();
                 TrainingDataSet dataSet = new TrainingDataSet();
                 tam.ExpressionTableAdapter = new ExpressionTableAdapter();
 
                 tam.ExpressionTableAdapter.Fill(dataSet.Expression);               
-
+                
                 return dataSet.Expression.FindByExpressionOID(System.Convert.ToInt32(value)).Expression;
             }
             catch (NullReferenceException)

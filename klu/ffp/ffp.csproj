@@ -44,6 +44,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -107,7 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="BatchClassification.xaml">
+    <Page Include="BatchClassificationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -139,8 +140,8 @@
     <Compile Include="AnnDialog.xaml.cs">
       <DependentUpon>AnnDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BatchClassification.xaml.cs">
-      <DependentUpon>BatchClassification.xaml</DependentUpon>
+    <Compile Include="BatchClassificationDialog.xaml.cs">
+      <DependentUpon>BatchClassificationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ExpressionIDToImageConverter.cs" />
     <Compile Include="ExpressionComboBoxConverter.cs" />

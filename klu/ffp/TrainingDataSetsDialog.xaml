@@ -70,43 +70,43 @@
                     </toolkit:DataGridTemplateColumn.CellTemplate>
                 </toolkit:DataGridTemplateColumn>-->
 
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerLeftX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerLeftY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerRightX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipCornerRightY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpLeftX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpLeftY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpCenterX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpCenterY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpRightX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipUpRightY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomLeftX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomLeftY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomCenterX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomCenterY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomRightX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LipBottomRightY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=EyeDistance}" />                         
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftEyeCenterX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftEyeCenterY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidBottomX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidBottomY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerLeftX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerLeftY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerRightX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidCornerRightY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidUpX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=LeftLidUpY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightEyeCenterX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightEyeCenterY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidBottomX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidBottomY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerLeftX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerLeftY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerRightX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidCornerRightY}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidUpX}" />
-                <toolkit:DataGridTextColumn Binding="{Binding Path=RightLidUpY}" />                
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipCornerLeftX" Binding="{Binding Path=LipCornerLeftX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipCornerLeftY" Binding="{Binding Path=LipCornerLeftY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipCornerRightX" Binding="{Binding Path=LipCornerRightX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipCornerRightY" Binding="{Binding Path=LipCornerRightY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpLeftX" Binding="{Binding Path=LipUpLeftX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpLeftY" Binding="{Binding Path=LipUpLeftY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpCenterX" Binding="{Binding Path=LipUpCenterX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpCenterY" Binding="{Binding Path=LipUpCenterY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpRightX" Binding="{Binding Path=LipUpRightX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipUpRightY" Binding="{Binding Path=LipUpRightY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomLeftX" Binding="{Binding Path=LipBottomLeftX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomLeftY" Binding="{Binding Path=LipBottomLeftY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomCenterX" Binding="{Binding Path=LipBottomCenterX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomCenterY" Binding="{Binding Path=LipBottomCenterY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomRightX" Binding="{Binding Path=LipBottomRightX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LipBottomRightY" Binding="{Binding Path=LipBottomRightY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="EyeDistance" Binding="{Binding Path=EyeDistance}" />                         
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftEyeCenterX" Binding="{Binding Path=LeftEyeCenterX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftEyeCenterY" Binding="{Binding Path=LeftEyeCenterY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidBottomX" Binding="{Binding Path=LeftLidBottomX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidBottomY" Binding="{Binding Path=LeftLidBottomY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidCornerLeftX" Binding="{Binding Path=LeftLidCornerLeftX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidCornerLeftY" Binding="{Binding Path=LeftLidCornerLeftY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidCornerRightX" Binding="{Binding Path=LeftLidCornerRightX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidCornerRightY" Binding="{Binding Path=LeftLidCornerRightY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidUpX" Binding="{Binding Path=LeftLidUpX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="LeftLidUpY" Binding="{Binding Path=LeftLidUpY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightEyeCenterX" Binding="{Binding Path=RightEyeCenterX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightEyeCenterY" Binding="{Binding Path=RightEyeCenterY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidBottomX" Binding="{Binding Path=RightLidBottomX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidBottomY" Binding="{Binding Path=RightLidBottomY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerLeftX" Binding="{Binding Path=RightLidCornerLeftX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerLeftY" Binding="{Binding Path=RightLidCornerLeftY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerRightX" Binding="{Binding Path=RightLidCornerRightX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerRightY" Binding="{Binding Path=RightLidCornerRightY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidUpX" Binding="{Binding Path=RightLidUpX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidUpY" Binding="{Binding Path=RightLidUpY}" />                
             </toolkit:DataGrid.Columns>
         </toolkit:DataGrid>
     </Grid>

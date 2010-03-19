@@ -26,6 +26,13 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
+            
+            <Style x:Key="MyDataGridCellStyleNumber" TargetType="{x:Type toolkit:DataGridCell}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+            </Style>
+            
+            
             <Style x:Key="MyDataGridStyle" TargetType="{x:Type toolkit:DataGrid}">
                 <Setter Property="AlternatingRowBackground">
                     <Setter.Value>

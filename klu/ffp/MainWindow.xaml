@@ -308,7 +308,7 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Processing"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton Name="doEyeProcessingMenuItem" Command="{StaticResource ProcessEyesCmd}" />
+                    <r:RibbonToggleButton IsChecked="True" Name="doEyeProcessingMenuItem" Command="{StaticResource ProcessEyesCmd}" />
                     <r:RibbonToggleButton IsChecked="True" Name="doMouthProcessingMenuItem" Command="{StaticResource ProcessMouthCmd}" /> 
                 </r:RibbonGroup>
                 <r:RibbonGroup>
@@ -347,8 +347,8 @@
                     <r:RibbonGroup.Command>
                         <r:RibbonCommand LabelTitle="Elements To Draw"/>
                     </r:RibbonGroup.Command>
-                    <r:RibbonToggleButton Name="drawAnthropometricPointsMenuItem" Command="{StaticResource DrawAnthropometricPointsCmd}" />
-                    <r:RibbonToggleButton Name="drawSearchRectanglesMenuItem" Command="{StaticResource DrawRectanglesCmd}" />
+                    <r:RibbonToggleButton IsChecked="False" Name="drawAnthropometricPointsMenuItem" Command="{StaticResource DrawAnthropometricPointsCmd}" />
+                    <r:RibbonToggleButton IsChecked="False" Name="drawSearchRectanglesMenuItem" Command="{StaticResource DrawRectanglesCmd}" />
                     <r:RibbonToggleButton IsChecked="True" Name="drawFaceRectangleMenuItem"  Command="{StaticResource DrawFaceRectangleCmd}" />
                     <r:RibbonToggleButton IsChecked="True" Name="drawDetectionTimeMenuItem" Command="{StaticResource DrawDetectionTimeCmd}" />
                     <r:RibbonToggleButton IsChecked="True" Name="drawFeaturePointsMenuItem" Command="{StaticResource DrawFacialFeaturePointsCmd}" />
