@@ -4,7 +4,7 @@
     Title="Artificial Neural Network"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
                 xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
-    Height="431" Width="637" Icon="/ffp;component/img/107.png">
+    Height="431" Width="637" Icon="/ffp;component/img/107.png" Background="AliceBlue">
     <Grid Name="AnnGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>

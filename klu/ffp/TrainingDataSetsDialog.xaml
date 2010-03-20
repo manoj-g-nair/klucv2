@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Training Datasets"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="301" Width="762" Icon="/ffp;component/img/032.png">
+    Height="301" Width="762" Icon="/ffp;component/img/032.png" Background="AliceBlue">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
@@ -106,7 +106,9 @@
                 <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerRightX" Binding="{Binding Path=RightLidCornerRightX}" />
                 <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidCornerRightY" Binding="{Binding Path=RightLidCornerRightY}" />
                 <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidUpX" Binding="{Binding Path=RightLidUpX}" />
-                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidUpY" Binding="{Binding Path=RightLidUpY}" />                
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="RightLidUpY" Binding="{Binding Path=RightLidUpY}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="MouthCenterX" Binding="{Binding Path=MouthCenterX}" />
+                <toolkit:DataGridTextColumn CellStyle="{StaticResource MyDataGridCellStyleNumber}" Header="MouthCenterY" Binding="{Binding Path=MouthCenterY}" />
             </toolkit:DataGrid.Columns>
         </toolkit:DataGrid>
     </Grid>

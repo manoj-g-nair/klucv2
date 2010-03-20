@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KluSharp", "KluSharp\KluSha
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "native", "native\native.vcproj", "{247C611C-DDF9-4A06-BAA9-A9904DBD8533}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenameFeedDB", "RenameFeedDB\RenameFeedDB.csproj", "{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,16 @@ Global
 		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Win32.ActiveCfg = Release|Win32
 		{247C611C-DDF9-4A06-BAA9-A9904DBD8533}.Release|Win32.Build.0 = Release|Win32
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{61AD93C7-98C0-4D17-A63B-84DA6BE37EA3}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

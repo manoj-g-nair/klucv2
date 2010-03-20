@@ -52,9 +52,9 @@ namespace ffp
             #region Initialize ANN stuff
             _ANN = new ANN();
             _ANN.NumLayers = 3;
-            _ANN.SetNumNeurons(0, 16);
+            _ANN.SetNumNeurons(0, 38);
             _ANN.SetNumNeurons(1, 6);
-            _ANN.SetNumNeurons(2, 1);
+            _ANN.SetNumNeurons(2, 7);
 
             // Bind certain labels to ANN stuff
             AnnNumLayers.DataContext = _ANN;
@@ -165,7 +165,7 @@ namespace ffp
         {
             _ANN.NumLayers = 2 + _DataSet.Tables[0].Rows.Count;
             _ANN.SetNumNeurons(0, 16);
-            _ANN.SetNumNeurons(_DataSet.Tables[0].Rows.Count + 1, 1);
+            _ANN.SetNumNeurons(_DataSet.Tables[0].Rows.Count + 1, 7);
 
             for (int i = 0; i < _DataSet.Tables[0].Rows.Count; i++)
             {

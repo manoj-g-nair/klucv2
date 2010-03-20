@@ -100,6 +100,7 @@ namespace KluSharp
     [StructLayout(LayoutKind.Sequential)]
     public class MouthFeaturePoints
     {
+        public KluPoint MouthCenter;
         public KluPoint LipUpCenter;
         public KluPoint LipBottomCenter;
         public KluPoint LipUpRight;

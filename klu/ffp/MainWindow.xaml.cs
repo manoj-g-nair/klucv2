@@ -427,72 +427,79 @@ namespace ffp
         /// <param name="e"></param>
         private void TrainingStart_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            statusText.Text = "Now training...";
+            TrainingDialog dlg = new TrainingDialog(ref _DataSet);
+            dlg.Owner = this;
+            dlg.ShowDialog();
+            return;
 
-            // Enable infinite progess indicator
-            statusProgess.IsEnabled = true;
-            statusProgess.Visibility = Visibility.Visible;
+            //statusText.Text = "Now training...";
 
-            #region Prepare data to be trained. Involves copying.
+            //// Enable infinite progess indicator
+            //statusProgess.IsEnabled = true;
+            //statusProgess.Visibility = Visibility.Visible;
 
-            int numTrainingSets = _DataSet.Training.Rows.Count;
-            const int numInputNeurons = 16;
-            const int numOutputNeurons = 1;
-            double[][] inputs = new double[numTrainingSets][];
-            double[][] outputs = new double[numTrainingSets][];
+            //#region Prepare data to be trained. Involves copying.
 
-            for (int i = 0; i < numTrainingSets; i++)
-            {
-                inputs[i] = new double[numInputNeurons];
-                inputs[i][0] = _DataSet.Training[i].LipCornerLeftX;
-                inputs[i][1] = _DataSet.Training[i].LipCornerLeftY;
-                inputs[i][2] = _DataSet.Training[i].LipCornerRightX;
-                inputs[i][3] = _DataSet.Training[i].LipCornerRightY;
-                inputs[i][4] = _DataSet.Training[i].LipUpLeftX;
-                inputs[i][5] = _DataSet.Training[i].LipUpLeftY;
-                inputs[i][6] = _DataSet.Training[i].LipUpCenterX;
-                inputs[i][7] = _DataSet.Training[i].LipUpCenterY;
-                inputs[i][8] = _DataSet.Training[i].LipUpRightX;
-                inputs[i][9] = _DataSet.Training[i].LipUpRightY;
-                inputs[i][10] = _DataSet.Training[i].LipBottomLeftX;
-                inputs[i][11] = _DataSet.Training[i].LipBottomLeftY;
-                inputs[i][12] = _DataSet.Training[i].LipBottomCenterX;
-                inputs[i][13] = _DataSet.Training[i].LipBottomCenterY;
-                inputs[i][14] = _DataSet.Training[i].LipBottomRightX;
-                inputs[i][15] = _DataSet.Training[i].LipBottomRightY;
+            //int numTrainingSets = _DataSet.Training.Rows.Count;
+            //const int numInputNeurons = 16;
+            //const int numOutputNeurons = 1;
+            //double[][] inputs = new double[numTrainingSets][];
+            //double[][] outputs = new double[numTrainingSets][];
 
-                outputs[i] = new double[numOutputNeurons];
-                outputs[i][0] = _DataSet.Training[i].ExpressionOID;
-            }
-            #endregion
+            //for (int i = 0; i < numTrainingSets; i++)
+            //{
+            //    inputs[i] = new double[numInputNeurons];
+            //    inputs[i][0] = _DataSet.Training[i].LipCornerLeftX;
+            //    inputs[i][1] = _DataSet.Training[i].LipCornerLeftY;
+            //    inputs[i][2] = _DataSet.Training[i].LipCornerRightX;
+            //    inputs[i][3] = _DataSet.Training[i].LipCornerRightY;
+            //    inputs[i][4] = _DataSet.Training[i].LipUpLeftX;
+            //    inputs[i][5] = _DataSet.Training[i].LipUpLeftY;
+            //    inputs[i][6] = _DataSet.Training[i].LipUpCenterX;
+            //    inputs[i][7] = _DataSet.Training[i].LipUpCenterY;
+            //    inputs[i][8] = _DataSet.Training[i].LipUpRightX;
+            //    inputs[i][9] = _DataSet.Training[i].LipUpRightY;
+            //    inputs[i][10] = _DataSet.Training[i].LipBottomLeftX;
+            //    inputs[i][11] = _DataSet.Training[i].LipBottomLeftY;
+            //    inputs[i][12] = _DataSet.Training[i].LipBottomCenterX;
+            //    inputs[i][13] = _DataSet.Training[i].LipBottomCenterY;
+            //    inputs[i][14] = _DataSet.Training[i].LipBottomRightX;
+            //    inputs[i][15] = _DataSet.Training[i].LipBottomRightY;
 
-            ActivationNetwork network = new ActivationNetwork(
-                new SigmoidFunction(1.0),
-                numInputNeurons,
-                6,
-                5,
-                numOutputNeurons
-            );
+            //    outputs[i] = new double[numOutputNeurons];
+            //    outputs[i][0] = _DataSet.Training[i].ExpressionOID;
+            //}
+            //#endregion
 
-            BackPropagationLearning teacher = new BackPropagationLearning(network);
-            teacher.LearningRate = 0.1;
+            //ActivationNetwork network = new ActivationNetwork(
+            //    new SigmoidFunction(1.0),
+            //    numInputNeurons,
+            //    6,
+            //    5,
+            //    numOutputNeurons
+            //);
 
-            for (int i = 0; i < 1000; i++)
-            {
-                double error = teacher.RunEpoch(inputs, outputs);
-                if (i == 0)
-                {
-                    Console.WriteLine("Error at i=" + i + ": " + error);
-                }
-                if (i == 999)
-                {
-                    Console.WriteLine("Error at i=" + i + ": " + error);
-                }
-            }
+            //BackPropagationLearning teacher = new BackPropagationLearning(network);
+            //teacher.LearningRate = 0.1;
 
-            // Disable infinite progess indicator
-            statusProgess.IsEnabled = false;
-            statusProgess.Visibility = Visibility.Hidden;
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    double error = teacher.RunEpoch(inputs, outputs);
+            //    if (i == 0)
+            //    {
+            //        Console.WriteLine("Error at i=" + i + ": " + error);
+            //    }
+            //    if (i == 999)
+            //    {
+            //        Console.WriteLine("Error at i=" + i + ": " + error);
+            //    }
+            //}
+
+            //// Disable infinite progess indicator
+            //statusProgess.IsEnabled = false;
+            //statusProgess.Visibility = Visibility.Hidden;
+
+            // OOOOOLLLLD!!!!
 
                 
             //Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
@@ -778,6 +785,9 @@ namespace ffp
             row.RightLidCornerRightY = i2r(ffp.RightEye.LidCornerRight.Y, y, h);
             row.RightLidUpX = i2r(ffp.RightEye.LidUpCenter.X, x, w);
             row.RightLidUpY = i2r(ffp.RightEye.LidUpCenter.Y, y, h);
+            row.MouthCenterX = i2r(ffp.Mouth.MouthCenter.Y, y, h);
+            row.MouthCenterY = i2r(ffp.Mouth.MouthCenter.Y, y, h);
+            
             row.Thumbnail = ms.ToArray();
 
             dataSet.Training.AddTrainingRow(row);

@@ -126,6 +126,7 @@ extern "C" {
     */  
     KLULIB_API typedef struct KluMouthFeaturePoints
     {
+        CvPoint mouthCenter;
         CvPoint upperLipMiddle;
         CvPoint lowerLipMiddle;
         CvPoint upperLipRight;
@@ -133,7 +134,7 @@ extern "C" {
         CvPoint upperLipLeft;
         CvPoint lowerLipLeft;
         CvPoint cornerLeft; // from your point of view
-        CvPoint cornerRight;// from your point of view
+        CvPoint cornerRight;// from your point of view        
     } KluMouthFeaturePoints;
 
     /**

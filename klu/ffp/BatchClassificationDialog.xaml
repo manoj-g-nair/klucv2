@@ -5,7 +5,8 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 
     Title="Batch Classification"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="202" Width="333" Icon="/ffp;component/img/075.png">
+    Height="202" Width="333" Icon="/ffp;component/img/075.png"
+        Background="AliceBlue">
 
         <WrapPanel Margin="10" HorizontalAlignment="Center">
             <Image Height="32"  HorizontalAlignment="Left" Source="/ffp;component/img/075.png" Stretch="Uniform"></Image>
@@ -19,6 +20,6 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
             <Button Margin="3" Name="CancelButton" Click="CancelButton_Click">Cancel</Button>
             
             <Label>Progress:</Label>
-        <ProgressBar MinWidth="200" Height="20" Name="ProgressBar"></ProgressBar>
+        <ProgressBar Minimum="0" Maximum="100" MinWidth="200" Height="20" Name="ProgressBar"></ProgressBar>
     </WrapPanel>
 </Window>

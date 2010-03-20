@@ -5,7 +5,7 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 
     Title="Expressions"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="375" Width="397" Icon="/ffp;component/img/075.png">
+    Height="375" Width="397" Icon="/ffp;component/img/075.png" Background="AliceBlue">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"></RowDefinition>
@@ -14,17 +14,16 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
         <StackPanel Margin="6" Grid.Row="0" Orientation="Horizontal">
             <Image HorizontalAlignment="Left" Source="/ffp;component/img/075.png" Stretch="Uniform"></Image>
             <Label HorizontalAlignment="Left" VerticalAlignment="Center">
-                <TextBlock TextWrapping="Wrap">Please, feel free edit or add
-                    your own Expressions!</TextBlock>                
+                <TextBlock TextWrapping="Wrap">These are the available basic expressions!</TextBlock>                
             </Label>
         </StackPanel>
         <toolkit:DataGrid Grid.Row="1"
                         RowStyle="{StaticResource RowStyle}"
                         Style="{StaticResource MyDataGridStyle}"
                         Margin="6"
-                        CanUserAddRows="True" 
-                        CanUserDeleteRows="True" 
-                        CanUserSortColumns="True" 
+                        CanUserAddRows="False" 
+                        CanUserDeleteRows="False" 
+                        CanUserSortColumns="True"
                         Name="ExpressionsDataGrid"
                         ItemsSource="{Binding}"
                         RowHeight="50"

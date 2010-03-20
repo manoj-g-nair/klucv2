@@ -566,6 +566,8 @@ namespace klu
         // Create a copy of the eye region image
         IplImage * regImg = extractGrayScaleROI(image);
 
+        fp.mouthCenter = getRectMidPoint(cvGetImageROI(image));
+
         cvEqualizeHist(regImg, regImg);
 
         //cvFloodFill(regImg, 
