@@ -164,14 +164,6 @@
                                      ToolTipDescription="Starts the training of the Artificial Neural Network. You'll be asked to select a nerual network file."
                                      Executed="TrainingStart_Executed"/>
 
-                    <r:RibbonCommand x:Key="StopTrainingCmd" 
-                                     LargeImageSource="/ffp;component/img/263.png"
-                                     SmallImageSource="/ffp;component/img/263.png"
-                                     LabelTitle="Stop Training"
-                                     ToolTipTitle="Stop Training"
-                                     ToolTipDescription="Stops the training of the Artificial Neural Network."
-                                     Executed="TrainingStop_Executed"/>
-
                     <r:RibbonCommand x:Key="ShowTrainingDatasetsDialog"
                                      LargeImageSource="/ffp;component/img/032.png"
                                      SmallImageSource="/ffp;component/img/032.png"
@@ -179,14 +171,6 @@
                                      ToolTipTitle="Show Training Datasets"
                                      ToolTipDescription="Opens a dialog that shows all the training datasets you have collected so far. You can manipulate each dataset individually"
                                      Executed="TrainingDataSetsDialog_Executed"/>
-
-                    <r:RibbonCommand x:Key="CreateANNCmd"
-                                     LargeImageSource="/ffp;component/img/107.png"
-                                     SmallImageSource="/ffp;component/img/107.png"
-                                     LabelTitle="Create ANN"
-                                     ToolTipTitle="Create an Artificial Neural Network (ANN)"
-                                     ToolTipDescription="Shows a dialog that lets you setup the Artifical Neural Network (ANN) which is used to train and classify facial expressions."
-                                     Executed="AnnDialog_Executed"/>
 
                     <r:RibbonCommand x:Key="ExportToExcelCmd"
                                      LargeImageSource="/ffp;component/img/Disc001.png"
@@ -361,13 +345,6 @@
                         <r:RibbonCommand LabelTitle="Training"/>
                     </r:RibbonGroup.Command>
                     <r:RibbonButton Command="{StaticResource StartTrainingCmd}" />
-                    <r:RibbonButton IsEnabled="False" Command="{StaticResource StopTrainingCmd}" />                    
-                </r:RibbonGroup>
-               <r:RibbonGroup HorizontalAlignment="Center" HorizontalContentAlignment="Center">
-                    <r:RibbonGroup.Command>
-                        <r:RibbonCommand LabelTitle="Artificial Neural Network"/>
-                    </r:RibbonGroup.Command>
-                    <r:RibbonButton  Command="{StaticResource CreateANNCmd}" />
                 </r:RibbonGroup>
 
                 <r:RibbonGroup>

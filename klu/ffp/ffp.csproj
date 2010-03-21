@@ -53,6 +53,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge, Version=2.1.1.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL" />
@@ -111,10 +112,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AnnDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="BatchClassificationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -147,9 +144,6 @@
   <ItemGroup>
     <Compile Include="AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="AnnDialog.xaml.cs">
-      <DependentUpon>AnnDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="BatchClassificationDialog.xaml.cs">
       <DependentUpon>BatchClassificationDialog.xaml</DependentUpon>

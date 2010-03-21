@@ -5,55 +5,121 @@ xmlns:r="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControls
                 
     Title="Training"     xmlns:toolkit="http://schemas.microsoft.com/wpf/2008/toolkit"
     xmlns:local="clr-namespace:ffp"
-    Height="513" Width="526"
+    Height="595" Width="797"
         Background="AliceBlue">
-    <Grid HorizontalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="205*"></RowDefinition>
-            <RowDefinition Height="240*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="20" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Learning Rate:</Label>
-            <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LearningRate" HorizontalContentAlignment="Right">0.1</TextBox>
-            <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Momentum:</Label>
-            <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Momentum" HorizontalContentAlignment="Right">0</TextBox>
-            <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Max Iterations:</Label>
-            <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="MaxIterations" HorizontalContentAlignment="Right">1000</TextBox>
-            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Epsilon:</Label>
-            <TextBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="Epsilon" HorizontalContentAlignment="Right">0.000001</TextBox>
-            <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Sigmoid Alpha:</Label>
-            <TextBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="SigmoidAlpha" HorizontalContentAlignment="Right">2</TextBox>
-            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Current Error:</Label>
-            <TextBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="CurrentError" HorizontalContentAlignment="Right" IsReadOnly="True" />
-            <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Current Iteration:</Label>
-            <TextBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="CurrentIteration" HorizontalContentAlignment="Right" IsReadOnly="True" />
-            <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Progress:</Label>
-            <ProgressBar Name="TrainingProgress" Grid.Row="7" Grid.Column="1"  Maximum="100" Minimum="0" />
-        </Grid>
+    <TabControl>
+        <TabItem Header="Parameters">
+            <Grid HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="243*"></RowDefinition>
+                    <RowDefinition Height="252.04*"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Margin="20,20,20,0" VerticalAlignment="Top" Height="205" Grid.RowSpan="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Learning Rate:</Label>
+                    <TextBox NumberSubstitution.Substitution="AsCulture" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Name="LearningRate" HorizontalContentAlignment="Right">0.1</TextBox>
+                    <Label Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Momentum:</Label>
+                    <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Name="Momentum" HorizontalContentAlignment="Right">0</TextBox>
+                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Max Iterations:</Label>
+                    <TextBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Name="MaxIterations" HorizontalContentAlignment="Right">1000</TextBox>
+                    <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Epsilon:</Label>
+                    <TextBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Name="Epsilon" HorizontalContentAlignment="Right">0.000001</TextBox>
+                    <Label Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">Sigmoid Alpha:</Label>
+                    <TextBox Grid.Row="0" Grid.Column="3" VerticalAlignment="Center" Name="SigmoidAlpha" HorizontalContentAlignment="Right">2</TextBox>
+                    <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">Current Error:</Label>
+                    <TextBlock Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Name="CurrentError" />
+                    <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Center">Current Iteration:</Label>
+                    <TextBlock Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" Name="CurrentIteration" />               
+                    <!--Stats-->
+                    <Label Grid.Row="4" Grid.Column="2" VerticalAlignment="Center">Mean Error:</Label>
+                    <TextBlock Grid.Row="4" Grid.Column="3" VerticalAlignment="Center" Name="MeanError"  />
+                    <Label Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Mean Absolute Error:</Label>
+                    <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Name="MeanAbsoluteError"/>                    
+                    <Label Grid.Row="5" Grid.Column="2" VerticalAlignment="Center">Max Error:</Label>
+                    <TextBlock Grid.Row="5" Grid.Column="3" VerticalAlignment="Center" Name="MaxError" />
+                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Mean Squared Error (MSE):</Label>
+                    <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Name="MeanSquaredError" />                    
+                    <Label Grid.Row="3" Grid.Column="2" VerticalAlignment="Center">Median:</Label>
+                    <TextBlock Grid.Row="3" Grid.Column="3" VerticalAlignment="Center" Name="Median" />
+                    <Label Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Standard Deviation:</Label>
+                    <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Name="StandardDeviation"  />
+                    <!--Progress-->
+                    <Label Grid.Row="7" Grid.Column="2" VerticalAlignment="Center">Progress:</Label>
+                    <ProgressBar Grid.Row="7" Grid.Column="3" Name="TrainingProgress"   Maximum="100" Minimum="0" />
+                </Grid>
 
-        <Border Margin="20" Grid.Row="1" Background="White" Height="Auto" Effect="{StaticResource DropShadowEffect}">
-            <WindowsFormsHost Name="windowsFormsHost1" />
-        </Border>
+                <Border Margin="20" Grid.Row="1" Background="White" Height="Auto" Effect="{StaticResource DropShadowEffect}">
+                    <WindowsFormsHost Name="windowsFormsHost1" />
+                </Border>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="ClearGraph" Click="ClearGraph_Click" Width="140">Clear Graph</Button>
-            <Button Name="StartButton" Click="StartButton_Click" Width="140">Start</Button>            
-            <Button Name="StopButton" Click="StopButton_Click" Width="139">Stop</Button>
-        </StackPanel>
-    </Grid>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Name="ClearGraph" Click="ClearGraph_Click">Clear Graph</Button>
+                    <Button Name="StartButton" Click="StartButton_Click">Start</Button>
+                    <Button Name="StopButton" Click="StopButton_Click">Stop</Button>
+                </StackPanel>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Architecture">
+            <Grid Name="AnnGrid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                    <Grid VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Button Click="LoadAnnButton_Click" Grid.Column="0" Grid.Row="0" Margin="6" Name="LoadAnnButton">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Height="24" Source="/ffp;component/img/035.png" Width="24" />
+                                <Label>Load</Label>
+                            </StackPanel>
+                        </Button>
+                        <Button Click="SaveAnnButton_Click" Grid.Column="1" Grid.Row="0" Margin="6" Name="SaveAnnButton" ToolTip="Click here, when you are done configuring your neural network. You can use it later for training and after that to process image feature points.">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Height="24" Source="/ffp;component/img/Disc001.png" Width="24" />
+                                <Label>Save</Label>
+                            </StackPanel>
+                        </Button>
+                        <Button Click="ApplyAnnSettings_Click" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Margin="6" Name="ApplyAnnSettings">Apply hidden layers</Button>
+                        <toolkit:DataGrid AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" CanUserSortColumns="False" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" ItemsSource="{Binding}" Margin="6" MinHeight="150" Name="HiddenLayerDataGrid" SelectionMode="Single" Style="{StaticResource MyDataGridStyle}">
+                            <toolkit:DataGrid.Columns>
+                                <toolkit:DataGridTextColumn Binding="{Binding Path=Neurons}" Header="Neurons on hidden layer" />
+                            </toolkit:DataGrid.Columns>
+                        </toolkit:DataGrid>
+                    </Grid>
+                </StackPanel>
+                <Border Background="DimGray" BorderBrush="DimGray" BorderThickness="2" Grid.Column="1" Margin="6" Name="AnnBorder">
+                    <Canvas Background="#FF333333" Name="AnnCanvas" SizeChanged="AnnCanvas_SizeChanged" />
+                </Border>
+            </Grid>
+        </TabItem>
+    </TabControl>
 </Window>

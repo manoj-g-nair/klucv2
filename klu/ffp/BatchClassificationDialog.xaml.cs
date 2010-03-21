@@ -157,7 +157,7 @@ namespace ffp
 
             // Setup the progress bar
             ProgressBar.IsIndeterminate = false;
-            ProgressBar.Maximum = _SelectedFiles.Count;
+            ProgressBar.Maximum = 100;
             ProgressBar.Minimum = 0;
             ProgressBar.Value = 0;
 
