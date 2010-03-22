@@ -372,6 +372,7 @@ namespace klu
         return regImg;
     }
     //------------------------------------------------------------------------------
+    //int djdjd = 0;
     KluEyeFeaturePoints detectEyeFeaturePoints(const IplImage * image,
         const CvPoint & eyeCenter,
         CvMemStorage * storage,                                        
@@ -396,6 +397,10 @@ namespace klu
         fp.center.y -= region.y;
 
         cvEqualizeHist(regImg, regImg);
+        //char eq[255];
+        //memset(eq, '\0', sizeof(eq));
+        //sprintf(eq, "equalized %d", djdjd++);
+        //saveImage(regImg, eq);
 
         // Get some statistical information about the grayscale distribution
         GrayStats stats = getGrayStats(regImg);
@@ -569,6 +574,11 @@ namespace klu
         fp.mouthCenter = getRectMidPoint(cvGetImageROI(image));
 
         cvEqualizeHist(regImg, regImg);
+
+        //char eq[255];
+        //memset(eq, '\0', sizeof(eq));
+        //sprintf(eq, "equalized %f", fp.mouthCenter.x);
+        //saveImage(regImg, eq);
 
         //cvFloodFill(regImg, 
 
@@ -772,15 +782,15 @@ namespace klu
         // Lips
         if (app.processOptions.doMouthProcessing)
         {
-            cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW);
-            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
-            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW);
-            cvLine(image, ffp.mouth.upperLipMiddle, ffp.mouth.upperLipRight, COL_YELLOW);
-            cvLine(image, ffp.mouth.upperLipRight, ffp.mouth.cornerRight, COL_YELLOW);
-            cvLine(image, ffp.mouth.cornerRight, ffp.mouth.lowerLipRight, COL_YELLOW);
-            cvLine(image, ffp.mouth.lowerLipRight, ffp.mouth.lowerLipMiddle, COL_YELLOW);
-            cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW);
-            cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW);       
+            cvLine(image, ffp.mouth.cornerLeft, ffp.mouth.upperLipLeft, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.upperLipLeft, ffp.mouth.upperLipMiddle, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.upperLipMiddle, ffp.mouth.upperLipRight, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.upperLipRight, ffp.mouth.cornerRight, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.cornerRight, ffp.mouth.lowerLipRight, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.lowerLipRight, ffp.mouth.lowerLipMiddle, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.lowerLipMiddle, ffp.mouth.lowerLipLeft, COL_YELLOW, 1);
+            cvLine(image, ffp.mouth.lowerLipLeft, ffp.mouth.cornerLeft, COL_YELLOW, 1);       
         }
 
         
@@ -881,6 +891,12 @@ namespace klu
                     {
                         // Find right eye feature points
                         cvSetImageROI(app.grayscale, rightEyeRect);
+                        
+                        //cvSetImageROI(image, rightEyeRect);
+                        //saveImage(image, "right eye orig col");
+                        //saveImage(app.grayscale, "right eye orig gray");
+                        //cvResetImageROI(image);
+
                         ffp->rightEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(rightEyeRect), app.memStorage, "RE Contrast Stretch 1", "RE Contrast Stretch 2","RE Threshold", "RE Contour", "RE Feature Points");
                         cvResetImageROI(app.grayscale);
                     }
@@ -911,6 +927,12 @@ namespace klu
                     {
                         // Find left eye feature points
                         cvSetImageROI(app.grayscale, leftEyeRect);
+
+                        //cvSetImageROI(image, leftEyeRect);
+                        //saveImage(image, "left eye orig col");
+                        //saveImage(app.grayscale, "left eye orig gray");
+                        //cvResetImageROI(image);
+
                         ffp->leftEye = detectEyeFeaturePoints(app.grayscale, getRectMidPoint(leftEyeRect), app.memStorage, "LE Contrast Stretch 1", "LE Contrast Stretch 2","LE Threshold", "LE Contour", "LE Feature Points");
                         cvResetImageROI(app.grayscale);
                     }
@@ -948,6 +970,12 @@ namespace klu
                         mouthRect.y += mouthSearchWindow.y;
 
                         cvSetImageROI(app.grayscale, mouthRect);
+
+                        //cvSetImageROI(image, mouthRect);
+                        //saveImage(image, "mouth orig col");
+                        //saveImage(app.grayscale, "mouth orig gray");
+                        //cvResetImageROI(image);
+
                         ffp->mouth = detectMouthFeaturePoints(app.grayscale, app.memStorage, "M Contrast Stretch 1", "M Contrast Stretch 2","M Threshold", "M Contour", "M Feature Points");
                         cvResetImageROI(app.grayscale);
                     }
@@ -988,7 +1016,7 @@ namespace klu
             if (app.processOptions.drawAnthropometricPoints)
             {
                 // Draw eye-midpoint connection line
-                cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE);
+                cvLine(image, ffp->rightEye.center, ffp->leftEye.center, COL_BLUE, 1);
 
                 // Draw anthropometric eyebrow distance line (0.33% of eye mid-points distance)		    
                 cvLine(image, ffp->rightEye.center, cvPoint((int) ffp->rightEye.center.x, (int) ffp->rightEye.center.y - eyeDist * 0.33), COL_RED, 1);
@@ -1021,6 +1049,8 @@ namespace klu
             cvRectangle(image, cvPoint(org.x, org.y + ymin), cvPoint(org.x + textBoundings.width, org.y - textBoundings.height), cvScalar(0,0,0,0.5), CV_FILLED);
             cvPutText(image, buf, cvPoint(0, image->height - 8), &app.font, CV_RGB(0,255,0));		
         }
+
+        //saveImage(image, "result");
 
         //==========================
         //==========================
